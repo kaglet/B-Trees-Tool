@@ -24,8 +24,11 @@ h1 {
     color: blue;
 }
 
-button {
-    background-color: aquamarine;
-    height: 5%;
-    font-size: 200%;
+canvas {
+    background-color: white;
+    display: block;
+}
+#canvasholder {
+    border:2px solid black;
+    float: left; /* This makes the border exactly fit the canvas. */
 }

@@ -8,9 +8,15 @@
     <link rel = "stylesheet" href="css/main.css"/>
     <!-- the below links the java script file to the html file (instead of using <script></script>) -->
     <script src = "js/main.js"></script>
+    <script src = "js/balancedTree.js"></script>
+
 </head>
-    <body>
-        <main><h1>DSA PROJECT hello</h1><main>
-            <button onclick = "sayHello()">Click Me!</button>
+    <body onload="init()">
+        <h1>DSA PROJECT</h1>
+        <div id="canvasholder">
+            <canvas id="canvas" width="600" height="600">
+                <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
+            Canvas not supported.
+            </canvas>
     </body>
 </html>
