@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Creation</title>
+    <link href="css/styles.css" rel="stylesheet">
+
+    <!-- import custom font Nunito -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="main-container">
+        <section class="canvas-container">
+            <section class="insert-delete-container">
+                <ul>
+                    <li>
+                        <label for="insert">Insert</label>
+                        <input type="number" name="insert" id="insert">
+                    </li>
+                    <li>
+                        <label for="delete">Delete</label>
+                        <input type="number" name="delete" id="delete">
+                    </li>
+                </ul>
+            </section>
+            <canvas id="canvas">
+                <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
+            Canvas not supported.
+            </canvas>
+            <section>
+                <button type="button">
+                    Save
+                </button>
+            </section>
+        </section>
+    </section>
+    <section class="side-panel">
+        <section class="parameters-container">
+            <ul>
+                <li>
+                    <label for="max-degree">Max Degree</label>
+                    <input type="number" name="max-degree" id="max-degree">
+                </li>
+                <li>
+                    <label for="num-nodes">Num Nodes</label>
+                    <input type="number" name="num-nodes" id="num-nodes">
+                </li>
+            </ul>
+        </section>
+        <button type="button" class="custom-tree-btn">
+            Custom Tree
+        </button>
+    </section>
+</body>
+</html>
