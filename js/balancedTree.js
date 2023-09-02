@@ -543,6 +543,7 @@ function drawTree(node, x, y) {
     }
 
     drawNode(x, y, keys);
+    //draws the tree in the console
     console.log(keys);
 
     if (!node.leaf) {
@@ -559,6 +560,7 @@ function drawTree(node, x, y) {
         const childXPositions = [];
 
         node.C.forEach((child, index) => {
+            // this if fixes the undefined error
             if (child!=undefined){
                 const childWidth = child.keys.length * 60;
                 const childX = startX + childWidth / 2;
