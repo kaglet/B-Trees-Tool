@@ -193,12 +193,13 @@ class BTreeNode {
             if (!this.leaf) {
                 this.C[i].traverse();
             }
-            console.log(this.keys[i]);
+            
+            // console.log(this.keys[i]);
         }
- 
-        
-
-        if (!this.leaf) {
+        for (let x = this.n; x < 2*this.t-1; x++) {
+            this.keys[x]=undefined;
+        }
+         if (!this.leaf) {
             this.C[i].traverse();
         }
     }
@@ -248,40 +249,35 @@ class BTreeNode {
     }
 
     //fix something somewhere here
-    splitChild(i, y) {
+    splitChild(x, y) {
         const z = new BTreeNode(y.t, y.leaf);
         z.n = this.t - 1;
     
         for (let j = 0; j < this.t - 1; j++) {
             z.keys[j] = y.keys[j + this.t];
-            y.keys[j + this.t] = undefined;            
-
         }
     
         if (!y.leaf) {
-            for (let j = 0; j < this.t; j++) {
-                z.C[j] = y.C[j + this.t];
+            for (let i = 0; i < this.t; i++) {
+                z.C[i] = y.C[i + this.t];
             }
         }
     
         y.n = this.t - 1;
         
     
-        for (let j = this.n; j >= i + 1; j--) {
-            this.C[j + 1] = this.C[j];
+        for (let z = this.n; z >= x + 1; z--) {
+            this.C[z + 1] = this.C[z];
         }
     
-        this.C[i + 1] = z;
+        this.C[x + 1] = z;
     
-        for (let j = this.n - 1; j >= i; j--) {
-            this.keys[j + 1] = this.keys[j];
+        for (let m = this.n - 1; m >= x; m--) {
+            this.keys[m + 1] = this.keys[m];
         }
         //this here causes it
-        this.keys[i] = y.keys[this.t - 1];
-        y.keys[this.t - 1] = undefined;
-        this.n = this.n + 1;
-
-        
+        this.keys[x] = y.keys[this.t - 1];
+        this.n = this.n + 1;       
     }
     
     
@@ -298,9 +294,7 @@ class BTree {
             this.root = new BTreeNode(this.t, true);
             this.root.keys[0] = k;
             this.root.n = 1;
-        } else {
-
-            
+        } else {            
             if (this.root.n === 2 * this.t - 1) {
                 const s = new BTreeNode(this.t, false);
                 s.C[0] = this.root;
@@ -355,7 +349,7 @@ class BTree {
 var canvas;
 var rootNode;
 var graphics;
-const t = new BTree(2); // 2 is the max degree
+let tree = new BTree(2); // 2 is the max degree
 
 function init() {
 
@@ -367,24 +361,50 @@ function init() {
 	}
 
 	 // A B-Tree with minimum degree 3
-    t.insert(10);
-    t.insert(20);
-    t.insert(30);
+    tree.insert(10);
+    tree.traverse();
+    tree.insert(20);
+    tree.traverse();
+    tree.insert(30);
+    tree.traverse();
+    tree.insert(2);
+    tree.traverse();
+    tree.insert(5);
+    tree.traverse();
+    tree.insert(3);
+    tree.traverse();
+    tree.insert(12);
+    tree.traverse();
+    tree.insert(33);
+    tree.traverse();
+    tree.insert(4);
+    tree.traverse();
+    tree.insert(1);
+    tree.traverse();
+    tree.insert(6);
+    tree.traverse();
 
-    t.insert(2);
-    t.insert(1);
-    t.insert(35);
 
 
-    console.log(t.root.keys);
-    // console.log(t.root.C[0].keys);
-    // console.log(t.root.C[1].keys);
 
-    console.log("Traversal of the constructed tree is:");
-    t.traverse();
+    // console.log(tree.root.keys);
+    // console.log(tree.root.C[0].keys);
+    // console.log(tree.root.C[1].keys);
+    // console.log(tree.root.C[2].keys);
+    // console.log(tree.root.C[0].C[0].keys);
+    // console.log(tree.root.C[0].C[1].keys);
+    // console.log(tree.root.C[1].C[0].keys);
+    // console.log(tree.root.C[1].C[1].keys);
+
+
+
+
+
+    // console.log("Traversal of the constructed tree is:");
+    // tree.traverse();
 
     graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    drawTree(t.root, canvas.width / 2 - 60, 50);
+    drawTree(tree.root, canvas.width / 2 - 60, 50);
 
     
 }
@@ -394,9 +414,10 @@ var insertValue;
 function insertKey() {
     try {
 		insertValue = document.getElementById("insertKeyValue").value;
-        t.insert(insertValue);
+        tree.insert(insertValue);
+        tree.traverse();
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        drawTree(t.root, canvas.width / 2 - 60, 50);
+        drawTree(tree.root, canvas.width / 2 - 60, 50);
         document.getElementById("insertKeyValue").value = null;
 	} catch(e) {
         console.log(e);
@@ -408,9 +429,9 @@ var removalValue;
 function removeKey() {
     try {
 		removalValue = document.getElementById("removeKeyValue").value;
-        t.remove(removalValue);
+        tree.remove(removalValue);
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        drawTree(t.root, canvas.width / 2 - 60, 50);
+        drawTree(tree.root, canvas.width / 2 - 60, 50);
         document.getElementById("removeKeyValue").value = null;
 	} catch(e) {
         console.log(e);
@@ -454,6 +475,7 @@ function drawNode(x, y, keys) {
 function drawTree(node, x, y) {
     if (node) {
         drawNode(x, y, node.keys);
+        console.log(node.keys);
 
         if (!node.leaf) {
             const childY = y + 200; // Adjust as needed
