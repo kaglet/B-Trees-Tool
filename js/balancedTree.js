@@ -345,11 +345,12 @@ class BTree {
 // USER INPUT AND INITIALISATION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var frameNumber = 0;
 
 var canvas;
 var rootNode;
 var graphics;
-let tree = new BTree(2); // 2 is the max degree
+const t = new BTree(2); // 2 is the max degree
 
 function init() {
 
@@ -444,53 +445,153 @@ function removeKey() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Function to draw a single key in a square
-function drawKey(x, y, key) {
-    const keySize = 60; // Adjust as needed
-    graphics.strokeRect(x - keySize / 2, y - keySize / 2, keySize, keySize);
-    graphics.fillText(key, x - 5, y + 5); // Adjust position for text within the square
-}
+// // Function to draw a single key in a square
+// function drawKey(x, y, key) {
+//     const keySize = 60; // Adjust as needed
+//     graphics.strokeRect(x - keySize / 2, y - keySize / 2, keySize, keySize);
+//     graphics.fillText(key, x - 5, y + 5); // Adjust position for text within the square
+// }
 
-// Function to draw a rectangular node with keys as squares
-function drawNode(x, y, keys) {
-    const nodeHeight = 60; 
-    let validKeys = [];
-    keys.forEach((key, index) => {
-        if (key!=undefined){
-           validKeys.push(key);
-        } 
-    });
-    const nodeWidth = keys.validKeys*60; 
-    const keySpacing = 60;
+// // Function to draw a rectangular node with keys as squares
+// function drawNode(x, y, keys) {
+//     const nodeHeight = 60; 
+//     let validKeys = [];
+//     keys.forEach((key, index) => {
+//         if (key!=undefined){
+//            validKeys.push(key);
+//         } 
+//     });
+//     const nodeWidth = keys.validKeys*60; 
+//     const nodeSpacing = 60;
+//     const keySpacing = 60;
 
-    graphics.strokeRect(x - nodeHeight, y - nodeHeight / 2, nodeWidth, nodeHeight);
+//     //graphics.strokeRect(x - nodeHeight, y - nodeHeight / 2, nodeWidth, nodeHeight);
 
-    const startX = x - nodeHeight / 2;
+//     const startX = x - nodeHeight / 2 + nodeSpacing;
 
-    validKeys.forEach((key, index) => {
-        drawKey(startX + index * keySpacing, y, key);
-    });
-}
+//     validKeys.forEach((key, index) => {
+//         drawKey(startX + index * keySpacing, y, key);
+//     });
+// }
+
+// function drawTree(node, x, y) {
+//     if (node) {
+//         drawNode(x, y, node.keys);
+
+//         if (!node.leaf) {
+//             const childY = y + 150; // Adjust as needed
+//             const numChildren = node.C.length;
+
+//             node.C.forEach((child, index) => {
+//                 let childX;
+//                 if (index>0){
+
+//                     childX = x - (numChildren / 2) * 60 + (node.C[index-1].keys.length) * index * 60 + 50;
+//                 } else{
+//                    childX = x - (numChildren / 2) * 60;
+//                 }
+//                 drawTree(child, childX, childY);
+//             });
+//             x = x+ 30;
+//         }
+//     }
+// }
 
 function drawTree(node, x, y) {
-    if (node) {
-        drawNode(x, y, node.keys);
-        console.log(node.keys);
+    const canvasWidth = 1200;
+    if (!node) return;
 
-        if (!node.leaf) {
-            const childY = y + 200; // Adjust as needed
-            const numChildren = node.C.length;
+    const keys = node.keys.filter((key) => key !== undefined);
+    const nodeWidth = keys.length * 60; //one rectangle made fro each node, so the rectangles length is adjusted to 
+    const nodeSpacing = 40; //dist between nodes
 
-            node.C.forEach((child, index) => {
-                let childX;
-                if (index>0){
+    // make sure it doesnt print outside of canvas
+    if (x + nodeWidth / 2 > canvasWidth) {      //maybe rather make the nodes smaller
+        x = canvasWidth - nodeWidth / 2;
+    } else if (x - nodeWidth / 2 < 0) {
+        x = nodeWidth / 2;
+    }
 
-                    childX = x - (numChildren / 2) * 60 + (node.C[index-1].keys.length) * index * 60+30;
-                } else{
-                   childX = x - (numChildren / 2) * 60;
-                }
-                drawTree(child, childX, childY);
-            });
-        }
+    drawNode(x, y, keys);
+
+    if (!node.leaf) {
+        const numChildren = node.C.length;
+        const totalChildWidth = numChildren * (nodeWidth + nodeSpacing) - nodeSpacing;
+        let startX = x - totalChildWidth / 2;
+
+        // if (startX + totalChildWidth > canvasWidth) {
+        //     startX = canvasWidth - totalChildWidth;
+        // } else if (startX < 0) {
+        //     startX = 0;
+        // }
+
+        const childXPositions = [];
+
+        node.C.forEach((child, index) => {
+            const childWidth = child.keys.length * 60;
+            const childX = startX + childWidth / 2;
+            const childY = y + 150; // Adjust as needed
+
+            childXPositions.push(childX);
+
+            drawTree(child, childX, childY);
+            
+            startX += childWidth + nodeSpacing;
+        });
+
+        // for (let i = 1; i < childXPositions.length; i++) {
+        //     const prevX = childXPositions[i - 1];
+        //     const currX = childXPositions[i];
+        //     if (currX - prevX < nodeWidth + nodeSpacing) {
+        //         childXPositions[i] = prevX + nodeWidth + nodeSpacing;
+        //     }
+        // }
+        
+        // // Redraw child nodes with adjusted positions
+        // for (let i = 0; i < node.C.length; i++) {
+        //     const child = node.C[i];
+        //     drawTree(child, childXPositions[i], y + 150);
+        // }
     }
 }
+
+function drawKey(x, y, key) {
+    const keySize = 30; //size of blue square -- hopefull make into draggable
+    graphics.fillStyle = "lightblue";
+    
+    graphics.fillRect(x + keySize / 2, y - keySize / 2, keySize, keySize);  //fills blue small rect
+    
+    graphics.fillStyle = "black";
+    graphics.font = "14px Arial";
+    graphics.textAlign = "center";
+    graphics.textBaseline = "middle";
+    graphics.fillText(key, x+ keySize, y);  //drawing key text, numbers
+}
+
+function drawNode(x, y, keys) {
+    const nodeHeight = 60;
+    const validKeys = keys.filter((key) => key !== undefined);  //tking away undefined from array
+    const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
+    const keySpacing = 60;  //how far apart the keys are spaced
+
+    // draw the node rectangle
+    graphics.strokeRect(x - nodeWidth / 2, y - nodeHeight / 2, nodeWidth, nodeHeight);
+
+    // draw keys in the node
+    graphics.fillStyle = "black";
+    graphics.font = "14px Arial";
+    graphics.textAlign = "center";
+    graphics.textBaseline = "middle";
+    
+    validKeys.forEach((key, index) => {
+        const keyX = x + (index - validKeys.length / 2) * keySpacing;   //calcs each key x and y value
+        const keyY = y;
+        
+        drawKey(keyX, keyY, key);
+    });
+}
+
+
+
+
+
