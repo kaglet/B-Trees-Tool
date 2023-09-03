@@ -364,108 +364,13 @@ class BTree {
     } 
 }
 
+// export default BTree;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // USER INPUT AND INITIALISATION
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-var frameNumber = 0;
-
-var canvas;
-var rootNode;
-var graphics;
-const tree = new BTree(2); // 2 is the max degree
-
-function init() {
-
-    try {
-		canvas = document.getElementById("canvas");
-		graphics = canvas.getContext("2d");
-	} catch(e) {
-		document.getElementById("canvasholder").innerHTML = "An error occurred while initializing graphics.";
-	}
-
-	// A B-Tree with minimum degree 3
-    tree.insert(100);
-    tree.traverse();
-    tree.insert(200);
-    tree.traverse();
-    tree.insert(300);
-    tree.traverse();
-
-    tree.insert(150);
-    tree.traverse();
-    tree.insert(250);
-    tree.traverse();
-    tree.insert(350);
-    tree.traverse();
-
-    tree.insert(50);
-    tree.traverse();
-    tree.insert(275);
-    tree.traverse();
-    tree.insert(380);
-    tree.traverse();
-
-    // console.log("Traversal of the constructed tree is:");
-    // tree.traverse();
-
-    console.log("The Tree:");
-    graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    drawTree(tree.root, canvas.width / 2 - 60, 50);
-
-    
-}
-
-// user input and insert that value into the tree
-var insertValue;
-function insertKey() {
-    try {
-		insertValue = document.getElementById("insertKeyValue").value;
-        //ensure a traverse is called after an insert to allow for cleaning tree
-        try{
-            if (insertValue === ""){
-                console.log("Enter a number");
-            } else {
-                tree.insert(parseInt(insertValue));
-                tree.traverse();
-            }
-        } catch(e) {
-            console.log(e);
-        }
-        graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        console.log("The Tree:");
-        drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("insertKeyValue").value = null;
-	} catch(e) {
-        console.log(e);
-	}
-}
-
-// user input and remove that value from the tree
-var removeValue;
-function removeKey() {
-    try {
-		removeValue = document.getElementById("removeKeyValue").value;
-        //ensure a traverse is called after a removal to allow for cleaning tree
-        try{
-            if (removeValue === ""){
-                console.log("Enter a number");
-            } else {
-                tree.remove(parseInt(removeValue));
-                tree.traverse();
-            }
-        } catch(e) {
-            console.log(e);
-        }
-        graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        console.log("The Tree:");
-        drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("removeKeyValue").value = null;
-	} catch(e) {
-        console.log(e);
-	}
-}
 
 
 
@@ -527,104 +432,7 @@ function removeKey() {
 //     }
 // }
 
-function drawTree(node, x, y) {
-    const canvasWidth = 1200;
-    if (!node) return;
 
-    const keys = node.keys.filter((key) => key !== undefined);
-    const nodeWidth = keys.length * 60; //one rectangle made fro each node, so the rectangles length is adjusted to 
-    const nodeSpacing = 40; //dist between nodes
-
-    // make sure it doesnt print outside of canvas
-    if (x + nodeWidth / 2 > canvasWidth) {      //maybe rather make the nodes smaller
-        x = canvasWidth - nodeWidth / 2;
-    } else if (x - nodeWidth / 2 < 0) {
-        x = nodeWidth / 2;
-    }
-
-    drawNode(x, y, keys);
-    //draws the tree in the console
-    console.log(keys);
-
-    if (!node.leaf) {
-        const numChildren = node.C.length;
-        const totalChildWidth = numChildren * (nodeWidth + nodeSpacing) - nodeSpacing;
-        let startX = x - totalChildWidth / 2;
-
-        // if (startX + totalChildWidth > canvasWidth) {
-        //     startX = canvasWidth - totalChildWidth;
-        // } else if (startX < 0) {
-        //     startX = 0;
-        // }
-
-        const childXPositions = [];
-
-        node.C.forEach((child, index) => {
-            // this if fixes the undefined error
-            if (child!=undefined){
-                const childWidth = child.keys.length * 60;
-                const childX = startX + childWidth / 2;
-                const childY = y + 150; // Adjust as needed
-    
-                childXPositions.push(childX);
-    
-                drawTree(child, childX, childY);
-                
-                startX += childWidth + nodeSpacing;
-            }
-        });
-
-        // for (let i = 1; i < childXPositions.length; i++) {
-        //     const prevX = childXPositions[i - 1];
-        //     const currX = childXPositions[i];
-        //     if (currX - prevX < nodeWidth + nodeSpacing) {
-        //         childXPositions[i] = prevX + nodeWidth + nodeSpacing;
-        //     }
-        // }
-        
-        // // Redraw child nodes with adjusted positions
-        // for (let i = 0; i < node.C.length; i++) {
-        //     const child = node.C[i];
-        //     drawTree(child, childXPositions[i], y + 150);
-        // }
-    }
-}
-
-function drawKey(x, y, key) {
-    const keySize = 30; //size of blue square -- hopefull make into draggable
-    graphics.fillStyle = "lightblue";
-    
-    graphics.fillRect(x + keySize / 2, y - keySize / 2, keySize, keySize);  //fills blue small rect
-    
-    graphics.fillStyle = "black";
-    graphics.font = "14px Arial";
-    graphics.textAlign = "center";
-    graphics.textBaseline = "middle";
-    graphics.fillText(key, x+ keySize, y);  //drawing key text, numbers
-}
-
-function drawNode(x, y, keys) {
-    const nodeHeight = 60;
-    const validKeys = keys.filter((key) => key !== undefined);  //tking away undefined from array
-    const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
-    const keySpacing = 60;  //how far apart the keys are spaced
-
-    // draw the node rectangle
-    graphics.strokeRect(x - nodeWidth / 2, y - nodeHeight / 2, nodeWidth, nodeHeight);
-
-    // draw keys in the node
-    graphics.fillStyle = "black";
-    graphics.font = "14px Arial";
-    graphics.textAlign = "center";
-    graphics.textBaseline = "middle";
-    
-    validKeys.forEach((key, index) => {
-        const keyX = x + (index - validKeys.length / 2) * keySpacing;   //calcs each key x and y value
-        const keyY = y;
-        
-        drawKey(keyX, keyY, key);
-    });
-}
 
 
 

@@ -2,22 +2,19 @@
 //     console.log("Hello");
 // }
 
-import BTree from "./balancedTree.js"; // Import classes from balancedTree.js
-import { drawKey, drawNode, drawTree } from './drawTree.js';
+// import BTree from "./balancedTree.js"; // Import classes from balancedTree.js
+// import { drawKey, drawNode, drawTree } from './drawTree.js';
 
 var frameNumber = 0;
 
 var canvas;
 var rootNode;
-export var graphics;
+var graphics;
 const tree = new BTree(2); // 2 is the max degree
 var insertButton = document.getElementById('insertBtn');
 var removeButton = document.getElementById('removeBtn');
 
-
-
 function init() {
-    console.log("hi there");
     try {
 		canvas = document.getElementById("canvas");
 		graphics = canvas.getContext("2d");
@@ -56,6 +53,8 @@ function init() {
 
     
 }
+
+// export default init;
 
 // user input and insert that value into the tree
 var insertValue;
@@ -106,13 +105,6 @@ function removeKey() {
 	}
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     // Your initialization code here
-//     init(); // Call your init function
-// });
-
-//document.addEventListener("DOMContentLoaded", init);
-
 insertButton.addEventListener( 'click', () => {
     insertKey();    
 } );
@@ -120,4 +112,13 @@ insertButton.addEventListener( 'click', () => {
 removeButton.addEventListener( 'click', () => {
     removeKey();    
 } );
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     // Your initialization code here
+//     init(); // Call your init function
+// });
+
+//document.addEventListener("DOMContentLoaded", init);
+
+
 
