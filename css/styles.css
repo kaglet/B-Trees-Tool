@@ -16,9 +16,16 @@
     --main-container-input-color: #c0baba;
     --canvas-color: #e6dada;
     --main-font-family: 'Nunito', system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --page-btm-padding: 8px;
+    --input-height: 31px;
+    --canvas-container-gap: 10px;
+    --insert-delete-reserve-space: calc(var(--input-height) + var(--canvas-container-gap));
 }
 
 /* SET LAYOUT, SIZING AND FONT PROPERTIES*/
+canvas:first-child {
+    margin-top: var(--insert-delete-reserve-space);
+}
 
 body {
     height: 100vh;
@@ -31,6 +38,10 @@ button {
     border: none;
     border-radius: 3px;
     padding: 0.5rem 1.7rem;
+}
+
+button:hover {
+    transform: scale(1.1);
 }
 
 #canvas {
@@ -54,11 +65,11 @@ ul {
 }
 
 .canvas-container {
-    gap: 10px;
+    gap: var(--canvas-container-gap);
 }
 
 .main-container, .side-panel {
-    padding: var(--panel-padding-tb) var(--panel-padding-lr) 15px var(--panel-padding-lr);
+    padding: var(--panel-padding-tb) var(--panel-padding-lr) var(--page-btm-padding) var(--panel-padding-lr);
 }
 
 .side-panel {
@@ -75,6 +86,10 @@ ul {
 
 input {
     width: 100px;
+    border: none;
+    font-size: 0.9rem;
+    height: var(--input-height);
+    padding: 0px 10px;
 }
 
 canvas + section {
@@ -83,6 +98,10 @@ canvas + section {
 
 .custom-tree-btn {
     margin-top: auto;
+}
+
+.random-tree-btn {
+    margin-top: 25px;
 }
 
 .parameters-container li {
