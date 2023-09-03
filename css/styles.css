@@ -46,8 +46,6 @@ button:hover {
 
 #canvas {
     display: block;
-    width: 900px;
-    height: 670px;
     background-color: var(--canvas-color);
 }
 
