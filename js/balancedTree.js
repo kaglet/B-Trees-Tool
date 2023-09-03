@@ -421,7 +421,7 @@ function init() {
 var insertValue;
 function insertKey() {
     try {
-		insertValue = document.getElementById("insertKeyValue").value;
+		insertValue = document.getElementById("insert").value;
         //ensure a traverse is called after an insert to allow for cleaning tree
         try{
             if (insertValue === ""){
@@ -446,7 +446,7 @@ function insertKey() {
 var removeValue;
 function removeKey() {
     try {
-		removeValue = document.getElementById("removeKeyValue").value;
+		removeValue = document.getElementById("delete").value;
         //ensure a traverse is called after a removal to allow for cleaning tree
         try{
             if (removeValue === ""){
@@ -626,17 +626,5 @@ function drawNode(x, y, keys) {
     });
 }
 
-
-
-
-
-
-                    childX = x - (numChildren / 2) * 60 + (node.C[index-1].keys.length) * index * 60+30;
-                } else{
-                   childX = x - (numChildren / 2) * 60;
-                }
-                drawTree(child, childX, childY);
-            });
-        }
-    }
-}
+// let body = document.body;
+// body.addEventListener('onload',init);
