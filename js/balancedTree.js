@@ -357,7 +357,7 @@ function init() {
 		canvas = document.getElementById("canvas");
 		graphics = canvas.getContext("2d");
 	} catch(e) {
-		document.getElementById("canvasholder").innerHTML = "An error occurred while initializing graphics.";
+		document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
 	}
 
 	 // A B-Tree with minimum degree 3
@@ -413,12 +413,12 @@ function init() {
 var insertValue;
 function insertKey() {
     try {
-		insertValue = document.getElementById("insertKeyValue").value;
+		insertValue = document.getElementById("insert").value;
         tree.insert(insertValue);
         tree.traverse();
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
         drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("insertKeyValue").value = null;
+        document.getElementById("insert").value = null;
 	} catch(e) {
         console.log(e);
 	}
@@ -428,11 +428,11 @@ function insertKey() {
 var removalValue;
 function removeKey() {
     try {
-		removalValue = document.getElementById("removeKeyValue").value;
+		removalValue = document.getElementById("delete").value;
         tree.remove(removalValue);
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
         drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("removeKeyValue").value = null;
+        document.getElementById("delete").value = null;
 	} catch(e) {
         console.log(e);
 	}
@@ -494,3 +494,4 @@ function drawTree(node, x, y) {
         }
     }
 }
+
