@@ -532,63 +532,75 @@ function drawTree(node, x, y) {
     if (!node) return;
 
     const keys = node.keys.filter((key) => key !== undefined);
-    const nodeWidth = keys.length * 60; //one rectangle made fro each node, so the rectangles length is adjusted to 
-    const nodeSpacing = 40; //dist between nodes
+    const nodeWidth = keys.length * 60;
+    const nodeSpacing = 40;
+    const arrowSize = 10; // Size of the arrowhead
 
-    // make sure it doesnt print outside of canvas
-    if (x + nodeWidth / 2 > canvasWidth) {      //maybe rather make the nodes smaller
+    if (x + nodeWidth / 2 > canvasWidth) {
         x = canvasWidth - nodeWidth / 2;
     } else if (x - nodeWidth / 2 < 0) {
         x = nodeWidth / 2;
     }
 
-    drawNode(x, y, keys);
-    //draws the tree in the console
-    console.log(keys);
-
+    // Draw arrows to children
     if (!node.leaf) {
         const numChildren = node.C.length;
         const totalChildWidth = numChildren * (nodeWidth + nodeSpacing) - nodeSpacing;
         let startX = x - totalChildWidth / 2;
 
-        // if (startX + totalChildWidth > canvasWidth) {
-        //     startX = canvasWidth - totalChildWidth;
-        // } else if (startX < 0) {
-        //     startX = 0;
-        // }
-
         const childXPositions = [];
 
         node.C.forEach((child, index) => {
-            // this if fixes the undefined error
-            if (child!=undefined){
+            if (child != undefined) {
                 const childWidth = child.keys.length * 60;
                 const childX = startX + childWidth / 2;
-                const childY = y + 150; // Adjust as needed
-    
+                const childY = y + 150;
+
+                // Calculate arrow angle
+                const angle = Math.atan2(childY - (y + 30), childX - x);
+
+                // Draw arrow line
+                graphics.save();
+                graphics.beginPath();
+                graphics.moveTo(x, y + 30); // Arrow starts from the top center of the parent node
+                graphics.lineTo(childX, childY - 30); // Arrow points to the top center of the child node
+                graphics.lineWidth = 3;
+                graphics.strokeStyle = "orange";
+                graphics.stroke();
+                graphics.closePath();
+
+                // Draw arrowhead (triangle)
+                graphics.beginPath();
+                graphics.moveTo(childX, childY - 30);
+                graphics.lineTo(
+                    childX - arrowSize * Math.cos(angle - Math.PI / 6),
+                    childY - 30 - arrowSize * Math.sin(angle - Math.PI / 6)
+                );
+                graphics.lineTo(
+                    childX - arrowSize * Math.cos(angle + Math.PI / 6),
+                    childY - 30 - arrowSize * Math.sin(angle + Math.PI / 6)
+                );
+                graphics.fillStyle = "orange";
+                graphics.fill();
+                graphics.closePath();
+
+                graphics.restore();
+
                 childXPositions.push(childX);
-    
+
                 drawTree(child, childX, childY);
-                
+
                 startX += childWidth + nodeSpacing;
             }
         });
-
-        // for (let i = 1; i < childXPositions.length; i++) {
-        //     const prevX = childXPositions[i - 1];
-        //     const currX = childXPositions[i];
-        //     if (currX - prevX < nodeWidth + nodeSpacing) {
-        //         childXPositions[i] = prevX + nodeWidth + nodeSpacing;
-        //     }
-        // }
-        
-        // // Redraw child nodes with adjusted positions
-        // for (let i = 0; i < node.C.length; i++) {
-        //     const child = node.C[i];
-        //     drawTree(child, childXPositions[i], y + 150);
-        // }
     }
+
+    // Draw the node and keys
+    drawNode(x, y, keys);
+    console.log(keys);
 }
+
+
 
 function drawKey(x, y, key) {
     const keySize = 30; //size of blue square -- hopefull make into draggable
