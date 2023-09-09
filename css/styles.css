@@ -114,6 +114,10 @@ canvas + section {
     gap: 5px;
 }
 
+.label-error {
+    color: red;
+}
+
 input#num-nodes {
     margin-left: auto;
 }
