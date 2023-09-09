@@ -3,28 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSA</title>
-    <!-- the below links the css file to thias html file (instead of using <style></style>) -->
-    <link rel = "stylesheet" href="css/main.css"/>
-    <!-- the below links the java script file to the html file (instead of using <script></script>) -->
-    <script src = "js/main.js"></script>
-    <script src = "js/balancedTree.js"></script>
-    <script src="js/tools-ui-updates.js"></script>
+    <title>Tree Creation</title>
+    <link href="css/styles.css" rel="stylesheet">
+    <script src = "js/balancedTree.js" defer></script>
+    <script src="js/tools-ui-updates.js" defer></script>
+
+    <!-- import custom font Nunito -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
 </head>
-    <body onload="init()">
-        <h1>DSA PROJECT</h1>
-        <div class="row">
-            <!-- INSERT DOES WORK 50/50 -->
-            <button onclick="insertKey()">Insert</button>
-            <input id="insert" type="number">
-            <!-- REMOVE DOESNT WORK -->
-            <button onclick="removeKey()">Remove</button>
-            <input id="delete" type="number">
-        </div>
-        <div id="canvas">
-            <canvas id="canvas" width="1200" height="1200">
+
+<body onload="init()">
+    <section class="main-container">
+        <section class="canvas-container">
+            <section class="insert-delete-container">
+                <ul>
+                    <li>
+                        <button for="insert" onclick="insertKey()">Insert</button>
+                        <input type="number" name="insert" id="insert">
+                    </li>
+                    <li>
+                        <button for="delete" onclick="removeKey()">Delete</button>
+                        <input type="number" name="delete" id="delete">
+                    </li>
+                </ul>
+            </section>
+            <canvas id="canvas" width="900" height="670">
                 <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
             Canvas not supported.
             </canvas>
-    </body>
+            <section>
+                <button type="button">
+                    Save
+                </button>
+            </section>
+        </section>
+    </section>
+    <section class="side-panel">
+        <section class="parameters-Scontainer">
+            <ul>
+                <li>
+                    <label for="max-degree">Max Degree</label>
+                    <input type="number" name="max-degree" id="max-degree">
+                </li>
+                <li>
+                    <label for="num-nodes">Num Nodes</label>
+                    <input type="number" name="num-nodes" id="num-nodes">
+                </li>
+                <button type="button" class="random-tree-btn">
+                    Random Tree
+                </button>
+                <li>    
+                    <label class="label-error" id="error-message" value=""></label>
+                </li>
+            </ul>
+        </section>
+        <button type="button" onclick="createTree()" id= "custom-tree-btn" class="custom-tree-btn">
+            Custom Tree
+        </button>
+    </section>
+</body>
 </html>
