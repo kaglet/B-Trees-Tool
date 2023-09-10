@@ -180,6 +180,7 @@ class BTreeNode {
         } else {
             if (this.leaf) {
                 console.log(`The key ${k} does not exist in the tree`);
+                document.getElementById("error-message").innerHTML  = "The key does not exist in the tree";
                 return;
             }
 
@@ -374,13 +375,17 @@ var frameNumber = 0;
 var canvas;
 var rootNode;
 var graphics;
-var tree; // 2 is the max degree
+var tree;
+var createTreeStarted = true;
+
 
 function init() {
 
     try {
 		canvas = document.getElementById("canvas");
 		graphics = canvas.getContext("2d");
+        document.getElementById("max-degree").focus();
+        document.getElementById("insert-delete-section").style.display = "none";
 	} catch(e) {
 		document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
 	}
@@ -420,55 +425,71 @@ function init() {
 // user input and insert that value into the tree
 var insertValue;
 function insertKey() {
-    try {
-		insertValue = document.getElementById("insert").value;
-        //ensure a traverse is called after an insert to allow for cleaning tree
-        try{
-            if (insertValue === ""){
-                console.log("Enter a number");
-            } else {
-                tree.insert(parseInt(insertValue));
-                tree.traverse();
+    if (!createTreeStarted) {
+        document.getElementById("error-message").innerHTML  = "";
+        try {
+            insertValue = document.getElementById("insert").value;
+            //ensure a traverse is called after an insert to allow for cleaning tree
+            try{
+                if (insertValue === ""){
+                    console.log("Enter a number");
+                    document.getElementById("error-message").innerHTML  = "Please enter a key to insert";
+                } else {
+                    tree.insert(parseInt(insertValue));
+                    tree.traverse();
+                    document.getElementById("insert").focus();
+                    document.getElementById("error-message").innerHTML  = "";
+                }
+            } catch(e) {
+                console.log(e);
             }
+            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            console.log("The Tree:");
+            drawTree(tree.root, canvas.width / 2 - 60, 50);
+            document.getElementById("insert").value = null;
         } catch(e) {
             console.log(e);
         }
-        graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        console.log("The Tree:");
-        drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("insert").value = null;
-	} catch(e) {
-        console.log(e);
-	}
+    } else {
+        document.getElementById("error-message").innerHTML  = "Please enter a max degree and select 'Custom Tree'";
+    }
 }
 
 // user input and remove that value from the tree
 var removeValue;
 function removeKey() {
-    try {
-		removeValue = document.getElementById("delete").value;
-        //ensure a traverse is called after a removal to allow for cleaning tree
-        try{
-            if (removeValue === ""){
-                console.log("Enter a number");
-            } else {
-                tree.remove(parseInt(removeValue));
-                tree.traverse();
+    if (!createTreeStarted) {
+        document.getElementById("error-message").innerHTML  = "";
+        try {
+            removeValue = document.getElementById("delete").value;
+            //ensure a traverse is called after a removal to allow for cleaning tree
+            try{
+                if (removeValue === ""){
+                    console.log("Enter a number");
+                    document.getElementById("error-message").innerHTML  = "Please enter a key to remove";
+                } else {
+                    tree.remove(parseInt(removeValue));
+                    tree.traverse();
+                    document.getElementById("delete").focus();
+                    document.getElementById("error-message").innerHTML  = "";
+
+                }
+            } catch(e) {
+                console.log(e);
             }
+            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            console.log("The Tree:");
+            drawTree(tree.root, canvas.width / 2 - 60, 50);
+            document.getElementById("delete").value = null;
         } catch(e) {
             console.log(e);
         }
-        graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        console.log("The Tree:");
-        drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("delete").value = null;
-	} catch(e) {
-        console.log(e);
-	}
+    } else {
+        document.getElementById("error-message").innerHTML  = "Please enter a max degree and select 'Custom Tree'";
+    }
 }
 
 var maxDegree;
-var createTreeStarted = true;
 function createTree() {
     if (createTreeStarted) {
         try {
@@ -477,12 +498,18 @@ function createTree() {
             try{
                 if (maxDegree === ""){
                     console.log("Enter a max degree value");
-                    document.getElementById("error-message").innerHTML  = "Enter a max degree value";
+                    document.getElementById("error-message").innerHTML  = "Enter a max degree value before creating a tree";
                 } else {
                     document.getElementById("error-message").innerHTML  = "";
                     tree = new BTree(parseInt(maxDegree));
                     document.getElementById("custom-tree-btn").innerHTML  = "Cancel";
+		            document.getElementById("insert").focus();
                     createTreeStarted= false;
+                    if (document.getElementById("insert-delete-section").style.display === "none" || document.getElementById("insert-delete-section").style.display === "") {
+                        document.getElementById("insert-delete-section").style.display = "inline"; // Show the section
+                    } else {
+                        document.getElementById("insert-delete-section").style.display = "none"; // Hide the section
+                    }
                 }
             } catch(e) {
                 console.log(e);
@@ -496,13 +523,15 @@ function createTree() {
         console.log("Tree Creation Canceled");
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
         document.getElementById("custom-tree-btn").innerHTML  = "Custom tree";
+        document.getElementById("max-degree").focus();
         createTreeStarted= true;
-
+        if (document.getElementById("insert-delete-section").style.display === "none" || document.getElementById("insert-delete-section").style.display === "") {
+            document.getElementById("insert-delete-section").style.display = "inline"; // Show the section
+        } else {
+            document.getElementById("insert-delete-section").style.display = "none"; // Hide the section
+        }
     }
-    
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -51,7 +51,7 @@ button:hover {
 
 .insert-delete-container li {
     display: inline;
-}
+} 
 
 .visible {
     visibility: visible;
@@ -85,7 +85,6 @@ ul {
 
 .insert-delete-container {
     align-self: flex-start;
-    visibility: visible;
 }
 
 input {
