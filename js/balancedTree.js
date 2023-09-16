@@ -534,7 +534,7 @@ function drawTree(node, x, y) {
     const keys = node.keys.filter((key) => key !== undefined);
     const nodeWidth = keys.length * 60;
     const nodeSpacing = 40;
-    const arrowSize = 10; // Size of the arrowhead
+    const arrowSize = 15; // Size of the arrowhead
 
     if (x + nodeWidth / 2 > canvasWidth) {
         x = canvasWidth - nodeWidth / 2;
@@ -585,6 +585,8 @@ function drawTree(node, x, y) {
                 graphics.closePath();
 
                 graphics.restore();
+
+                //Recursively draw the rest
 
                 childXPositions.push(childX);
 
