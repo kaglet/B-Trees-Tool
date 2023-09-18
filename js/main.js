@@ -14,6 +14,8 @@ const tree = new BTree(2); // 2 is the max degree
 var insertButton = document.getElementById('insertBtn');
 var removeButton = document.getElementById('removeBtn');
 
+
+
 function init() {
     try {
 		canvas = document.getElementById("canvas");
@@ -54,13 +56,11 @@ function init() {
     
 }
 
-// export default init;
-
 // user input and insert that value into the tree
 var insertValue;
 function insertKey() {
     try {
-		insertValue = document.getElementById("insertKeyValue").value;
+		insertValue = document.getElementById("insert").value;
         //ensure a traverse is called after an insert to allow for cleaning tree
         try{
             if (insertValue === ""){
@@ -75,7 +75,7 @@ function insertKey() {
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
         console.log("The Tree:");
         drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("insertKeyValue").value = null;
+        document.getElementById("insert").value = null;
 	} catch(e) {
         console.log(e);
 	}
@@ -84,7 +84,7 @@ function insertKey() {
 var removeValue;
 function removeKey() {
     try {
-		removeValue = document.getElementById("removeKeyValue").value;
+		removeValue = document.getElementById("delete").value;
         //ensure a traverse is called after a removal to allow for cleaning tree
         try{
             if (removeValue === ""){
@@ -99,19 +99,11 @@ function removeKey() {
         graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
         console.log("The Tree:");
         drawTree(tree.root, canvas.width / 2 - 60, 50);
-        document.getElementById("removeKeyValue").value = null;
+        document.getElementById("delete").value = null;
 	} catch(e) {
         console.log(e);
 	}
 }
-
-insertButton.addEventListener( 'click', () => {
-    insertKey();    
-} );
-
-removeButton.addEventListener( 'click', () => {
-    removeKey();    
-} );
 
 // document.addEventListener("DOMContentLoaded", function () {
 //     // Your initialization code here
@@ -120,5 +112,11 @@ removeButton.addEventListener( 'click', () => {
 
 //document.addEventListener("DOMContentLoaded", init);
 
+insertButton.addEventListener( 'click', () => {
+    insertKey();    
+} );
 
+removeButton.addEventListener( 'click', () => {
+    removeKey();    
+} );
 

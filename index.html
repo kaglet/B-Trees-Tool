@@ -7,9 +7,14 @@
     <!-- the below links the css file to thias html file (instead of using <style></style>) -->
     <link type="text/css" rel = "stylesheet" href="css/main.css"/>
     <!-- the below links the java script file to the html file (instead of using <script></script>) -->
-    <script src = "js/main.js"></script>
-    <script src = "js/balancedTree.js"></script>
-    <script src="js/tools-ui-updates.js"></script>
+    <!-- defer makes sure theyre executed in order -->
+      
+        <!-- <script>
+            function start(){
+                init();
+            }
+            //document.addEventListener("DOMContentLoaded", start);
+        </script>  -->
 </head>
 <!-- complains about init not being loaded yet -->
 <body onload = "init();">   
@@ -18,12 +23,12 @@
         <div class="row">
             <!-- INSERT DOES WORK 50/50 -->
             <button id="insertBtn">Insert</button>
-            <input id="insertKeyValue" type="number">
+            <input id="insert" type="number">
             <!-- REMOVE DOESNT WORK -->
             <button id = "removeBtn">Remove</button>
-            <input id="removeKeyValue" type="number">
+            <input id="delete" type="number">
         </div>
-        <div id="canvas">
+        <div id="canvasholder">
             <canvas id="canvas" width="1200" height="1200">
                 <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
             Canvas not supported.
@@ -31,7 +36,6 @@
         </div>
         <script type="text/javascript" src="js/balancedTree.js"></script>
         <script type="text/javascript" src="js/drawTree.js"></script>
-        <script type = "text/javascript" src="js/tools-ui-updates.js"></script>
         <script type = "text/javascript" src="js/main.js"></script> 
         
     </body>
