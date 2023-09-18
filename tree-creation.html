@@ -5,27 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tree Creation</title>
     <link href="css/styles.css" rel="stylesheet">
+    <script src = "js/balancedTree.js" defer></script>
+    <script src="js/tools-ui-updates.js" defer></script>
 
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
 </head>
-<body>
+
+<body onload="init()">
     <section class="main-container">
         <section class="canvas-container">
             <section class="insert-delete-container">
                 <ul>
                     <li>
-                        <label for="insert">Insert</label>
+                        <button for="insert" onclick="insertKey()">Insert</button>
                         <input type="number" name="insert" id="insert">
                     </li>
                     <li>
-                        <label for="delete">Delete</label>
+                        <button for="delete" onclick="removeKey()">Delete</button>
                         <input type="number" name="delete" id="delete">
                     </li>
                 </ul>
             </section>
-            <canvas id="canvas">
+            <canvas id="canvas" width="900" height="670">
                 <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
             Canvas not supported.
             </canvas>
@@ -47,6 +50,9 @@
                     <label for="num-nodes">Num Nodes</label>
                     <input type="number" name="num-nodes" id="num-nodes">
                 </li>
+                <button type="button" class="random-tree-btn">
+                    Random Tree
+                </button>
             </ul>
         </section>
         <button type="button" class="custom-tree-btn">
