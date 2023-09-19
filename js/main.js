@@ -14,8 +14,6 @@ const tree = new BTree(2); // 2 is the max degree
 var insertButton = document.getElementById('insertBtn');
 var removeButton = document.getElementById('removeBtn');
 
-
-
 function init() {
     try {
 		canvas = document.getElementById("canvas");
