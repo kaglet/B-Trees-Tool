@@ -51,7 +51,7 @@ button:hover {
 
 .insert-delete-container li {
     display: inline;
-}
+} 
 
 .visible {
     visibility: visible;
@@ -85,7 +85,6 @@ ul {
 
 .insert-delete-container {
     align-self: flex-start;
-    visibility: visible;
 }
 
 input {
@@ -112,6 +111,10 @@ canvas + section {
     display: flex;
     justify-content: space-between;
     gap: 5px;
+}
+
+.label-error {
+    color: red;
 }
 
 input#num-nodes {
