@@ -55,7 +55,8 @@ function insertKeyCreate() {
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             console.log("The Tree:");
-            drawTree(tree.root, canvas.width / 2 - 60, 50);
+            drawTree(tree.root, canvas.width / 2, 30);
+      
             document.getElementById("insert").value = null;
         } catch(e) {
             console.log(e);
@@ -89,7 +90,8 @@ function removeKeyCreate() {
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             console.log("The Tree:");
-            drawTree(tree.root, canvas.width / 2 - 60, 50);
+            drawTree(tree.root, canvas.width / 2, 30);
+           
             document.getElementById("delete").value = null;
         } catch(e) {
             console.log(e);
@@ -203,6 +205,27 @@ function randomTree() {
         }
     } else {
         document.getElementById("error-message").innerHTML  = "Cancel Custom Tree Creation before new Random Tree";
+    }
+}
+var offsetX = 0;
+
+function MoveCanvas(move) {
+    if (!createTreeStarted) {
+        if (move == 'l') {
+            // Move canvas's graphics to the left
+            offsetX -= 30;
+        } else if (move == 'r') {
+            // Move canvas's graphics to the right
+            offsetX += 30;
+        } else {
+            // Reset canvas's graphics
+            offsetX = 0;
+        }
+
+        graphics.clearRect(0, 0, canvas.width, canvas.height);
+        graphics.setTransform(1, 0, 0, 1, offsetX, 0);
+        drawTree(tree.root, canvas.width / 2 - 60, 50);
+        graphics.setTransform(1, 0, 0, 1, 0, 0);
     }
 }
 

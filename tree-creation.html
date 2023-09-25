@@ -13,6 +13,7 @@
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
+    
 </head>
 
 <body onload="initCreate()">
@@ -31,10 +32,21 @@
                     </li>
                 </ul>
             </section>
-            <canvas id="canvas" width="900" height="670">
-                <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
-            Canvas not supported.
+            <div class="canvas-scroll">
+            <canvas id="canvas" width="900px" height="670px" >
             </canvas>
+            </div>
+            <section>
+                <button type ="button" onclick="MoveCanvas('l')">
+                    <
+                </button>
+                <button type ="button" onclick="MoveCanvas('m')">
+                    Reset
+                </button>
+                <button type ="button" onclick="MoveCanvas('r')">
+                    >
+                </button>
+            </section>
             <section>
                 <button type="button" onclick="saveTree()" id="save-button">
                     Save
