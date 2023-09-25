@@ -210,7 +210,7 @@ function randomTree() {
 var offsetX = 0;
 
 function MoveCanvas(move) {
-    if (!createTreeStarted) {
+    if (!createTreeStarted || !randomTreeStarted) {
         if (move == 'l') {
             // Move canvas's graphics to the left
             offsetX -= 30;
@@ -248,6 +248,7 @@ function generateRandomTree() {
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
     let key;
+
     if (question == 0 ){
         //insert
         key = Math.floor(Math.random() * 100); 
@@ -256,6 +257,7 @@ function generateRandomQuestion() {
         console.log("Insert: ", key)
         document.getElementById("question").innerHTML  = "Insert: "+  key;
     } else if (question==1){
+        //delete
         key = Math.floor(Math.random() * 100); 
         while (tree.root.search(key)==null){
             key = Math.floor(Math.random() * 100); 
@@ -265,6 +267,7 @@ function generateRandomQuestion() {
         console.log("Delete: ", key)
         document.getElementById("question").innerHTML  = "Delete: "+ key;
     } else if (question==2){
+        //search
         key = Math.floor(Math.random() * 100); 
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
