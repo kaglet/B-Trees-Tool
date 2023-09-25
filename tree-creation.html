@@ -17,18 +17,18 @@
     
 </head>
 
-<body onload="init()">
+<body onload="initCreate()">
     <section class="main-container">
         <section class="canvas-container">
             <!-- style = "display: none;" -->
             <section class="insert-delete-container" id="insert-delete-section" >
                 <ul>
                     <li>
-                        <button for="insert" onclick="insertKey()">Insert</button>
+                        <button for="insert" onclick="insertKeyCreate()">Insert</button>
                         <input type="number" name="insert" id="insert">
                     </li>
                     <li>
-                        <button for="delete" onclick="removeKey()">Delete</button>
+                        <button for="delete" onclick="removeKeyCreate()">Delete</button>
                         <input type="number" name="delete" id="delete">
                     </li>
                 </ul>
@@ -49,27 +49,49 @@
                 </button>
             </section>
             <section>
-                <button type="button">
+                <button type="button" onclick="saveTree()" id="save-button">
                     Save
+                </button>
+                <button type="button" id="validate-button">
+                    Validate
                 </button>
             </section>
         </section>
     </section>
     <section class="side-panel">
-        <section class="parameters-container">
+        <!-- Create Tree View -->
+        <section class="parameters-container" id ="parameters-container">
             <ul>
                 <li>
                     <label for="max-degree">Max Degree</label>
                     <input type="number" name="max-degree" id="max-degree">
                 </li>
                 <li>
-                    <label for="num-nodes">Num Nodes</label>
-                    <input type="number" name="num-nodes" id="num-nodes">
+                    <label for="num-keys">Num Keys</label>
+                    <input type="number" name="num-keys" id="num-keys">
                 </li>
-                <button type="button" class="random-tree-btn">
-                    Random Tree
-                </button>
-                <label id="error-message" value=""></label>
+                <li>
+                    <button type="button" class="random-tree-btn" onclick="randomTree()" id= "random-tree-btn">
+                        Random Tree
+                    </button>
+                </li>
+                <li>
+                    <label style="color: red;" id="error-message" value=""></label>
+                </li>                
+            </ul>
+        </section>
+        <!-- Question View -->
+        <section class="parameters-container" id ="parameters-container-q">
+            <ul>
+                <li>
+                    <button type="button" class="random-tree-btn" onclick="generateRandomQuestion()" id= "random-tree-btn">
+                        Generate Random Question
+                    </button>
+                </li>
+                <li>
+                    <label  id="question" value=""></label>
+                </li>  
+                
             </ul>
         </section>
         <button type="button" onclick="createTree()" id= "custom-tree-btn" class="custom-tree-btn">
