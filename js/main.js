@@ -11,7 +11,6 @@ var canvas;
 var rootNode;
 var graphics;
 var tree;
-let questionTree;
 
 var createTreeStarted = true;
 var randomTreeStarted = true;
@@ -209,8 +208,8 @@ function randomTree() {
         document.getElementById("error-message").innerHTML  = "Cancel Custom Tree Creation before new Random Tree";
     }
 }
-var offsetX = 0;
 
+var offsetX = 0;
 function MoveCanvas(move) {
     if (!createTreeStarted || !randomTreeStarted) {
         if (move == 'l') {
@@ -281,6 +280,9 @@ function generateRandomQuestion() {
     drawTree(tree.root, canvas.width / 2 - 60, 50);
 
 }
+
+var userTree;
+//userTree = SOME KIND OF CONVERSION of tree
 
 function saveTree() {
     document.getElementById("parameters-container").style.display = "none";
