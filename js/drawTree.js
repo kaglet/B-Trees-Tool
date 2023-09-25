@@ -1,81 +1,186 @@
+function snapToGrid(x, y) {
+    return {
+        x: Math.round(x / 50) * 50,
+        y: Math.round(y / 50) * 50,
+    };
+}
+
 function drawTree(node, x, y) {
-    const canvasWidth = 1200;
-    if (!node) return;
-
     const keys = node.keys.filter((key) => key !== undefined);
-    const nodeWidth = keys.length * 60;
-    const nodeSpacing = 40;
-    const arrowSize = 15; // Size of the arrowhead
+    drawNode(x, y, keys)
+    const canvas2 = document.getElementById('canvas');
+    const graphics2 = canvas2.getContext("2d"); 
+    // if (!node.leaf) {
+    //     const numChildren = node.C.length;
+    //     const totalChildWidth = numChildren * (nodeWidth + nodeSpacing) - nodeSpacing;
+    //     let startX = x - totalChildWidth / 2;
 
-    if (x + nodeWidth / 2 > canvasWidth) {
-        x = canvasWidth - nodeWidth / 2;
-    } else if (x - nodeWidth / 2 < 0) {
-        x = nodeWidth / 2;
-    }
+    //     const childXPositions = [];
 
-    drawNode(x, y, keys);
-    console.log(keys);
+    //     node.C.forEach((child, index) => {
+    //         if (child != undefined) {
+    //             const childWidth = child.keys.length * 60;
+    //             const childX = startX + childWidth / 2;
+    //             const childY = y + 150;
 
-    if (!node.leaf) {
-        const numChildren = node.C.length;
-        const totalChildWidth = numChildren * (nodeWidth + nodeSpacing) - nodeSpacing;
-        let startX = x - totalChildWidth / 2;
+    //             const angle = Math.atan2(childY - (y + 30), childX - x);
 
-        const childXPositions = [];
+    //             // Determine if the child is less than or greater than the key
+    //             const isLessThanKey = child.keys[0] < keys[index];
 
-        node.C.forEach((child, index) => {
-            if (child != undefined) {
-                const childWidth = child.keys.length * 60;
-                const childX = startX + childWidth / 2;
-                const childY = y + 150;
+    //             // Calculate the arrow starting point
+    //             const arrowStartX = isLessThanKey ? x - nodeWidth / 2 + index * 60 : x + nodeWidth / 2 - (keys.length - index) * 60;
 
-                const angle = Math.atan2(childY - (y + 30), childX - x);
+    //             graphics.save();
+    //             graphics.beginPath();
+    //             graphics.moveTo(arrowStartX, y + 30); // Arrow starts from the appropriate side of the key
+    //             graphics.lineTo(childX, childY - 30);
+    //             graphics.lineWidth = 3;
+    //             graphics.strokeStyle = "orange";
+    //             graphics.stroke();
+    //             graphics.closePath();
 
-                // Determine if the child is less than or greater than the key
-                const isLessThanKey = child.keys[0] < keys[index];
+    //             graphics.beginPath();
+    //             graphics.moveTo(childX, childY - 30);
+    //             graphics.lineTo(
+    //                 childX - arrowSize * Math.cos(angle - Math.PI / 6),
+    //                 childY - 30 - arrowSize * Math.sin(angle - Math.PI / 6)
+    //             );
+    //             graphics.lineTo(
+    //                 childX - arrowSize * Math.cos(angle + Math.PI / 6),
+    //                 childY - 30 - arrowSize * Math.sin(angle + Math.PI / 6)
+    //             );
+    //             graphics.fillStyle = "orange";
+    //             graphics.fill();
+    //             graphics.closePath();
 
-                // Calculate the arrow starting point
-                const arrowStartX = isLessThanKey ? x - nodeWidth / 2 + index * 60 : x + nodeWidth / 2 - (keys.length - index) * 60;
+    //             graphics.restore();
 
-                graphics.save();
-                graphics.beginPath();
-                graphics.moveTo(arrowStartX, y + 30); // Arrow starts from the appropriate side of the key
-                graphics.lineTo(childX, childY - 30);
-                graphics.lineWidth = 3;
-                graphics.strokeStyle = "orange";
-                graphics.stroke();
-                graphics.closePath();
+    //             childXPositions.push(childX);
 
-                graphics.beginPath();
-                graphics.moveTo(childX, childY - 30);
-                graphics.lineTo(
-                    childX - arrowSize * Math.cos(angle - Math.PI / 6),
-                    childY - 30 - arrowSize * Math.sin(angle - Math.PI / 6)
-                );
-                graphics.lineTo(
-                    childX - arrowSize * Math.cos(angle + Math.PI / 6),
-                    childY - 30 - arrowSize * Math.sin(angle + Math.PI / 6)
-                );
-                graphics.fillStyle = "orange";
-                graphics.fill();
-                graphics.closePath();
+    //             drawTree(child, childX, childY);
 
-                graphics.restore();
+    //             startX += childWidth + nodeSpacing;
+    //         }
+    //     });
+    // }
+    canvas2.addEventListener('mousedown', (e) => {
+        const mouseX = e.clientX - canvas2.getBoundingClientRect().left;
+        const mouseY = e.clientY - canvas2.getBoundingClientRect().top;
 
-                childXPositions.push(childX);
+        const offsetX = mouseX - x;
+        const offsetY = mouseY - y;
+        let isDragging = true;
 
-                drawTree(child, childX, childY);
+        
 
-                startX += childWidth + nodeSpacing;
+        function onMouseMove(e) {
+            if (isDragging) {
+                const newX =
+                    e.clientX - canvas2.getBoundingClientRect().left - offsetX;
+                const newY =
+                    e.clientY - canvas2.getBoundingClientRect().top - offsetY;
+                x = newX;
+                y = newY;
+                graphics2.clearRect(0, 0, canvas2.width, canvas2.height);
+                drawNode(x, y, keys);
             }
-        });
-    }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+            canvas2.removeEventListener('mousemove', onMouseMove);
+            canvas2.removeEventListener('mouseup', onMouseUp);
+            const snappedPos = snapToGrid(x, y);
+            x = snappedPos.x;
+            y = snappedPos.y;
+            graphics2.clearRect(0, 0, canvas2.width, canvas2.height);
+            drawNode(x, y, keys);
+        }
+
+        
+        canvas2.addEventListener('mousemove', onMouseMove);
+        canvas2.addEventListener('mouseup', onMouseUp);
+
+    })
+
+    // const canvasWidth = 1200;
+    // if (!node) return;
+
+    // const keys = node.keys.filter((key) => key !== undefined);
+    // const nodeWidth = keys.length * 60;
+    // const nodeSpacing = 40;
+    // const arrowSize = 15; // Size of the arrowhead
+
+    // if (x + nodeWidth / 2 > canvasWidth) {
+    //     x = canvasWidth - nodeWidth / 2;
+    // } else if (x - nodeWidth / 2 < 0) {
+    //     x = nodeWidth / 2;
+    // }
+
+    // drawNode(x, y, keys);
+    // console.log(keys);
+
+    // if (!node.leaf) {
+    //     const numChildren = node.C.length;
+    //     const totalChildWidth = numChildren * (nodeWidth + nodeSpacing) - nodeSpacing;
+    //     let startX = x - totalChildWidth / 2;
+
+    //     const childXPositions = [];
+
+    //     node.C.forEach((child, index) => {
+    //         if (child != undefined) {
+    //             const childWidth = child.keys.length * 60;
+    //             const childX = startX + childWidth / 2;
+    //             const childY = y + 150;
+
+    //             const angle = Math.atan2(childY - (y + 30), childX - x);
+
+    //             // Determine if the child is less than or greater than the key
+    //             const isLessThanKey = child.keys[0] < keys[index];
+
+    //             // Calculate the arrow starting point
+    //             const arrowStartX = isLessThanKey ? x - nodeWidth / 2 + index * 60 : x + nodeWidth / 2 - (keys.length - index) * 60;
+
+    //             graphics.save();
+    //             graphics.beginPath();
+    //             graphics.moveTo(arrowStartX, y + 30); // Arrow starts from the appropriate side of the key
+    //             graphics.lineTo(childX, childY - 30);
+    //             graphics.lineWidth = 3;
+    //             graphics.strokeStyle = "orange";
+    //             graphics.stroke();
+    //             graphics.closePath();
+
+    //             graphics.beginPath();
+    //             graphics.moveTo(childX, childY - 30);
+    //             graphics.lineTo(
+    //                 childX - arrowSize * Math.cos(angle - Math.PI / 6),
+    //                 childY - 30 - arrowSize * Math.sin(angle - Math.PI / 6)
+    //             );
+    //             graphics.lineTo(
+    //                 childX - arrowSize * Math.cos(angle + Math.PI / 6),
+    //                 childY - 30 - arrowSize * Math.sin(angle + Math.PI / 6)
+    //             );
+    //             graphics.fillStyle = "orange";
+    //             graphics.fill();
+    //             graphics.closePath();
+
+    //             graphics.restore();
+
+    //             childXPositions.push(childX);
+
+    //             drawTree(child, childX, childY);
+
+    //             startX += childWidth + nodeSpacing;
+    //         }
+    //     });
+    // }
 }
 
 
 
 function drawKey(x, y, key) {
-    const keySize = 30; //size of blue square -- hopefull make into draggable
+    const keySize = 30; //size of blue square -- hopefully make into draggable
     graphics.fillStyle = "lightblue";
     
     graphics.fillRect(x + keySize / 2, y - keySize / 2, keySize, keySize);  //fills blue small rect
