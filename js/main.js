@@ -55,8 +55,9 @@ function insertKeyCreate() {
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             console.log("The Tree:");
-            drawTree(tree.root, canvas.width / 2, 30);
-      
+            //drawTree(tree.root, canvas.width / 2, 30);
+            makeTree(tree.root, canvas.width / 2, 30);
+
             document.getElementById("insert").value = null;
         } catch(e) {
             console.log(e);
@@ -90,8 +91,9 @@ function removeKeyCreate() {
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             console.log("The Tree:");
-            drawTree(tree.root, canvas.width / 2, 30);
-           
+            //drawTree(tree.root, canvas.width / 2, 30);
+            makeTree(tree.root, canvas.width / 2, 30);
+
             document.getElementById("delete").value = null;
         } catch(e) {
             console.log(e);
@@ -224,7 +226,8 @@ function MoveCanvas(move) {
 
         graphics.clearRect(0, 0, canvas.width, canvas.height);
         graphics.setTransform(1, 0, 0, 1, offsetX, 0);
-        drawTree(tree.root, canvas.width / 2 - 60, 50);
+        //drawTree(tree.root, canvas.width / 2 - 60, 50);
+        makeTree(tree.root, canvas.width / 2 - 60, 50);
         graphics.setTransform(1, 0, 0, 1, 0, 0);
     }
 }
