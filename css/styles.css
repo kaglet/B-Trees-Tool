@@ -45,7 +45,6 @@ button:hover {
 }
 
 #canvas {
-    display: block;
     background-color: var(--canvas-color);
 }
 
@@ -150,4 +149,13 @@ label {
 .main-container input, .main-container button {
     background-color: var(--main-container-input-color);
 }
+
+div.canvas-scroll{
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+
+
+}
+
 
