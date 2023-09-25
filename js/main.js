@@ -48,7 +48,8 @@ function insertKey() {
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             console.log("The Tree:");
-            drawTree(tree.root, canvas.width / 2 - 60, 50);
+            // drawTree(tree.root, canvas.width / 2 - 60, 50);
+            makeTree(tree.root, canvas.width / 2 - 60, 50);
             document.getElementById("insert").value = null;
         } catch(e) {
             console.log(e);
@@ -82,7 +83,8 @@ function removeKey() {
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             console.log("The Tree:");
-            drawTree(tree.root, canvas.width / 2 - 60, 50);
+            //drawTree(tree.root, canvas.width / 2 - 60, 50);
+            makeTree(tree.root, canvas.width / 2 - 60, 50);
             document.getElementById("delete").value = null;
         } catch(e) {
             console.log(e);
