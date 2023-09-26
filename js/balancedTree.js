@@ -11,6 +11,7 @@ class BTreeNode {
         this.C = new Array(2 * t); // this array stores BtreeNodes (they are the children of the node)
         this.n = 0; // the number of keys in the node
         this.leaf = leaf; // boolean for if the node is a leaf, if not then false
+        this.parent = null;
     }
 
     // A utility function that returns the index of the first key that is greater than or equal to k
@@ -202,6 +203,7 @@ class BTreeNode {
         let i;
         for (i = 0; i < this.n; i++) {
             if (!this.leaf) {
+                this.C[i].parent = this;
                 this.C[i].traverse();
             }
         }
@@ -215,8 +217,10 @@ class BTreeNode {
             this.C[y]=undefined;
         }
 
-         if (!this.leaf) {
+        if (!this.leaf) {
+            this.C[i].parent = this;
             this.C[i].traverse();
+            
         }
     }
       

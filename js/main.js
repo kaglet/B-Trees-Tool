@@ -245,6 +245,7 @@ function generateRandomTree() {
     graphics.clearRect(0, 0, canvas.width, canvas.height); 
     console.log("The Tree:");
     drawTree(tree.root, canvas.width / 2 - 60, 50);
+    console.log(tree);
 }
 
 function generateRandomQuestion() {

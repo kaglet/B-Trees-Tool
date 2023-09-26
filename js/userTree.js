@@ -13,6 +13,7 @@ class userTreeNode {
         this.keys = new Array(); // stores userTreeKeys
         this.C = new Array(); // stores userTreeNodes
         this.n = 0; // number of keys
+        this.parent = null; // number of keys
         this.topRightCorner; 
         this.topLeftCorner; 
         this.bottomRightCorner; 
