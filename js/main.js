@@ -4,7 +4,9 @@
 
 // import BTree from "./balancedTree.js"; // Import classes from balancedTree.js
 // import { drawKey, drawNode, drawTree } from './drawTree.js';
+import {num} from './assign-positions.js';
 
+console.log(num);
 var frameNumber = 0;
 
 var canvas;
