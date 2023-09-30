@@ -1,9 +1,4 @@
-// function sayHello(){
-//     console.log("Hello");
-// }
-
-// import BTree from "./balancedTree.js"; // Import classes from balancedTree.js
-// import { drawKey, drawNode, drawTree } from './drawTree.js';
+// import { assignNodePositions } from "./assign-positions.js";
 
 var frameNumber = 0;
 
@@ -81,6 +76,7 @@ function removeKeyCreate() {
                 } else {
                     tree.remove(parseInt(removeValue));
                     tree.traverse();
+                    // assignNodePositions(tree.root);
                     document.getElementById("delete").focus();
                     document.getElementById("error-message").innerHTML  = "";
 

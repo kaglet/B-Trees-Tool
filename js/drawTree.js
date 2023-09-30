@@ -108,8 +108,8 @@ function drawNode(x, y, keys) {
         const keyY = y;
 
         
-         // Mark the corresponding block in the grid as filled
-       //  fillBlock(gridRow, gridCol);
+        // Mark the corresponding block in the grid as filled
+        //  fillBlock(gridRow, gridCol);
         
         drawKey(keyX, keyY, key);
     });
