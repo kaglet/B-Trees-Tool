@@ -1,3 +1,10 @@
+// function sayHello(){
+//     console.log("Hello");
+// }
+
+// import BTree from "./balancedTree.js"; // Import classes from balancedTree.js
+// import { drawKey, drawNode, drawTree } from './drawTree.js';
+
 var frameNumber = 0;
 
 var canvas;
