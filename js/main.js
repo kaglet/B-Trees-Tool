@@ -27,36 +27,35 @@ function draw() {
 
 window.addEventListener('load', init);
 
-let insertButton = document.querySelector('insert-button');
-let deleteButton = document.querySelector('delete-button');
+let insertButton = document.querySelector('button.insert');
+let deleteButton = document.querySelector('button.delete');
 
-let insertInput = document.getElementById('insert').value;
-let deleteInput = document.getElementById('delete').value;
+let insertInput = document.getElementById('insert');
+let deleteInput = document.getElementById('delete');
 
 let errorMessageLabel = document.getElementById('error-message');
 
-insertButton.addEventListener('click', () => {
-    if (!insertInput.value) {
-        tree.insert(insertInput.value);
-        draw();
-        errorMessageLabel.textContent = "";
-        return;
-    }
-    errorMessageLabel.textContent = "Please enter a key to insert";
-});
+// insertButton.addEventListener('click', () => {
+//     if (!insertInput.value) {
+//         tree.insert(insertInput.value);
+//         draw();
+//         errorMessageLabel.textContent = "";
+//         return;
+//     }
+//     errorMessageLabel.textContent = "Please enter a key to insert";
+// });
 
-deleteButton.addEventListener('click', () => {
-    if (!deleteInput.value) {
-        tree.delete(deleteInput.value);
-        draw();
-        errorMessageLabel.textContent = "";
-        return;
-    }
-    errorMessageLabel.textContent = "Please enter a key to delete";
-});
+// deleteButton.addEventListener('click', () => {
+//     if (!deleteInput.value) {
+//         tree.delete(deleteInput.value);
+//         draw();
+//         errorMessageLabel.textContent = "";
+//         return;
+//     }
+//     errorMessageLabel.textContent = "Please enter a key to delete";
+// });
 
-
-
+let insertValue;
 function insertKeyCreate() {
     if (!createTreeStarted  || !randomTreeStarted) {
         document.getElementById("error-message").innerHTML  = "";
