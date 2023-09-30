@@ -62,6 +62,32 @@ function moveCanvas(direction) {
     }
 }
 
+function generateRandomQuestion() {
+    const question = Math.floor(Math.random() * 3);
+    let key = Math.floor(Math.random() * 100);
+    let questionDisplay = document.getElementById("question");
+    if (question == 0) {
+        //insert
+        tree.insert(parseInt(key));
+        tree.traverse();
+        questionDisplay.textContent = "Insert: " + key;
+    } else if (question == 1) {
+        //delete
+        while (tree.root.search(key) == null) {
+            key = Math.floor(Math.random() * 100);
+        }
+        tree.remove(key);
+        tree.traverse();
+        questionDisplay.textContent = "Delete: " + key;
+    } else if (question == 2) {
+        //search
+        questionDisplay.textContent = "Search: " + key;
+    }
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawTree(tree.root, canvas.width / 2 - 60, 50);
+}
+
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
 window.addEventListener('load', () => init(insertDeleteSection));
@@ -136,40 +162,6 @@ randomTreeButton.addEventListener('click', () => {
     tree = new BTree(+maxDegreeInput.value);
     generateRandomTree(+numKeysInput.value);
 });
-
-function generateRandomQuestion() {
-    const question = Math.floor(Math.random() * 3);
-    let key;
-
-    if (question == 0) {
-        //insert
-        key = Math.floor(Math.random() * 100);
-        tree.insert(parseInt(key));
-        tree.traverse();
-        console.log("Insert: ", key)
-        document.getElementById("question").innerHTML = "Insert: " + key;
-    } else if (question == 1) {
-        //delete
-        key = Math.floor(Math.random() * 100);
-        while (tree.root.search(key) == null) {
-            key = Math.floor(Math.random() * 100);
-        }
-        tree.remove(key);
-        tree.traverse();
-        console.log("Delete: ", key)
-        document.getElementById("question").innerHTML = "Delete: " + key;
-    } else if (question == 2) {
-        //search
-        key = Math.floor(Math.random() * 100);
-        console.log("Search: ", key)
-        document.getElementById("question").innerHTML = "Search: " + key;
-
-    }
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("The Tree:");
-    drawTree(tree.root, canvas.width / 2 - 60, 50);
-
-}
 
 
 
