@@ -9,7 +9,7 @@ let graphics;
 let tree;
 let offsetX = 0;
 
-// try initialize canvas and graphics else display unsupported canvas error
+// Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection) {
     try {
         canvas = document.getElementById("canvas");
@@ -86,6 +86,7 @@ let insertDeleteSection = document.getElementById('insert-delete-section');
 
 window.addEventListener('load', () => init(insertDeleteSection));
 
+// Initialize all GUI components
 let insertButton = document.querySelector('button.insert');
 let deleteButton = document.querySelector('button.delete');
 
@@ -103,6 +104,7 @@ let directionalButtons = document.querySelectorAll('.panning-controls button');
 
 let errorMessageLabel = document.getElementById('error-message');
 
+// Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
     moveCanvas(button.className);
 }));
