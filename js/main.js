@@ -40,13 +40,13 @@ function generateRandomTree(numKeys) {
     console.log(tree);
 }
 
-function MoveCanvas(move) {
+function moveCanvas(direction) {
     let offsetX = 0;
     if (!createTreeStarted || !randomTreeStarted) {
-        if (move == 'l') {
+        if (direction == 'l') {
             // Move canvas's graphics to the left
             offsetX -= 30;
-        } else if (move == 'r') {
+        } else if (direction == 'r') {
             // Move canvas's graphics to the right
             offsetX += 30;
         } else {
@@ -56,7 +56,7 @@ function MoveCanvas(move) {
 
         graphics.clearRect(0, 0, canvas.width, canvas.height);
         graphics.setTransform(1, 0, 0, 1, offsetX, 0);
-        //drawTree(tree.root, canvas.width / 2 - 60, 50);
+        
         makeTree(tree.root, canvas.width / 2 - 60, 50);
         graphics.setTransform(1, 0, 0, 1, 0, 0);
     }
@@ -77,6 +77,11 @@ let randomTreeButton = document.querySelector('button.random-tree');
 
 let maxDegreeInput = document.getElementById('max-degree');
 let numKeysInput = document.getElementById('num-keys');
+
+let directionalButtons = document.querySelectorAll('panning-controls');
+directionalButtons.forEach((button) => button.addEventListener('click', () => {
+    moveCanvas(button.className);
+}));
 
 let errorMessageLabel = document.getElementById('error-message');
 
