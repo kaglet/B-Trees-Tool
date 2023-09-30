@@ -1,14 +1,14 @@
 // import { assignNodePositions } from "./assign-positions.js";
 
-var frameNumber = 0;
+let frameNumber = 0;
 
-var canvas;
-var rootNode;
-var graphics;
-var tree;
+let canvas;
+let rootNode;
+let graphics;
+let tree;
 
-var createTreeStarted = true;
-var randomTreeStarted = true;
+let createTreeStarted = true;
+let randomTreeStarted = true;
 
 function init() {
     try {
@@ -20,7 +20,7 @@ function init() {
 }
 
 
-var insertValue;
+let insertValue;
 function insertKeyCreate() {
     if (!createTreeStarted  || !randomTreeStarted) {
         document.getElementById("error-message").innerHTML  = "";
@@ -55,7 +55,7 @@ function insertKeyCreate() {
 }
 
 // user input and remove that value from the tree
-var removeValue;
+let removeValue;
 function removeKeyCreate() {
     if (!createTreeStarted || !randomTreeStarted) {
         document.getElementById("error-message").innerHTML  = "";
@@ -91,7 +91,7 @@ function removeKeyCreate() {
     }
 }
 
-var maxDegree;
+let maxDegree;
 function createTree() {
     if (randomTreeStarted) {
         if (createTreeStarted) {
@@ -142,7 +142,7 @@ function createTree() {
 
 }
 
-var NumKeys;
+let NumKeys;
 function randomTree() {
     if (createTreeStarted) {
         if (randomTreeStarted) {
@@ -198,7 +198,7 @@ function randomTree() {
     }
 }
 
-var offsetX = 0;
+let offsetX = 0;
 function MoveCanvas(move) {
     if (!createTreeStarted || !randomTreeStarted) {
         if (move == 'l') {
@@ -271,7 +271,7 @@ function generateRandomQuestion() {
 
 }
 
-var userTree;
+let userTree;
 //userTree = SOME KIND OF CONVERSION of tree
 
 function saveTree() {
