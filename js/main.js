@@ -55,77 +55,6 @@ deleteButton.addEventListener('click', () => {
     errorMessageLabel.textContent = "Please enter a key to delete";
 });
 
-let insertValue;
-function insertKeyCreate() {
-    if (!createTreeStarted  || !randomTreeStarted) {
-        document.getElementById("error-message").innerHTML  = "";
-        try {
-            insertValue = document.getElementById("insert").value;
-            //ensure a traverse is called after an insert to allow for cleaning tree
-            try{
-                if (insertValue === ""){
-                    console.log("Enter a number");
-                    document.getElementById("error-message").innerHTML  = "Please enter a key to insert";
-                } else {
-                    tree.insert(parseInt(insertValue));
-                    tree.traverse();
-                    document.getElementById("insert").focus();
-                    document.getElementById("error-message").innerHTML  = "";
-                }
-            } catch(e) {
-                console.log(e);
-            }
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            console.log("The Tree:");
-            //drawTree(tree.root, canvas.width / 2, 30);
-            makeTree(tree.root, canvas.width / 2, 30);
-
-            document.getElementById("insert").value = null;
-        } catch(e) {
-            console.log(e);
-        }
-    } else {
-        document.getElementById("error-message").innerHTML  = "Please enter a max degree and select 'Custom Tree'";
-    }
-}
-
-// user input and remove that value from the tree
-let removeValue;
-function removeKeyCreate() {
-    if (!createTreeStarted || !randomTreeStarted) {
-        document.getElementById("error-message").innerHTML  = "";
-        try {
-            removeValue = document.getElementById("delete").value;
-            //ensure a traverse is called after a removal to allow for cleaning tree
-            try{
-                if (removeValue === ""){
-                    console.log("Enter a number");
-                    document.getElementById("error-message").innerHTML  = "Please enter a key to remove";
-                } else {
-                    tree.remove(parseInt(removeValue));
-                    tree.traverse();
-                    // assignNodePositions(tree.root);
-                    document.getElementById("delete").focus();
-                    document.getElementById("error-message").innerHTML  = "";
-
-                }
-            } catch(e) {
-                console.log(e);
-            }
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            console.log("The Tree:");
-            //drawTree(tree.root, canvas.width / 2, 30);
-            makeTree(tree.root, canvas.width / 2, 30);
-
-            document.getElementById("delete").value = null;
-        } catch(e) {
-            console.log(e);
-        }
-    } else {
-        document.getElementById("error-message").innerHTML  = "Please enter a max degree and select 'Custom Tree'";
-    }
-}
-
 let maxDegree;
 function createTree() {
     if (randomTreeStarted) {
@@ -304,15 +233,6 @@ function generateRandomQuestion() {
 
 let userTree;
 //userTree = SOME KIND OF CONVERSION of tree
-
-function saveTree() {
-    document.getElementById("parameters-container").style.display = "none";
-    document.getElementById("parameters-container-q").style.display = "flex";
-    document.getElementById("custom-tree-btn").style.display = "none";
-    document.getElementById("validate-button").style.display = "flex";
-    document.getElementById("save-button").style.display = "none";
-    document.getElementById("insert-delete-section").style.display = "none";
-}
 
 
   
