@@ -11,6 +11,7 @@ var canvas;
 var rootNode;
 var graphics;
 var tree;
+var userTree;
 
 var createTreeStarted = true;
 var randomTreeStarted = true;
@@ -46,6 +47,10 @@ function insertKeyCreate() {
                 } else {
                     tree.insert(parseInt(insertValue));
                     tree.traverse();
+
+                    userTree.insert(parseInt(insertValue));
+                    userTree.traverse();
+
                     document.getElementById("insert").focus();
                     document.getElementById("error-message").innerHTML  = "";
                 }
@@ -81,6 +86,10 @@ function removeKeyCreate() {
                 } else {
                     tree.remove(parseInt(removeValue));
                     tree.traverse();
+
+                    userTree.remove(parseInt(removeValue));
+                    userTree.traverse();
+
                     document.getElementById("delete").focus();
                     document.getElementById("error-message").innerHTML  = "";
 
@@ -116,6 +125,7 @@ function createTree() {
                     } else {
                         document.getElementById("error-message").innerHTML  = "";
                         tree = new BTree(parseInt(maxDegree));
+                        userTree = new BTree(parseInt(maxDegree));
                         document.getElementById("custom-tree-btn").innerHTML  = "Cancel";
                         document.getElementById("insert").focus();
                         createTreeStarted= false;
@@ -172,6 +182,8 @@ function randomTree() {
                         document.getElementById("error-message").innerHTML  = "";
                         // randomise here
                         tree = new BTree(parseInt(maxDegree));
+                        userTree = new BTree(parseInt(maxDegree));
+                        
                         generateRandomTree();
                         document.getElementById("random-tree-btn").innerHTML  = "Cancel";
                         document.getElementById("insert").focus();
@@ -240,6 +252,9 @@ function generateRandomTree() {
         const key = Math.floor(Math.random() * 100); 
         tree.insert(parseInt(key));
         tree.traverse();
+
+        userTree.insert(parseInt(key));
+        userTree.traverse();
     }
 
     graphics.clearRect(0, 0, canvas.width, canvas.height); 
@@ -257,6 +272,9 @@ function generateRandomQuestion() {
         key = Math.floor(Math.random() * 100); 
         tree.insert(parseInt(key));
         tree.traverse();
+
+        userTree.insert(parseInt(key));
+        userTree.traverse();
         console.log("Insert: ", key)
         document.getElementById("question").innerHTML  = "Insert: "+  key;
     } else if (question==1){
@@ -267,6 +285,10 @@ function generateRandomQuestion() {
         }
         tree.remove(key);
         tree.traverse();
+
+        userTree.remove(key);
+        userTree.traverse();
+
         console.log("Delete: ", key)
         document.getElementById("question").innerHTML  = "Delete: "+ key;
     } else if (question==2){
@@ -282,17 +304,62 @@ function generateRandomQuestion() {
 
 }
 
-var userTree;
 //userTree = SOME KIND OF CONVERSION of tree
 
 function saveTree() {
+
     document.getElementById("parameters-container").style.display = "none";
     document.getElementById("parameters-container-q").style.display = "flex";
     document.getElementById("custom-tree-btn").style.display = "none";
     document.getElementById("validate-button").style.display = "flex";
     document.getElementById("save-button").style.display = "none";
     document.getElementById("insert-delete-section").style.display = "none";
+    validateTree();
 }
+
+function validateTree(){
+    var treeEqual = areBtreesEqual(tree, userTree);
+    if (treeEqual){
+        console.log("Your tree is correct");
+    } else {
+        console.log("Your tree is in-correct");
+    }
+}
+
+
+function areBtreesEqual(tree1, tree2) {
+    // Helper function for in-order traversal
+    function inOrderTraversal(node, keys) {
+        if (node) {
+            for (let i = 0; i < node.n; i++) {
+                inOrderTraversal(node.C[i], keys);
+                keys.push(node.keys[i]);
+            }
+            inOrderTraversal(node.C[node.n], keys);
+        }
+    }
+
+    const keys1 = [];
+    const keys2 = [];
+
+    // Perform in-order traversal on both trees and collect keys
+    inOrderTraversal(tree1.root, keys1);
+    inOrderTraversal(tree2.root, keys2);
+
+    // Compare the collected key sequences
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < keys1.length; i++) {
+        if (keys1[i] !== keys2[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 
   
