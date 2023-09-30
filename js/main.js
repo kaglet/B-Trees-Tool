@@ -10,17 +10,10 @@ var tree;
 var createTreeStarted = true;
 var randomTreeStarted = true;
 
-function initCreate() {
+function init() {
     try {
 		canvas = document.getElementById("canvas");
 		graphics = canvas.getContext("2d");
-        document.getElementById("max-degree").focus();
-        document.getElementById("insert-delete-section").style.display = "none";
-        document.getElementById("parameters-container").style.display = "flex";
-        document.getElementById("parameters-container-q").style.display = "none";
-        document.getElementById("custom-tree-btn").style.display = "flex";
-        document.getElementById("validate-button").style.display = "none";
-        document.getElementById("save-button").style.display = "flex";
 	} catch(e) {
 		document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
 	}    
