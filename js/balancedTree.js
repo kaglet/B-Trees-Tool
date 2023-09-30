@@ -307,7 +307,7 @@ class BTreeNode {
 }
 
 // A BTree 
-class BTree {
+export class BTree {
     constructor(t) {
         this.root = null; // The BTreenode that is the root node
         this.t = t; // Minimum degree (number of keys=2*t-1)
@@ -342,6 +342,7 @@ class BTree {
     remove(k) {
 
         if (!this.root) {
+            // TODO: Refactor this to console.log as an error since there is a console method for that
             console.log("The tree is empty");
             return;
         }
@@ -367,8 +368,6 @@ class BTree {
         }
     } 
 }
-
-// export default BTree;
 
 
 
