@@ -1,5 +1,8 @@
-function drawTree(node, x, y) {
-    const canvasWidth = 1200;
+let graphics;
+
+export function drawTree(node, x, y, canvas) {
+    graphics = canvas.getContext("2d"); 
+    const canvasWidth = canvas.width;
     if (!node) return;
 
     const keys = node.keys.filter((key) => key !== undefined);
@@ -13,8 +16,7 @@ function drawTree(node, x, y) {
         x = nodeWidth / 2;
     }
 
-    drawNode(x, y, keys);
-    console.log(keys);
+    drawNode(x, y, keys, graphics);
 
     if (!node.leaf) {
         const numChildren = node.C.length;
@@ -73,7 +75,7 @@ function drawTree(node, x, y) {
 }
 
 
-function drawKey(x, y, key) {
+function drawKey(x, y, key, graphics = graphics) {
     const keySize = 30; //size of blue square -- hopefull make into draggable
     graphics.fillStyle = "lightblue";
     
@@ -86,7 +88,7 @@ function drawKey(x, y, key) {
     graphics.fillText(key, x+ keySize, y);  //drawing key text, numbers
 }
 
-function drawNode(x, y, keys) {
+export function drawNode(x, y, keys, graphics) {
     const nodeHeight = 60;
     const validKeys = keys.filter((key) => key !== undefined);  //tking away undefined from array
     const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
@@ -111,6 +113,6 @@ function drawNode(x, y, keys) {
         // Mark the corresponding block in the grid as filled
         //  fillBlock(gridRow, gridCol);
         
-        drawKey(keyX, keyY, key);
+        drawKey(keyX, keyY, key, graphics);
     });
 }

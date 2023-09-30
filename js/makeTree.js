@@ -1,52 +1,50 @@
-function snapToGrid(x, y) {
-    return {
-        x: Math.round(x / 50) * 50,
-        y: Math.round(y / 50) * 50,
-    };
-}
+import { drawNode } from "./drawTree.js";
 
-function makeTree(node, x, y) {
+export function makeTree(node, x, y, canvas) {
     const keys = node.keys.filter((key) => key !== undefined);
-    drawNode(x, y, keys)
-    const canvas2 = document.getElementById('canvas');
-    const graphics2 = canvas2.getContext("2d"); 
+    const graphics = canvas.getContext("2d"); 
+    drawNode(x, y, keys, graphics);
     
-    canvas2.addEventListener('mousedown', (e) => {
-        const mouseX = e.clientX - canvas2.getBoundingClientRect().left;
-        const mouseY = e.clientY - canvas2.getBoundingClientRect().top;
+    canvas.addEventListener('mousedown', (e) => {
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
 
         const offsetX = mouseX - x;
         const offsetY = mouseY - y;
         let isDragging = true;
 
-        
-
         function onMouseMove(e) {
             if (isDragging) {
                 const newX =
-                    e.clientX - canvas2.getBoundingClientRect().left - offsetX;
+                    e.clientX - canvas.getBoundingClientRect().left - offsetX;
                 const newY =
-                    e.clientY - canvas2.getBoundingClientRect().top - offsetY;
+                    e.clientY - canvas.getBoundingClientRect().top - offsetY;
                 x = newX;
                 y = newY;
-                graphics2.clearRect(0, 0, canvas2.width, canvas2.height);
+                graphics.clearRect(0, 0, canvas.width, canvas.height);
                 drawNode(x, y, keys);
             }
         }
 
         function onMouseUp() {
             isDragging = false;
-            canvas2.removeEventListener('mousemove', onMouseMove);
-            canvas2.removeEventListener('mouseup', onMouseUp);
+            canvas.removeEventListener('mousemove', onMouseMove);
+            canvas.removeEventListener('mouseup', onMouseUp);
             const snappedPos = snapToGrid(x, y);
             x = snappedPos.x;
             y = snappedPos.y;
-            graphics2.clearRect(0, 0, canvas2.width, canvas2.height);
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
             drawNode(x, y, keys);
         }
 
-        canvas2.addEventListener('mousemove', onMouseMove);
-        canvas2.addEventListener('mouseup', onMouseUp);
-
+        canvas.addEventListener('mousemove', onMouseMove);
+        canvas.addEventListener('mouseup', onMouseUp);
     })
+}
+
+function snapToGrid(x, y) {
+    return {
+        x: Math.round(x / 50) * 50,
+        y: Math.round(y / 50) * 50,
+    };
 }
