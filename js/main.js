@@ -1,4 +1,5 @@
 // import { assignNodePositions } from "./assign-positions.js";
+// DECLARE GLOBAL VARIABLES
 let frameNumber = 0;
 
 let canvas;
@@ -10,13 +11,14 @@ let createTreeStarted = true;
 let randomTreeStarted = true;
 
 // initialize canvas and graphics else display unsupported canvas error
-function init() {
+function init(insertDeleteSection) {
     try {
-		canvas = document.getElementById("canvas");
-		graphics = canvas.getContext("2d");
-	} catch(e) {
-		document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
-	}    
+        canvas = document.getElementById("canvas");
+        graphics = canvas.getContext("2d");
+        insertDeleteSection.classList.toggle('invisible');
+    } catch (e) {
+        document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
+    }
 }
 
 function draw() {
@@ -25,13 +27,34 @@ function draw() {
     makeTree(tree.root, canvas.width / 2, 30);
 }
 
-window.addEventListener('load', init);
+function generateRandomTree(numKeys) {
+    for (let i = 0; i < numKeys; i++) {
+        const key = Math.floor(Math.random() * 100);
+        tree.insert(parseInt(key));
+        tree.traverse();
+    }
+
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    console.log("The Tree:");
+    drawTree(tree.root, canvas.width / 2 - 60, 50);
+    console.log(tree);
+}
+
+let insertDeleteSection = document.getElementById('insert-delete-section');
+
+window.addEventListener('load', () => init(insertDeleteSection));
 
 let insertButton = document.querySelector('button.insert');
 let deleteButton = document.querySelector('button.delete');
 
 let insertInput = document.getElementById('insert');
 let deleteInput = document.getElementById('delete');
+
+let customTreeButton = document.querySelector('button.custom-tree');
+let randomTreeButton = document.querySelector('button.random-tree');
+
+let maxDegreeInput = document.getElementById('max-degree');
+let numKeysInput = document.getElementById('num-keys');
 
 let errorMessageLabel = document.getElementById('error-message');
 
@@ -42,6 +65,7 @@ insertButton.addEventListener('click', () => {
         errorMessageLabel.textContent = "";
         return;
     }
+
     errorMessageLabel.textContent = "Please enter a key to insert";
 });
 
@@ -52,118 +76,42 @@ deleteButton.addEventListener('click', () => {
         errorMessageLabel.textContent = "";
         return;
     }
+
     errorMessageLabel.textContent = "Please enter a key to delete";
 });
 
-let maxDegree;
-function createTree() {
-    if (randomTreeStarted) {
-        if (createTreeStarted) {
-            try {
-                maxDegree = document.getElementById("max-degree").value;
-                //ensure a traverse is called after a removal to allow for cleaning tree
-                try{
-                    if (maxDegree === ""){
-                        console.log("Enter a max degree value");
-                        document.getElementById("error-message").innerHTML  = "Enter a max degree value before creating a tree";
-                    } else {
-                        document.getElementById("error-message").innerHTML  = "";
-                        tree = new BTree(parseInt(maxDegree));
-                        document.getElementById("custom-tree-btn").innerHTML  = "Cancel";
-                        document.getElementById("insert").focus();
-                        createTreeStarted= false;
-                        console.log(document.getElementById("insert-delete-section").style.display)
-                        if (document.getElementById("insert-delete-section").style.display === "none" || document.getElementById("insert-delete-section").style.display === "") {
-                            document.getElementById("insert-delete-section").style.display = "inline"; // Show the section
-                        } else {
-                            document.getElementById("insert-delete-section").style.display = "none"; // Hide the section
-                        }
-                    }
-                } catch(e) {
-                    console.log(e);
-                }
-                document.getElementById("max-degree").value = null;
-            } catch(e) {
-                console.log(e);
-            }
-            
-        } else {
-            console.log("Tree Creation Canceled");
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            document.getElementById("custom-tree-btn").innerHTML  = "Custom tree";
-            document.getElementById("max-degree").focus();
-            createTreeStarted= true;
-            console.log(document.getElementById("insert-delete-section").style.display)
-            if (document.getElementById("insert-delete-section").style.display === "none" || document.getElementById("insert-delete-section").style.display === "") {
-                document.getElementById("insert-delete-section").style.display = "inline"; // Show the section
-            } else {
-                document.getElementById("insert-delete-section").style.display = "none"; // Hide the section
-            }
-        }
-    } else {
-        document.getElementById("error-message").innerHTML  = "Cancel Random Tree Creation before new Custom Tree";
+customTreeButton.addEventListener('click', () => {
+    if (maxDegreeInput.value) {
+        tree = new BTree(+maxDegreeInput.value);
+        graphics.clearRect(0, 0, canvas.width, canvas.height);
+        insertDeleteSection.classList.toggle('invisible');
+        errorMessageLabel.textContent = "";
+        return;
     }
 
-}
+    errorMessageLabel.textContent = "Please enter a max degree value before creating a tree";
+});
 
-let NumKeys;
-function randomTree() {
-    if (createTreeStarted) {
-        if (randomTreeStarted) {
-            try {
-                maxDegree = document.getElementById("max-degree").value;
-                NumKeys = document.getElementById("num-keys").value;
-                //ensure a traverse is called after a removal to allow for cleaning tree
-                try{
-                    if (maxDegree === ""){
-                        console.log("Enter a max degree value");
-                        document.getElementById("error-message").innerHTML  = "Enter a max degree value before randomizing a tree";
-                    } else  if (NumKeys === ""){
-                        console.log("Enter a num keys value");
-                        document.getElementById("error-message").innerHTML  = "Enter a num keys value before randomizing a tree";
-                    } else {
-                        document.getElementById("error-message").innerHTML  = "";
-                        // randomise here
-                        tree = new BTree(parseInt(maxDegree));
-                        generateRandomTree();
-                        document.getElementById("random-tree-btn").innerHTML  = "Cancel";
-                        document.getElementById("insert").focus();
-                        randomTreeStarted= false;
-                        console.log(document.getElementById("insert-delete-section").style.display)
-                        if (document.getElementById("insert-delete-section").style.display === "none" || document.getElementById("insert-delete-section").style.display === "") {
-                            document.getElementById("insert-delete-section").style.display = "inline"; // Show the section
-                        } else {
-                            document.getElementById("insert-delete-section").style.display = "none"; // Hide the section
-                        }
-                    }
-                } catch(e) {
-                    console.log(e);
-                }
-                document.getElementById("max-degree").value = null;
-                document.getElementById("num-keys").value = null;
-            } catch(e) {
-                console.log(e);
-            }
-        } else {
-            console.log("Tree Randomization Canceled");
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            document.getElementById("random-tree-btn").innerHTML  = "Randomize Tree";
-            document.getElementById("max-degree").focus();
-            randomTreeStarted= true;
-            console.log(document.getElementById("insert-delete-section").style.display)
-            if (document.getElementById("insert-delete-section").style.display === "none" || document.getElementById("insert-delete-section").style.display === "") {
-                document.getElementById("insert-delete-section").style.display = "inline"; // Show the section
-            } else {
-                document.getElementById("insert-delete-section").style.display = "none"; // Hide the section
-            }
-        }
-    } else {
-        document.getElementById("error-message").innerHTML  = "Cancel Custom Tree Creation before new Random Tree";
+randomTreeButton.addEventListener('click', () => {
+    if (!maxDegreeInput.value) {
+        errorMessageLabel.textContent = "Please enter a max degree value before randomizing a tree";
+        return;
+    } else if (!numKeysInput.value) {
+        errorMessageLabel.textContent = "Please enter a num keys value before randomizing a tree";
+        return;
     }
-}
 
-let offsetX = 0;
+    if (!insertDeleteSection.classList.contains('invisible')) {
+        insertDeleteSection.classList.toggle('invisible');
+    }
+    errorMessageLabel.textContent = "";
+
+    tree = new BTree(+maxDegreeInput.value);
+    generateRandomTree(+numKeysInput.value);
+});
+
 function MoveCanvas(move) {
+    let offsetX = 0;
     if (!createTreeStarted || !randomTreeStarted) {
         if (move == 'l') {
             // Move canvas's graphics to the left
@@ -184,48 +132,35 @@ function MoveCanvas(move) {
     }
 }
 
-function generateRandomTree() {
-    for (let i = 0; i < parseInt(NumKeys); i++) {
-        const key = Math.floor(Math.random() * 100); 
-        tree.insert(parseInt(key));
-        tree.traverse();
-    }
-
-    graphics.clearRect(0, 0, canvas.width, canvas.height); 
-    console.log("The Tree:");
-    drawTree(tree.root, canvas.width / 2 - 60, 50);
-    console.log(tree);
-}
-
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
     let key;
 
-    if (question == 0 ){
+    if (question == 0) {
         //insert
-        key = Math.floor(Math.random() * 100); 
+        key = Math.floor(Math.random() * 100);
         tree.insert(parseInt(key));
         tree.traverse();
         console.log("Insert: ", key)
-        document.getElementById("question").innerHTML  = "Insert: "+  key;
-    } else if (question==1){
+        document.getElementById("question").innerHTML = "Insert: " + key;
+    } else if (question == 1) {
         //delete
-        key = Math.floor(Math.random() * 100); 
-        while (tree.root.search(key)==null){
-            key = Math.floor(Math.random() * 100); 
+        key = Math.floor(Math.random() * 100);
+        while (tree.root.search(key) == null) {
+            key = Math.floor(Math.random() * 100);
         }
         tree.remove(key);
         tree.traverse();
         console.log("Delete: ", key)
-        document.getElementById("question").innerHTML  = "Delete: "+ key;
-    } else if (question==2){
+        document.getElementById("question").innerHTML = "Delete: " + key;
+    } else if (question == 2) {
         //search
-        key = Math.floor(Math.random() * 100); 
+        key = Math.floor(Math.random() * 100);
         console.log("Search: ", key)
-        document.getElementById("question").innerHTML  = "Search: "+ key;
+        document.getElementById("question").innerHTML = "Search: " + key;
 
     }
-    graphics.clearRect(0, 0, canvas.width, canvas.height); 
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
     console.log("The Tree:");
     drawTree(tree.root, canvas.width / 2 - 60, 50);
 
@@ -235,7 +170,7 @@ let userTree;
 //userTree = SOME KIND OF CONVERSION of tree
 
 
-  
+
 
 
 
