@@ -1,15 +1,11 @@
 // import { assignNodePositions } from "./assign-positions.js";
 // DECLARE GLOBAL VARIABLES
-let frameNumber = 0;
 
 let canvas;
 let graphics;
 let rootNode;
 let tree;
 let offsetX = 0;
-
-let createTreeStarted = true;
-let randomTreeStarted = true;
 
 // initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection) {
