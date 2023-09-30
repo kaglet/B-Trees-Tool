@@ -1,15 +1,15 @@
 // import { assignNodePositions } from "./assign-positions.js";
-
 let frameNumber = 0;
 
 let canvas;
-let rootNode;
 let graphics;
+let rootNode;
 let tree;
 
 let createTreeStarted = true;
 let randomTreeStarted = true;
 
+// initialize canvas and graphics else display unsupported canvas error
 function init() {
     try {
 		canvas = document.getElementById("canvas");
@@ -19,8 +19,44 @@ function init() {
 	}    
 }
 
+function draw() {
+    tree.traverse();
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    makeTree(tree.root, canvas.width / 2, 30);
+}
 
-let insertValue;
+window.addEventListener('load', init);
+
+let insertButton = document.querySelector('insert-button');
+let deleteButton = document.querySelector('delete-button');
+
+let insertInput = document.getElementById('insert').value;
+let deleteInput = document.getElementById('delete').value;
+
+let errorMessageLabel = document.getElementById('error-message');
+
+insertButton.addEventListener('click', () => {
+    if (!insertInput.value) {
+        tree.insert(insertInput.value);
+        draw();
+        errorMessageLabel.textContent = "";
+        return;
+    }
+    errorMessageLabel.textContent = "Please enter a key to insert";
+});
+
+deleteButton.addEventListener('click', () => {
+    if (!deleteInput.value) {
+        tree.delete(deleteInput.value);
+        draw();
+        errorMessageLabel.textContent = "";
+        return;
+    }
+    errorMessageLabel.textContent = "Please enter a key to delete";
+});
+
+
+
 function insertKeyCreate() {
     if (!createTreeStarted  || !randomTreeStarted) {
         document.getElementById("error-message").innerHTML  = "";
@@ -221,10 +257,6 @@ function MoveCanvas(move) {
 }
 
 function generateRandomTree() {
-    const seed = new Date().getTime().toString();
-    console.log(seed);
-    // Math.seed(seed);
-
     for (let i = 0; i < parseInt(NumKeys); i++) {
         const key = Math.floor(Math.random() * 100); 
         tree.insert(parseInt(key));
