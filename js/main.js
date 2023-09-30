@@ -6,6 +6,7 @@ let canvas;
 let graphics;
 let rootNode;
 let tree;
+let offsetX = 0;
 
 let createTreeStarted = true;
 let randomTreeStarted = true;
@@ -41,25 +42,22 @@ function generateRandomTree(numKeys) {
 }
 
 function moveCanvas(direction) {
-    let offsetX = 0;
-    if (!createTreeStarted || !randomTreeStarted) {
-        if (direction == 'l') {
-            // Move canvas's graphics to the left
-            offsetX -= 30;
-        } else if (direction == 'r') {
-            // Move canvas's graphics to the right
-            offsetX += 30;
-        } else {
-            // Reset canvas's graphics
-            offsetX = 0;
-        }
-
-        graphics.clearRect(0, 0, canvas.width, canvas.height);
-        graphics.setTransform(1, 0, 0, 1, offsetX, 0);
-        
-        makeTree(tree.root, canvas.width / 2 - 60, 50);
-        graphics.setTransform(1, 0, 0, 1, 0, 0);
+    if (direction == 'l') {
+        // Move canvas's graphics to the left
+        offsetX -= 30;
+    } else if (direction == 'r') {
+        // Move canvas's graphics to the right
+        offsetX += 30;
+    } else {
+        // Reset canvas's graphics
+        offsetX = 0;
     }
+
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    graphics.setTransform(1, 0, 0, 1, offsetX, 0);
+
+    makeTree(tree.root, canvas.width / 2 - 60, 50);
+    graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function generateRandomQuestion() {
@@ -104,7 +102,7 @@ let randomTreeButton = document.querySelector('button.random-tree');
 let maxDegreeInput = document.getElementById('max-degree');
 let numKeysInput = document.getElementById('num-keys');
 
-let directionalButtons = document.querySelectorAll('panning-controls');
+let directionalButtons = document.querySelectorAll('.panning-controls button');
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
     moveCanvas(button.className);
 }));
