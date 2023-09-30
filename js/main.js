@@ -35,25 +35,25 @@ let deleteInput = document.getElementById('delete');
 
 let errorMessageLabel = document.getElementById('error-message');
 
-// insertButton.addEventListener('click', () => {
-//     if (!insertInput.value) {
-//         tree.insert(insertInput.value);
-//         draw();
-//         errorMessageLabel.textContent = "";
-//         return;
-//     }
-//     errorMessageLabel.textContent = "Please enter a key to insert";
-// });
+insertButton.addEventListener('click', () => {
+    if (insertInput.value) {
+        tree.insert(+insertInput.value);
+        draw();
+        errorMessageLabel.textContent = "";
+        return;
+    }
+    errorMessageLabel.textContent = "Please enter a key to insert";
+});
 
-// deleteButton.addEventListener('click', () => {
-//     if (!deleteInput.value) {
-//         tree.delete(deleteInput.value);
-//         draw();
-//         errorMessageLabel.textContent = "";
-//         return;
-//     }
-//     errorMessageLabel.textContent = "Please enter a key to delete";
-// });
+deleteButton.addEventListener('click', () => {
+    if (deleteInput.value) {
+        tree.remove(+deleteInput.value);
+        draw();
+        errorMessageLabel.textContent = "";
+        return;
+    }
+    errorMessageLabel.textContent = "Please enter a key to delete";
+});
 
 let insertValue;
 function insertKeyCreate() {
