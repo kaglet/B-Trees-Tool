@@ -40,6 +40,28 @@ function generateRandomTree(numKeys) {
     console.log(tree);
 }
 
+function MoveCanvas(move) {
+    let offsetX = 0;
+    if (!createTreeStarted || !randomTreeStarted) {
+        if (move == 'l') {
+            // Move canvas's graphics to the left
+            offsetX -= 30;
+        } else if (move == 'r') {
+            // Move canvas's graphics to the right
+            offsetX += 30;
+        } else {
+            // Reset canvas's graphics
+            offsetX = 0;
+        }
+
+        graphics.clearRect(0, 0, canvas.width, canvas.height);
+        graphics.setTransform(1, 0, 0, 1, offsetX, 0);
+        //drawTree(tree.root, canvas.width / 2 - 60, 50);
+        makeTree(tree.root, canvas.width / 2 - 60, 50);
+        graphics.setTransform(1, 0, 0, 1, 0, 0);
+    }
+}
+
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
 window.addEventListener('load', () => init(insertDeleteSection));
@@ -110,28 +132,6 @@ randomTreeButton.addEventListener('click', () => {
     generateRandomTree(+numKeysInput.value);
 });
 
-function MoveCanvas(move) {
-    let offsetX = 0;
-    if (!createTreeStarted || !randomTreeStarted) {
-        if (move == 'l') {
-            // Move canvas's graphics to the left
-            offsetX -= 30;
-        } else if (move == 'r') {
-            // Move canvas's graphics to the right
-            offsetX += 30;
-        } else {
-            // Reset canvas's graphics
-            offsetX = 0;
-        }
-
-        graphics.clearRect(0, 0, canvas.width, canvas.height);
-        graphics.setTransform(1, 0, 0, 1, offsetX, 0);
-        //drawTree(tree.root, canvas.width / 2 - 60, 50);
-        makeTree(tree.root, canvas.width / 2 - 60, 50);
-        graphics.setTransform(1, 0, 0, 1, 0, 0);
-    }
-}
-
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
     let key;
@@ -165,9 +165,6 @@ function generateRandomQuestion() {
     drawTree(tree.root, canvas.width / 2 - 60, 50);
 
 }
-
-let userTree;
-//userTree = SOME KIND OF CONVERSION of tree
 
 
 
