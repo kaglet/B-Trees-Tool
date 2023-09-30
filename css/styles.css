@@ -47,9 +47,9 @@ button:hover {
     background-color: var(--canvas-color);
 }
 
-/* .insert-delete-container li {
-    display: none;
-}  */
+.insert-delete-container li {
+    display: inline;
+} 
 
 .visible {
     visibility: visible;
@@ -92,10 +92,6 @@ input {
     font-size: 0.9rem;
     height: var(--input-height);
     padding: 0px 10px;
-}
-
-canvas + section {
-    align-self: flex-end;
 }
 
 .custom-tree-btn {
