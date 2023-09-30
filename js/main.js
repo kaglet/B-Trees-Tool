@@ -133,7 +133,9 @@ customTreeButton.addEventListener('click', () => {
     if (maxDegreeInput.value) {
         tree = new BTree(+maxDegreeInput.value);
         graphics.clearRect(0, 0, canvas.width, canvas.height);
-        insertDeleteSection.classList.toggle('invisible');
+        if (insertDeleteSection.classList.contains('invisible')) {
+            insertDeleteSection.classList.toggle('invisible');
+        }
         errorMessageLabel.textContent = "";
         return;
     }
