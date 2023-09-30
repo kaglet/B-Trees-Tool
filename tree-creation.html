@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tree Creation</title>
     <link href="css/styles.css" rel="stylesheet">
-    <script src="js/main.js" type="module" defer></script> 
+    <script src="js/main.js" type="module" defer></script>
 
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +16,7 @@
 <body>
     <section class="main-container">
         <section class="canvas-container">
-            <section class="insert-delete-container" id="insert-delete-section" >
+            <section class="insert-delete-container" id="insert-delete-section">
                 <ul>
                     <li>
                         <button class="insert">Insert</button>
@@ -28,21 +29,18 @@
                 </ul>
             </section>
 
-            <div class="canvas-scroll">
-                <canvas id="canvas" width="900px" height="670px" >
-                </canvas>
-            </div>
+            <canvas id="canvas" width="900px" height="670px">
+            </canvas>
 
             <section class="panning-controls">
-                <button type ="button" class="l">
-                    <
-                </button>
-                <button type ="button" class="m">
-                    Reset
-                </button>
-                <button type ="button" class="r">
-                    >
-                </button>
+                <button type="button" class="l">
+                    < </button>
+                        <button type="button" class="m">
+                            Reset
+                        </button>
+                        <button type="button" class="r">
+                            >
+                        </button>
             </section>
 
             <section>
@@ -58,7 +56,7 @@
 
     <section class="side-panel">
         <!-- Create Tree View -->
-        <section class="parameters-container" id ="parameters-container">
+        <section class="parameters-container" id="parameters-container">
             <ul>
                 <li>
                     <label for="max-degree">Max Degree</label>
@@ -75,12 +73,12 @@
                 </li>
                 <li>
                     <label style="color: red;" id="error-message" value=""></label>
-                </li>                
+                </li>
             </ul>
         </section>
 
         <!-- Question View -->
-        <section class="parameters-container" id ="parameters-container-q">
+        <section class="parameters-container" id="parameters-container-q">
             <ul>
                 <li>
                     <button type="button" class="random-question">
@@ -88,9 +86,9 @@
                     </button>
                 </li>
                 <li>
-                    <label  id="question" value=""></label>
-                </li>  
-                
+                    <label id="question" value=""></label>
+                </li>
+
             </ul>
         </section>
 
@@ -99,4 +97,5 @@
         </button>
     </section>
 </body>
+
 </html>
