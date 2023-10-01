@@ -33,6 +33,7 @@ function generateRandomTree(numKeys) {
         tree.traverse();
     }
     console.log(tree.root);
+    console.log(tree.levels);
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
 }
