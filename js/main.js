@@ -28,11 +28,11 @@ function draw() {
 
 function generateRandomTree(numKeys) {
     for (let i = 0; i < numKeys; i++) {
-        const key = Math.floor(Math.random() * 100);
-        tree.insert(parseInt(key));
+        const key = +Math.floor(Math.random() * 100);
+        tree.insert(key);
         tree.traverse();
     }
-
+    console.log(tree.root);
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
 }
