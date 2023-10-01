@@ -201,12 +201,14 @@ class BTreeNode {
     // Function to traverse all nodes in a subtree rooted with this node
     traverse(levels, depth) {
         depth++;
-        levels.push([]);
         // recursion is executed linearly so level can be updated linearly its not in parallel
         let i;
         for (i = 0; i < this.n; i++) {
             if (!this.leaf) {
                 this.C[i].parent = this;
+                if (levels[depth] === undefined) {
+                    levels.push([]);
+                }
                 levels[depth][i] = this.C[i];
                 this.C[i].traverse(levels, depth);
             }
