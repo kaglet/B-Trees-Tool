@@ -157,6 +157,7 @@ randomTreeButton.addEventListener('click', () => {
     if (!insertDeleteSection.classList.contains('invisible')) {
         insertDeleteSection.classList.toggle('invisible');
     }
+    
     errorMessageLabel.textContent = "";
 
     tree = new BTree(+maxDegreeInput.value);
