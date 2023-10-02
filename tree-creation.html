@@ -5,48 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tree Creation</title>
     <link href="css/styles.css" rel="stylesheet">
-    <script src="js/main.js" type="module" defer></script> 
+    <script type="text/javascript" src="js/balancedTree.js"></script>
+    <script type="text/javascript" src="js/drawTree.js"></script>
+    <script type="text/javascript" src="js/makeTree.js"></script>
+    <script type = "text/javascript" src="js/main.js"></script> 
+    <script src="js/tools-ui-updates.js" defer></script>
 
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
+    
 </head>
 
-<body>
+<body onload="initCreate()">
     <section class="main-container">
         <section class="canvas-container">
+            <!-- style = "display: none;" -->
             <section class="insert-delete-container" id="insert-delete-section" >
                 <ul>
                     <li>
-                        <button class="insert">Insert</button>
+                        <button for="insert" onclick="insertKeyCreate()">Insert</button>
                         <input type="number" name="insert" id="insert">
                     </li>
                     <li>
-                        <button class="delete">Delete</button>
+                        <button for="delete" onclick="removeKeyCreate()">Delete</button>
                         <input type="number" name="delete" id="delete">
                     </li>
                 </ul>
             </section>
-
             <div class="canvas-scroll">
-                <canvas id="canvas" width="900px" height="670px" >
-                </canvas>
+            <canvas id="canvas" width="900px" height="670px" >
+            </canvas>
             </div>
-
-            <section class="panning-controls">
-                <button type ="button" class="l">
+            <section>
+                <button type ="button" onclick="MoveCanvas('l')">
                     <
                 </button>
-                <button type ="button" class="m">
+                <button type ="button" onclick="MoveCanvas('m')">
                     Reset
                 </button>
-                <button type ="button" class="r">
+                <button type ="button" onclick="MoveCanvas('r')">
                     >
                 </button>
             </section>
-
             <section>
-                <button type="button" id="save-button">
+                <button type="button" onclick="saveTree()" id="save-button">
                     Save
                 </button>
                 <button type="button" onclick="validateTree()" id="validate-button">
@@ -55,21 +58,20 @@
             </section>
         </section>
     </section>
-
     <section class="side-panel">
         <!-- Create Tree View -->
         <section class="parameters-container" id ="parameters-container">
             <ul>
                 <li>
                     <label for="max-degree">Max Degree</label>
-                    <input type="number" name="max-degree" id="max-degree" autofocus>
+                    <input type="number" name="max-degree" id="max-degree">
                 </li>
                 <li>
                     <label for="num-keys">Num Keys</label>
                     <input type="number" name="num-keys" id="num-keys">
                 </li>
                 <li>
-                    <button type="button" class="random-tree">
+                    <button type="button" class="random-tree-btn" onclick="randomTree()" id= "random-tree-btn">
                         Random Tree
                     </button>
                 </li>
@@ -78,12 +80,11 @@
                 </li>                
             </ul>
         </section>
-
         <!-- Question View -->
         <section class="parameters-container" id ="parameters-container-q">
             <ul>
                 <li>
-                    <button type="button" class="random-question">
+                    <button type="button" class="random-tree-btn" onclick="generateRandomQuestion()" id= "random-tree-btn">
                         Generate Random Question
                     </button>
                 </li>
@@ -93,8 +94,7 @@
                 
             </ul>
         </section>
-
-        <button type="button" class="custom-tree">
+        <button type="button" onclick="createTree()" id= "custom-tree-btn" class="custom-tree-btn">
             Custom Tree
         </button>
     </section>
