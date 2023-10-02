@@ -104,7 +104,7 @@ function generateRandomQuestion() {
         tree.traverse();
 
         // TODO:  this needs to be changed as the user must do it manually
-        userTree.insert(key);
+        userTree.remove(key);
         userTree.traverse();
         questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
