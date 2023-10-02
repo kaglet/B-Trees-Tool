@@ -1,4 +1,4 @@
-import { BTree } from "./balancedTree.js";
+// don't have to import anything if its a parameter
 
 // BTree or root node depending on how the traverse function works
 // call this function once logical representation of tree is done.

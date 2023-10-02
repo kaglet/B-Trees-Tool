@@ -64,7 +64,7 @@ function drawTree(node, x, y) {
 
                 childXPositions.push(childX);
 
-                drawTree(child, childX, childY);
+                drawTree(child, childX, childY, canvas);
 
                 startX += childWidth + nodeSpacing;
             }

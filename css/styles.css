@@ -28,9 +28,9 @@ canvas:first-child {
 }
 
 body {
-    height: 100vh;
     display: flex;
     font-family: var(--main-font-family);
+    height: 100vh;
 }
 
 button {
@@ -48,9 +48,9 @@ button:hover {
     background-color: var(--canvas-color);
 }
 
-/* .insert-delete-container li {
-    display: none;
-}  */
+.insert-delete-container li {
+    display: inline;
+} 
 
 .visible {
     visibility: visible;
@@ -67,6 +67,11 @@ ul {
 }
 
 .canvas-container {
+    justify-content: space-between;
+    height: 100%;
+}
+
+.canvas-container {
     gap: var(--canvas-container-gap);
 }
 
@@ -76,6 +81,7 @@ ul {
 
 .side-panel {
     flex: auto;
+    justify-content: space-between;
 }
 
 .main-container {
@@ -92,10 +98,6 @@ input {
     font-size: 0.9rem;
     height: var(--input-height);
     padding: 0px 10px;
-}
-
-canvas + section {
-    align-self: flex-end;
 }
 
 .custom-tree-btn {
@@ -158,4 +160,10 @@ div.canvas-scroll{
 
 }
 
+.invisible {
+    display: none;
+}
 
+#parameters-container-q.visible {
+    display: flex;
+}

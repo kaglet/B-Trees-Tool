@@ -199,28 +199,39 @@ class BTreeNode {
     }
     
     // Function to traverse all nodes in a subtree rooted with this node
-    traverse() {
+    traverse(levels, depth) {
+        depth++;
+        // recursion is executed linearly so level can be updated linearly its not in parallel
         let i;
         for (i = 0; i < this.n; i++) {
             if (!this.leaf) {
                 this.C[i].parent = this;
-                this.C[i].traverse();
+                if (levels[depth] === undefined) {
+                    levels.push([]);
+                }
+                levels[depth][i] = this.C[i];
+                this.C[i].traverse(levels, depth);
             }
         }
-        // Added - set all keys where there theoretically arent meant to be any to be undefined
+        // Added - set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2*this.t-1; x++) {
             this.keys[x]=undefined;
         }
 
-        // Added - set all children where there theoretically arent meant to be any to be undefined
+        // Added - set all children where there theoretically aren't meant to be any to be undefined
         for (let y = this.n+1; y < 2*this.t; y++) {
             this.C[y]=undefined;
         }
 
+        // TODO: Test if i = this.n out of bounds value
+        // TODO: Add code to add to levels during this traverse and test.
         if (!this.leaf) {
+            if (levels[depth] === undefined) {
+                levels.push([]);
+            }
+            levels[depth][i] = this.C[i];
             this.C[i].parent = this;
-            this.C[i].traverse();
-            
+            this.C[i].traverse(levels, depth);
         }
     }
       
@@ -311,6 +322,7 @@ class BTree {
     constructor(t) {
         this.root = null; // The BTreenode that is the root node
         this.t = t; // Minimum degree (number of keys=2*t-1)
+        this.levels = [[]];
     }
 
     // Calls the insert on the root node and performs some checks to keep to the conditions of the tree
@@ -361,15 +373,22 @@ class BTree {
     }
 
     // Calls the traversal on the root node, it is recursive so will go to all nodes
+    // Calling traverse on the method of the tree calls traverse on the methods of the nodes 
     traverse() {
         if (this.root) {
-            this.root.traverse();
+            // Levels is updated with each traverse of tree and is a property of the tree
+            // It is an alternate representation of the tree, a visual representation as opposed to a logical one
+            // It has the same nodes as the logical representation of the tree so we can easily pop this node when we delete it from the tree
+            // Or just call traverse to refresh levels and update it with traverse
+            let depth = 0;
+            this.levels = [[]];
+            this.levels[depth][0] = this.root;
+            this.root.traverse(this.levels, depth);
         }
     } 
 }
 
 // export default BTree;
-
 
 
 
