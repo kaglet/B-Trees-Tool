@@ -355,7 +355,6 @@ export class BTree {
     remove(k) {
 
         if (!this.root) {
-            // TODO: Refactor this to console.log as an error since there is a console method for that
             console.log("The tree is empty");
             return;
         }
@@ -389,6 +388,8 @@ export class BTree {
         }
     } 
 }
+
+// export default BTree;
 
 
 

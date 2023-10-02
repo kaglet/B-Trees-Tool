@@ -44,10 +44,10 @@
             </section>
 
             <section>
-                <button type="button" id="save-button">
+                <button class="save">
                     Save
                 </button>
-                <button type="button" id="validate-button">
+                <button class="validate">
                     Validate
                 </button>
             </section>
@@ -56,7 +56,7 @@
 
     <section class="side-panel">
         <!-- Create Tree View -->
-        <section class="parameters-container" id="parameters-container">
+        <section class="parameters-container" id="parameters-container-c">
             <ul>
                 <li>
                     <label for="max-degree">Max Degree</label>
@@ -72,6 +72,11 @@
                     </button>
                 </li>
                 <li>
+                    <button type="button" class="custom-tree">
+                        Custom Tree
+                    </button>
+                </li>
+                <li>
                     <label style="color: red;" id="error-message" value=""></label>
                 </li>
             </ul>
@@ -81,7 +86,7 @@
         <section class="parameters-container" id="parameters-container-q">
             <ul>
                 <li>
-                    <button type="button" class="random-question">
+                    <button  class="random-question">
                         Generate Random Question
                     </button>
                 </li>
@@ -92,9 +97,7 @@
             </ul>
         </section>
 
-        <button type="button" class="custom-tree">
-            Custom Tree
-        </button>
+        
     </section>
 </body>
 
