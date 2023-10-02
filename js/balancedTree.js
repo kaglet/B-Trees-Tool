@@ -200,16 +200,16 @@ class BTreeNode {
     
     // Function to traverse all nodes in a subtree rooted with this node
     traverse(levels, depth) {
-        if (levels[depth] === undefined) {
-            levels.push([]);
-        }
-        levels[depth].push(this);
         depth++;
         // recursion is executed linearly so level can be updated linearly its not in parallel
         let i;
         for (i = 0; i < this.n; i++) {
             if (!this.leaf) {
                 this.C[i].parent = this;
+                if (levels[depth] === undefined) {
+                    levels.push([]);
+                }
+                levels[depth][i] = this.C[i];
                 this.C[i].traverse(levels, depth);
             }
         }
@@ -224,7 +224,12 @@ class BTreeNode {
         }
 
         // TODO: Test if i = this.n out of bounds value
+        // TODO: Add code to add to levels during this traverse and test.
         if (!this.leaf) {
+            if (levels[depth] === undefined) {
+                levels.push([]);
+            }
+            levels[depth][i] = this.C[i];
             this.C[i].parent = this;
             this.C[i].traverse(levels, depth);
         }
@@ -377,6 +382,8 @@ export class BTree {
             // It has the same nodes as the logical representation of the tree so we can easily pop this node when we delete it from the tree
             // Or just call traverse to refresh levels and update it with traverse
             let depth = 0;
+            this.levels = [[]];
+            this.levels[depth][0] = this.root;
             this.root.traverse(this.levels, depth);
         }
     } 

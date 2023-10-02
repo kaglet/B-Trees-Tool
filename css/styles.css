@@ -30,6 +30,7 @@ canvas:first-child {
 body {
     display: flex;
     font-family: var(--main-font-family);
+    height: 100vh;
 }
 
 button {
@@ -63,6 +64,11 @@ ul {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.canvas-container {
+    justify-content: space-between;
+    height: 100%;
 }
 
 .canvas-container {

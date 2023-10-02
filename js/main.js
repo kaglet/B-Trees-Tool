@@ -22,6 +22,7 @@ function init(insertDeleteSection) {
 
 function draw() {
     tree.traverse();
+    console.log(tree.levels);
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     makeTree(tree.root, canvas.width / 2, 30, canvas);
 }
@@ -59,17 +60,17 @@ function moveCanvas(direction) {
 
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
-    let key = Math.floor(Math.random() * 100);
+    let key = +Math.floor(Math.random() * 100);
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
         //insert
-        tree.insert(parseInt(key));
+        tree.insert(key);
         tree.traverse();
         questionDisplay.textContent = "Insert: " + key;
     } else if (question == 1) {
         //delete
         while (tree.root.search(key) == null) {
-            key = Math.floor(Math.random() * 100);
+            key = +Math.floor(Math.random() * 100);
         }
         tree.remove(key);
         tree.traverse();
