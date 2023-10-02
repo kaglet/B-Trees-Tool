@@ -12,6 +12,7 @@ class BTreeNode {
         this.n = 0; // the number of keys in the node
         this.leaf = leaf; // boolean for if the node is a leaf, if not then false
         this.parent = null;
+        this.levels = [[]];
     }
 
     // A utility function that returns the index of the first key that is greater than or equal to k
