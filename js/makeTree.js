@@ -1,3 +1,5 @@
+import { drawNode } from "./drawTree.js";
+
 function snapToGrid(x, y) {
     return {
         x: Math.round(x / 50) * 50,
@@ -5,7 +7,7 @@ function snapToGrid(x, y) {
     };
 }
 
-function makeTree(node, x, y) {
+export function makeTree(node, x, y) {
     const keys = node.keys.filter((key) => key !== undefined);
     drawNode(x, y, keys)
     const canvas2 = document.getElementById('canvas');

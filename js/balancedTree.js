@@ -318,7 +318,7 @@ class BTreeNode {
 }
 
 // A BTree 
-class BTree {
+export class BTree {
     constructor(t) {
         this.root = null; // The BTreenode that is the root node
         this.t = t; // Minimum degree (number of keys=2*t-1)

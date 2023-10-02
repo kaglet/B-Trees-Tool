@@ -1,9 +1,7 @@
-// function sayHello(){
-//     console.log("Hello");
-// }
-
-// import BTree from "./balancedTree.js"; // Import classes from balancedTree.js
-// import { drawKey, drawNode, drawTree } from './drawTree.js';
+import { assignNodePositions } from "./assign-positions.js";
+import { drawTree } from "./drawTree.js";
+import { makeTree } from "./makeTree.js";
+import { BTree } from "./balancedTree.js";
 
 // DECLARE GLOBAL VARIABLES
 let canvas;
@@ -225,7 +223,15 @@ function drawQuestion() {
     console.log(tree.levels);
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     //to involve user interactivity
-    makeTree(tree.root, canvas.width / 2, 30, canvas);
+    // TODO: this isnt working
+    // draw tree is used when creating the tree, and seeting up for questions
+    // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
+    // makeTree(tree.root, canvas.width / 2, 30, canvas);
+    
+    drawTree(tree.root, canvas.width / 2, 30, canvas);
+
+    // note, when doing questions, pass in the userTree.root instead of the tree.root
+    // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
 }
 
 function generateRandomTree(numKeys) {
@@ -254,6 +260,7 @@ function moveCanvas(direction) {
 
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     graphics.setTransform(1, 0, 0, 1, offsetX, 0);
+    // TODO: logic to be handeld between create and question
     drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
@@ -267,7 +274,8 @@ function generateRandomQuestion() {
         tree.insert(key);
         tree.traverse();
 
-        userTree.insert(parseInt(key));
+        // TODO: this needs to be changed as the user must do it manually
+        userTree.insert(key);
         userTree.traverse();
 
         questionDisplay.textContent = "Insert: " + key;
@@ -279,7 +287,8 @@ function generateRandomQuestion() {
         tree.remove(key);
         tree.traverse();
 
-        userTree.insert(parseInt(key));
+        // TODO:  this needs to be changed as the user must do it manually
+        userTree.insert(key);
         userTree.traverse();
         questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
@@ -388,8 +397,9 @@ insertButton.addEventListener('click', () => {
 
         userTree.insert(+insertInput.value);
         userTree.traverse();
-        draw();
+        drawCreate();
         insertInput.focus();
+        insertInput.value = "";
         errorMessageLabel.textContent = "";
         return;
     }
@@ -404,8 +414,10 @@ deleteButton.addEventListener('click', () => {
 
         userTree.remove(parseInt(+deleteInput.value));
         userTree.traverse();
-        draw();
+        drawCreate();
         deleteInput.focus();
+        deleteInput.value = "";
+
         errorMessageLabel.textContent = "";
         return;
     }
@@ -422,9 +434,9 @@ customTreeButton.addEventListener('click', () => {
                 tree = new BTree(+maxDegreeInput.value);
                 userTree = new BTree(+maxDegreeInput.value);
                 graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-                if (insertDeleteSection.classList.contains('invisible')) {
+                // if (insertDeleteSection.classList.contains('invisible')) {
                     insertDeleteSection.classList.toggle('invisible');
-                }
+                // }
                 errorMessageLabel.textContent = "";
                 customTreePresent = true;
                 customTreeButton.textContent = "Cancel";
@@ -461,9 +473,9 @@ randomTreeButton.addEventListener('click', () => {
                 return;
             }
         
-            if (!insertDeleteSection.classList.contains('invisible')) {
+            // if (!insertDeleteSection.classList.contains('invisible')) {
                 insertDeleteSection.classList.toggle('invisible');
-            }       
+            // }       
             tree = new BTree(+maxDegreeInput.value);
             userTree = new BTree(+maxDegreeInput.value);
             generateRandomTree(+numKeysInput.value);
