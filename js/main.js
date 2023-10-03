@@ -29,14 +29,12 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 
 function drawCreate() {
     tree.traverse();
-    console.log(tree.levels);
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     drawTree(tree.root, canvas.width / 2, 30, canvas);
 }
 
 function drawQuestion() {
     tree.traverse();
-    console.log(tree.levels);
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     //to involve user interactivity
     // TODO: this isnt working
@@ -59,6 +57,7 @@ function generateRandomTree(numKeys) {
         userTree.insert(key);
         userTree.traverse();
     }
+    console.log(tree);
     drawCreate();
 }
 
@@ -117,7 +116,7 @@ function generateRandomQuestion() {
 }
 
 function validateTree(){
-    var treeEqual = areBtreesEqual(tree, userTree);
+    var treeEqual = areBTreesEqual(tree, userTree);
     if (treeEqual){
         console.log("Your tree is correct");
     } else {
@@ -125,7 +124,7 @@ function validateTree(){
     }
 }
 
-function areBtreesEqual(tree1, tree2) {
+function areBTreesEqual(tree1, tree2) {
     // Helper function for in-order traversal
     function inOrderTraversal(node, keys) {
         if (node) {

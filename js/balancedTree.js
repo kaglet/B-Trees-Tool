@@ -12,7 +12,6 @@ class BTreeNode {
         this.n = 0; // the number of keys in the node
         this.leaf = leaf; // boolean for if the node is a leaf, if not then false
         this.parent = null;
-        this.levels = [[]];
     }
 
     // A utility function that returns the index of the first key that is greater than or equal to k
@@ -200,39 +199,37 @@ class BTreeNode {
     }
     
     // Function to traverse all nodes in a subtree rooted with this node
-    traverse(levels, depth) {
+    traverse(levels, depth, nodeCountPerLevel) {
         depth++;
+        // if uninitialized for the first time, initialize it, and next time just increment it at that level
+        if (nodeCountPerLevel[depth] === undefined) {
+            nodeCountPerLevel[depth] = 0;
+        }
+        
         // recursion is executed linearly so level can be updated linearly its not in parallel
         let i;
-        for (i = 0; i < this.n; i++) {
+        for (i = 0; i < this.n + 1; i++) {
             if (!this.leaf) {
                 this.C[i].parent = this;
+
                 if (levels[depth] === undefined) {
                     levels.push([]);
                 }
-                levels[depth][i] = this.C[i];
-                this.C[i].traverse(levels, depth);
+                levels[depth][nodeCountPerLevel[depth]] = this.C[i];
+                // increment number of nodes at this depth
+                nodeCountPerLevel[depth]++;
+                
+                this.C[i].traverse(levels, depth, nodeCountPerLevel);
             }
         }
-        // Added - set all keys where there theoretically aren't meant to be any to be undefined
+        // Set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2*this.t-1; x++) {
             this.keys[x]=undefined;
         }
 
-        // Added - set all children where there theoretically aren't meant to be any to be undefined
+        // Set all children where there theoretically aren't meant to be any to be undefined
         for (let y = this.n+1; y < 2*this.t; y++) {
             this.C[y]=undefined;
-        }
-
-        // TODO: Test if i = this.n out of bounds value
-        // TODO: Add code to add to levels during this traverse and test.
-        if (!this.leaf) {
-            if (levels[depth] === undefined) {
-                levels.push([]);
-            }
-            levels[depth][i] = this.C[i];
-            this.C[i].parent = this;
-            this.C[i].traverse(levels, depth);
         }
     }
       
@@ -383,8 +380,11 @@ export class BTree {
             // Or just call traverse to refresh levels and update it with traverse
             let depth = 0;
             this.levels = [[]];
+            let nodeCountPerLevel = [];
+            nodeCountPerLevel[depth] = 0;
             this.levels[depth][0] = this.root;
-            this.root.traverse(this.levels, depth);
+            nodeCountPerLevel[depth] = 1;
+            this.root.traverse(this.levels, depth, nodeCountPerLevel);
         }
     } 
 }
