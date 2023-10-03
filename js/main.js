@@ -1,4 +1,3 @@
-import { assignNodePositions } from "./assign-positions.js";
 import { drawTree } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree } from "./balancedTree.js";
