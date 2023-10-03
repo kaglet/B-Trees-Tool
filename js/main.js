@@ -2,6 +2,7 @@ import { assignNodePositions } from "./assign-positions.js";
 import { drawTree } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree } from "./balancedTree.js";
+//import { SubtractiveBlending } from "three";
 
 // DECLARE GLOBAL VARIABLES
 let canvas;
@@ -9,6 +10,7 @@ let graphics;
 let tree;
 let userTree;
 let offsetX = 0;
+let scaleFactor = 1;
 let customTreePresent = false;
 let randomTreePresent = false;
 
@@ -71,14 +73,30 @@ function moveCanvas(direction) {
     } else {
         // Reset canvas's graphics
         offsetX = 0;
+        scaleFactor = 1;
     }
 
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    graphics.setTransform(1, 0, 0, 1, offsetX, 0);
+    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
+
+function zoomCanvas(zoom) {
+    if (zoom == 'zoom-out') {
+        scaleFactor *= 0.9;
+    } else if (zoom == 'zoom-in') {
+        scaleFactor /= 0.9;
+    } 
+
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    // TODO: logic to be handeld between create and question
+    drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
+    graphics.setTransform(1, 0, 0, 1, 0, 0);
+}
+
 
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
@@ -178,6 +196,8 @@ let numKeysInput = document.getElementById('num-keys');
 
 let directionalButtons = document.querySelectorAll('.panning-controls button');
 
+let zoomButtons = document.querySelectorAll('.zoom-controls button')
+
 let errorMessageLabel = document.getElementById('error-message');
 
 let createTreeParamtersContainer = document.getElementById('parameters-container-c');
@@ -189,6 +209,10 @@ window.addEventListener('load', () => init(insertDeleteSection, validateButton,q
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
     moveCanvas(button.className);
+}));
+
+zoomButtons.forEach((button) => button.addEventListener('click', () => {
+    zoomCanvas(button.className);
 }));
 
 saveButton.addEventListener('click', () => {
