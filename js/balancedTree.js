@@ -209,7 +209,7 @@ class BTreeNode {
             nodeCountPerLevel[depth] = 0;
         }
 
-        // recursion is executed linearly so level can be updated linearly its not in parallel
+        // recursion is executed linearly so levels can be updated linearly its not in parallel
         let i;
         for (i = 0; i < this.n + 1; i++) {
             if (!this.leaf) {
