@@ -31,7 +31,7 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    drawTree(tree.root, canvas);
+    drawTree(tree.root, canvas.width / 2, 30, canvas);
 }
 
 function drawQuestion() {
@@ -43,7 +43,7 @@ function drawQuestion() {
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
     
-    drawTree(tree.root, canvas);
+    drawTree(tree.root, canvas.width / 2, 30, canvas);
 
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
@@ -100,6 +100,7 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
     let key = +Math.floor(Math.random() * 100);
+    let questionDisplay = document.getElementById("question");
     if (question == 0) {
         //insert
         tree.insert(key);
@@ -109,7 +110,7 @@ function generateRandomQuestion() {
         userTree.insert(key);
         userTree.traverse();
 
-        questionLabel.textContent = "Insert: " + key;
+        questionDisplay.textContent = "Insert: " + key;
     } else if (question == 1) {
         //delete
         while (tree.root.search(key) == null) {
@@ -121,12 +122,12 @@ function generateRandomQuestion() {
         // TODO:  this needs to be changed as the user must do it manually
         userTree.remove(key);
         userTree.traverse();
-        questionLabel.textContent = "Delete: " + key;
+        questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
         //search
         key = Math.floor(Math.random() * 100); 
         console.log("Search: ", key)
-        questionLabel.textContent  = "Search: "+ key;
+        document.getElementById("question").innerHTML  = "Search: "+ key;
     }
     drawQuestion();
 }
@@ -201,8 +202,6 @@ let errorMessageLabel = document.getElementById('error-message');
 let createTreeParamtersContainer = document.getElementById('parameters-container-c');
 let questionsParamtersContainer = document.getElementById('parameters-container-q');
 let questionLabel = document.getElementById('question');
-let treeDegreeLabel = document.getElementById('tree-degree');
-
 
 window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
 
@@ -225,8 +224,6 @@ saveButton.addEventListener('click', () => {
     questionsParamtersContainer.classList.toggle('invisible');
     questionsParamtersContainer.classList.toggle('visible');
     validateButton.classList.toggle('invisible');
-    treeDegreeLabel.textContent = "Tree Degree: " +  tree.root.t;
-
 
     validateTree();
 });
