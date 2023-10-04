@@ -26,18 +26,11 @@ export function drawTree(node, canvas) {
                // const childX = child.keys[0].x - 30;
               //  const childY = child.keys[0].y - 30;
 
-<<<<<<< HEAD
                 const angle = Math.atan2(childY - (y + 30), childX - x);
                 
                 // TODO: Figure out the following: This causes a bug where keys[index] is undefined since keys ends at index 0, but index 3 is referenced for example
                 // Determine if the child is less than or greater than the key
                 const isLessThanKey = childKeys[0].value < keys[index].value;
-=======
-                // const angle = Math.atan2(childY - (keys[0].y + 30), childX - keys[0].x);
-
-                // // Determine if the child is less than or greater than the key
-                // const isLessThanKey = childKeys[0].value < keys[index].value;
->>>>>>> 556bc908c55cdeccf0d3212cbbee630f960726f4
 
 
                 // // Calculate the arrow starting point
