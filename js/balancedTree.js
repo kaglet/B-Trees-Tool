@@ -233,12 +233,19 @@ class BTreeNode {
                     levels.push([]);
                 }
                 levels[depth][nodeCountPerLevel[depth]] = this.C[i];
+
+               
                 // increment number of nodes at this depth
                 nodeCountPerLevel[depth]++;
 
                 this.C[i].traverse(levels, depth, nodeCountPerLevel);
             }
         }
+        
+        for (let k = this.n + 1; k < 2*this.t; k++){
+            levels[depth][k] = new BTreeNode(this.t, true);
+        }
+
         // Set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2 * this.t - 1; x++) {
             this.keys[x].value = undefined;
@@ -376,7 +383,7 @@ export class BTree {
                 // loop over each key in node
                 for (let k = 0; k < numKeys; k++) {
                     const keyX = startX + accumulatedNodeWidth + k * 60;
-                    const keyY = i * ySpacing;
+                    const keyY = i * ySpacing + 30;
     
                     // Assign x and y values to the BTreeKey
                     // console.log(k);
