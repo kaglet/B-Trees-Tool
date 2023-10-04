@@ -166,7 +166,7 @@ function areBTreesEqual(tree1, tree2) {
     }
 
     for (let i = 0; i < keys1.length; i++) {
-        if (keys1[i] !== keys2[i]) {
+        if (keys1[i].value !== keys2[i].value) {
             return false;
         }
     }

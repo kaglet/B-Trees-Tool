@@ -6,6 +6,7 @@ export function drawTree(node, x, y, canvas) {
     if (!node) return;
 
     const keys = node.keys.filter((key) => key !== undefined);
+
     const nodeWidth = keys.length * 60;
     const nodeSpacing = 40;
     const arrowSize = 15; // Size of the arrowhead
@@ -27,6 +28,7 @@ export function drawTree(node, x, y, canvas) {
 
         node.C.forEach((child, index) => {
             if (child != undefined) {
+                const childKeys = child.keys.filter((key) => key !== undefined);
                 const childWidth = child.keys.length * 60;
                 const childX = startX + childWidth / 2;
                 const childY = y + 150;
@@ -34,7 +36,8 @@ export function drawTree(node, x, y, canvas) {
                 const angle = Math.atan2(childY - (y + 30), childX - x);
 
                 // Determine if the child is less than or greater than the key
-                const isLessThanKey = child.keys[0] < keys[index];
+                const isLessThanKey = childKeys[0].value < keys[index].value;
+
 
                 // Calculate the arrow starting point
                 const arrowStartX = isLessThanKey ? x - nodeWidth / 2 + index * 60 : x + nodeWidth / 2 - (keys.length - index) * 60;
@@ -85,12 +88,12 @@ function drawKey(x, y, key, graphics = graphics) {
     graphics.font = "14px Arial";
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
-    graphics.fillText(key, x+ keySize, y);  //drawing key text, numbers
+    graphics.fillText(key.value, x+ keySize, y);  //drawing key text, numbers
 }
 
 export function drawNode(x, y, keys, graphics) {
     const nodeHeight = 60;
-    const validKeys = keys.filter((key) => key !== undefined);  //tking away undefined from array
+    const validKeys = keys.filter((key) => key.value !== undefined);  //tking away undefined from array
     const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
     const keySpacing = 60;  //how far apart the keys are spaced
 
