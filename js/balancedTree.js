@@ -241,7 +241,6 @@ class BTreeNode {
         }
         // Set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2 * this.t - 1; x++) {
-            // no longer set the value to undefined but the whole key
             this.keys[x] = undefined;
         }
 
@@ -403,7 +402,7 @@ export class BTree {
                     const keyY = i * ySpacing;
     
                     // Assign x and y values to the BTreeKey
-                    console.log(k);
+                    // console.log(k);
                     currNode.keys[k].x = keyX;
                     currNode.keys[k].y = keyY;
                 }
