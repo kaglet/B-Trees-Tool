@@ -241,7 +241,9 @@ class BTreeNode {
         }
         // Set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2 * this.t - 1; x++) {
-            this.keys[x] = undefined;
+            this.keys[x].value = undefined;
+            // this.keys[x].x = undefined;
+            // this.keys[x].y = undefined;
         }
 
         // Set all children where there theoretically aren't meant to be any to be undefined
@@ -351,31 +353,6 @@ export class BTree {
         gives the number of nodes at that depth. Or getting the size of the node.key array gives the number of keys in that node. 
         Given these convenient known sizes, we can divide them on the canvas space however we wish.
         */
-        // const ySpacing = 120;
-        // const keySpacing = 30;
-        // const canvasWidth = 900;
-    
-        // for (let i = 0; i < this.levels.length; i++) {
-        //     const numNodes = this.levels[i].length;
-        //     const totalKeyWidth = numNodes * 60 + (numNodes - 1) * keySpacing;
-        //     let startX = (canvasWidth - totalKeyWidth) / 2;
-    
-        //     for (let j = 0; j < numNodes; j++) {
-        //         const currNode = this.levels[i][j];
-        //         const numKeys = currNode.keys.length;
-    
-        //         for (let k = 0; k < numKeys; k++) {
-        //             const keyX = startX + j * keySpacing + k * 60;
-        //             const keyY = i * ySpacing;
-    
-        //             // Assign x and y values to the BTreeKey
-        //             currNode.keys[k].x = keyX - 250;
-        //             currNode.keys[k].y = keyY;
-        //         }
-    
-        //         startX += numKeys * 60 + keySpacing;
-        //     }
-        // }
         const ySpacing = 120;
         const keySpacing = 30;
         const canvasWidth = 900;
@@ -393,7 +370,7 @@ export class BTree {
             // loop over each node in level
             for (let j = 0; j < numNodes; j++) {
                 const currNode = this.levels[i][j];
-                const currKeys = currNode.keys.filter((key) => key !== undefined); //DOESNT WORK WTF!!!
+                const currKeys = currNode.keys.filter((key) => key.value !== undefined); //DOESNT WORK WTF!!! --- IT DOES WORK!!! XD
                 const numKeys = currKeys.length;
                 
                 // loop over each key in node
