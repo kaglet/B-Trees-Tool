@@ -1,4 +1,4 @@
-import { assignNodePositions } from "./assign-positions.js";
+//import { assignNodePositions } from "./assign-positions.js";
 import { drawTree } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree } from "./balancedTree.js";
@@ -32,7 +32,7 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    drawTree(tree.root, canvas.width / 2, 30, canvas);
+    drawTree(tree.root, canvas);
 }
 
 function drawQuestion() {
@@ -44,7 +44,7 @@ function drawQuestion() {
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
     
-    drawTree(tree.root, canvas.width / 2, 30, canvas);
+    drawTree(tree.root, canvas);
 
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
@@ -166,7 +166,7 @@ function areBTreesEqual(tree1, tree2) {
     }
 
     for (let i = 0; i < keys1.length; i++) {
-        if (keys1[i] !== keys2[i]) {
+        if (keys1[i].value !== keys2[i].value) {
             return false;
         }
     }
