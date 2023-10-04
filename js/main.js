@@ -101,7 +101,6 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion() {
     const question = Math.floor(Math.random() * 3);
     let key = +Math.floor(Math.random() * 100);
-    let questionDisplay = document.getElementById("question");
     if (question == 0) {
         //insert
         tree.insert(key);
@@ -111,7 +110,7 @@ function generateRandomQuestion() {
         userTree.insert(key);
         userTree.traverse();
 
-        questionDisplay.textContent = "Insert: " + key;
+        questionLabel.textContent = "Insert: " + key;
     } else if (question == 1) {
         //delete
         while (tree.root.search(key) == null) {
@@ -123,12 +122,12 @@ function generateRandomQuestion() {
         // TODO:  this needs to be changed as the user must do it manually
         userTree.remove(key);
         userTree.traverse();
-        questionDisplay.textContent = "Delete: " + key;
+        questionLabel.textContent = "Delete: " + key;
     } else if (question == 2) {
         //search
         key = Math.floor(Math.random() * 100); 
         console.log("Search: ", key)
-        document.getElementById("question").innerHTML  = "Search: "+ key;
+        questionLabel.textContent  = "Search: "+ key;
     }
     drawQuestion();
 }
@@ -203,6 +202,8 @@ let errorMessageLabel = document.getElementById('error-message');
 let createTreeParamtersContainer = document.getElementById('parameters-container-c');
 let questionsParamtersContainer = document.getElementById('parameters-container-q');
 let questionLabel = document.getElementById('question');
+let treeDegreeLabel = document.getElementById('tree-degree');
+
 
 window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
 
@@ -225,6 +226,8 @@ saveButton.addEventListener('click', () => {
     questionsParamtersContainer.classList.toggle('invisible');
     questionsParamtersContainer.classList.toggle('visible');
     validateButton.classList.toggle('invisible');
+    treeDegreeLabel.textContent = "Tree Degree: " +  tree.root.t;
+
 
     validateTree();
 });
