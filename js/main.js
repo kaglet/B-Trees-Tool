@@ -55,8 +55,8 @@ function generateRandomTree(numKeys) {
         tree.insert(key);
         tree.traverse();
 
-        userTree.insert(key);
-        userTree.traverse();
+        // userTree.insert(key);
+        // userTree.traverse();
     }
     console.log(tree);
     drawCreate();

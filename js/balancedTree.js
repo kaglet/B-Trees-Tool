@@ -241,7 +241,8 @@ class BTreeNode {
         }
         // Set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2 * this.t - 1; x++) {
-            this.keys[x].value = undefined;
+            // no longer set the value to undefined but the whole key
+            this.keys[x] = undefined;
         }
 
         // Set all children where there theoretically aren't meant to be any to be undefined
@@ -379,7 +380,8 @@ export class BTree {
         const ySpacing = 120;
         const keySpacing = 30;
         const canvasWidth = 900;
-    
+        
+        // loop over each level
         for (let i = 0; i < this.levels.length; i++) {
             const numNodes = this.levels[i].length;
             const totalKeyWidth = numNodes * 60 + (numNodes - 1) * keySpacing;
@@ -388,20 +390,20 @@ export class BTree {
             const startX = nodeSpacing; // Start from the first node position
     
             let accumulatedNodeWidth = 0;
-    
+            
+            // loop over each node in level
             for (let j = 0; j < numNodes; j++) {
                 const currNode = this.levels[i][j];
-                const currKeys = currNode.keys.filter((key) => key.value !== undefined); //DOESNT WORK WTF!!!
-            //   let currKeys = currNode.keys.filter(function( element ) {
-            //     return element.value !== undefined;
-            //  });
+                const currKeys = currNode.keys.filter((key) => key !== undefined); //DOESNT WORK WTF!!!
                 const numKeys = currKeys.length;
-    
+                
+                // loop over each key in node
                 for (let k = 0; k < numKeys; k++) {
                     const keyX = startX + accumulatedNodeWidth + k * 60;
                     const keyY = i * ySpacing;
     
                     // Assign x and y values to the BTreeKey
+                    console.log(k);
                     currNode.keys[k].x = keyX;
                     currNode.keys[k].y = keyY;
                 }
@@ -468,15 +470,14 @@ export class BTree {
             // It has the same nodes as the logical representation of the tree so we can easily pop this node when we delete it from the tree
             // Or just call traverse to refresh levels and update it with traverse
             let depth = 0;
-           // this.levels = [[]];
+            this.levels = [[]];
             let nodeCountPerLevel = [];
             nodeCountPerLevel[depth] = 0;
             this.levels[depth][0] = this.root;
             nodeCountPerLevel[depth] = 1;
             this.root.traverse(this.levels, depth, nodeCountPerLevel);
-            
+            this.assignNodePositions();
         }
-        this.assignNodePositions();
     }
 }
 
