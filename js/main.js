@@ -174,6 +174,19 @@ function areBTreesEqual(tree1, tree2) {
     return true;
 }
 
+function findSelectedKey(levels) {
+    levels.forEach((level, i) => {
+        level.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                // if coordinate x and y are in range defined by key both then this is the key whose index must be saved
+                if (!(key.value === undefined)) {
+                    console.log(`I am key ${k} in node ${j} in level ${i}`);
+                }
+            });
+        });
+    });
+}
+
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
@@ -348,5 +361,9 @@ canvas = document.getElementById("canvas");
 canvas.addEventListener('click', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    
+    // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
+    // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
+    if (tree !== undefined) {
+        findSelectedKey(tree.levels); 
+    }
 });
