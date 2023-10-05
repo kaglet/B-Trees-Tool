@@ -31,7 +31,7 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    drawTree(tree.root, canvas.width / 2, 30, canvas);
+    drawTree(tree.root, canvas);
 }
 
 function drawQuestion() {
@@ -43,7 +43,7 @@ function drawQuestion() {
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
     
-    // drawTree(tree.root, canvas.width / 2, 30, canvas);
+    drawTree(tree.root, canvas);
 
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
@@ -78,8 +78,7 @@ function moveCanvas(direction) {
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    // TODO: Notice how draw tree is very fast, as used in the moveCanvas
-    // drawTree(tree.root, canvas.width / 2 - 60, 50, canvas); 
+    drawTree(tree.root,  canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -93,7 +92,7 @@ function zoomCanvas(zoom) {
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
+    drawTree(tree.root, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -167,7 +166,7 @@ function areBTreesEqual(tree1, tree2) {
     }
 
     for (let i = 0; i < keys1.length; i++) {
-        if (keys1[i].value !== keys2[i].value) {
+        if (keys1[i] !== keys2[i]) {
             return false;
         }
     }
