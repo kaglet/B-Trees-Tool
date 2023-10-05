@@ -31,6 +31,8 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
+    
+    tree.assignNodePositions();
     drawTree(tree.root, canvas);
 }
 
@@ -42,7 +44,7 @@ function drawQuestion() {
     // draw tree is used when creating the tree, and seeting up for questions
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
-    
+    tree.assignNodePositions();
     drawTree(tree.root, canvas);
 
     // note, when doing questions, pass in the userTree.root instead of the tree.root
@@ -75,11 +77,11 @@ function moveCanvas(direction) {
         scaleFactor = 1;
     }
 
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    graphics.clearRect(0, 0, canvas.width , canvas.height );
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
+    tree.assignNodePositions();
     drawTree(tree.root,  canvas);
-    graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function zoomCanvas(zoom) {
@@ -89,9 +91,10 @@ function zoomCanvas(zoom) {
         scaleFactor /= 0.9;
     } 
 
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    graphics.clearRect(0, 0, canvas.width  , canvas.height  );
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
+    tree.assignNodePositions();
     drawTree(tree.root, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
