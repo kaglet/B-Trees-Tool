@@ -362,31 +362,6 @@ export class BTree {
         gives the number of nodes at that depth. Or getting the size of the node.key array gives the number of keys in that node. 
         Given these convenient known sizes, we can divide them on the canvas space however we wish.
         */
-        // const ySpacing = 120;
-        // const keySpacing = 30;
-        // const canvasWidth = 900;
-    
-        // for (let i = 0; i < this.levels.length; i++) {
-        //     const numNodes = this.levels[i].length;
-        //     const totalKeyWidth = numNodes * 60 + (numNodes - 1) * keySpacing;
-        //     let startX = (canvasWidth - totalKeyWidth) / 2;
-    
-        //     for (let j = 0; j < numNodes; j++) {
-        //         const currNode = this.levels[i][j];
-        //         const numKeys = currNode.keys.length;
-    
-        //         for (let k = 0; k < numKeys; k++) {
-        //             const keyX = startX + j * keySpacing + k * 60;
-        //             const keyY = i * ySpacing;
-    
-        //             // Assign x and y values to the BTreeKey
-        //             currNode.keys[k].x = keyX - 250;
-        //             currNode.keys[k].y = keyY;
-        //         }
-    
-        //         startX += numKeys * 60 + keySpacing;
-        //     }
-        // }
         const ySpacing = 120;
         const keySpacing = 30;
         const canvasWidth = 900;
@@ -399,7 +374,8 @@ export class BTree {
             const startX = nodeSpacing; // Start from the first node position
     
             let accumulatedNodeWidth = 0;
-    
+            
+            // loop over each node in level
             for (let j = 0; j < numNodes; j++) {
                 const currNode = this.levels[i][j];
                 if (currNode!= undefined){
@@ -491,7 +467,6 @@ export class BTree {
             nodeCountPerLevel[depth] = 1;
             this.root.traverse(this.levels, depth, nodeCountPerLevel);
         }
-        this.assignNodePositions();
     }
 }
 
