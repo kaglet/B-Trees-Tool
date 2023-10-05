@@ -344,3 +344,9 @@ randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 validateButton.addEventListener('click', validateTree);
 
+canvas = document.getElementById("canvas");
+canvas.addEventListener('click', (e) => {
+    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+    
+});
