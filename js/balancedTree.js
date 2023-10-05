@@ -218,6 +218,7 @@ class BTreeNode {
     // Function to traverse all nodes in a subtree rooted with this node
     traverse(levels, depth, nodeCountPerLevel) {
         depth++;
+
         // if uninitialized for the first time, initialize it, and next time just increment it at that level
         if (nodeCountPerLevel[depth] === undefined) {
             nodeCountPerLevel[depth] = 0;
@@ -233,28 +234,31 @@ class BTreeNode {
                     levels.push([]);
                 }
                 levels[depth][nodeCountPerLevel[depth]] = this.C[i];
-
                
                 // increment number of nodes at this depth
                 nodeCountPerLevel[depth]++;
 
                 this.C[i].traverse(levels, depth, nodeCountPerLevel);
+
             }
         }
         
-        for (let k = this.n + 1; k < 2*this.t; k++){
-            levels[depth][k] = new BTreeNode(this.t, true);
-        }
-
         // Set all keys where there theoretically aren't meant to be any to be undefined
         for (let x = this.n; x < 2 * this.t - 1; x++) {
             this.keys[x] = new BTreeKey();
+            this.keys[x].value = undefined;
+
         }
 
         // Set all children where there theoretically aren't meant to be any to be undefined
         for (let y = this.n + 1; y < 2 * this.t; y++) {
+
+            // fixes tree representation
             this.C[y] = undefined;
         }
+
+        
+        
     }
 
     // Function to search key k in subtree rooted with this node
@@ -386,7 +390,7 @@ export class BTree {
         const ySpacing = 120;
         const keySpacing = 30;
         const canvasWidth = 900;
-    
+        
         for (let i = 0; i < this.levels.length; i++) {
             const numNodes = this.levels[i].length;
             const totalKeyWidth = numNodes * 60 + (numNodes - 1) * keySpacing;
@@ -398,22 +402,27 @@ export class BTree {
     
             for (let j = 0; j < numNodes; j++) {
                 const currNode = this.levels[i][j];
-                const currKeys = currNode.keys.filter((key) => key.value !== undefined); //DOESNT WORK WTF!!!
-            //   let currKeys = currNode.keys.filter(function( element ) {
-            //     return element.value !== undefined;
-            //  });
-                const numKeys = currKeys.length;
-    
-                for (let k = 0; k < numKeys; k++) {
-                    const keyX = startX + accumulatedNodeWidth + k * 60;
-                    const keyY = i * ySpacing + 30;
-    
-                    // Assign x and y values to the BTreeKey
-                    currNode.keys[k].x = keyX;
-                    currNode.keys[k].y = keyY;
+                if (currNode!= undefined){
+                    const currKeys = currNode.keys //filter((key) => key.value !== undefined); //DOESNT WORK WTF!!!
+                
+                    //   let currKeys = currNode.keys.filter(function( element ) {
+                    //     return element.value !== undefined;
+                    //  });
+                    const numKeys = currKeys.length;
+        
+                    for (let k = 0; k < numKeys; k++) {
+                        const keyX = startX + accumulatedNodeWidth + k * 60;
+                        const keyY = i * ySpacing + 30;
+        
+                        // Assign x and y values to the BTreeKey
+                        if (currNode.keys[k].value != undefined){
+                            currNode.keys[k].x = keyX;
+                            currNode.keys[k].y = keyY;
+                        }
+                    }
+        
+                    accumulatedNodeWidth += nodeSpacing + nodeSpacing;
                 }
-    
-                accumulatedNodeWidth += nodeSpacing + nodeSpacing;
             }
         }
         
@@ -475,13 +484,12 @@ export class BTree {
             // It has the same nodes as the logical representation of the tree so we can easily pop this node when we delete it from the tree
             // Or just call traverse to refresh levels and update it with traverse
             let depth = 0;
-           // this.levels = [[]];
+            this.levels = [[]];
             let nodeCountPerLevel = [];
             nodeCountPerLevel[depth] = 0;
             this.levels[depth][0] = this.root;
             nodeCountPerLevel[depth] = 1;
             this.root.traverse(this.levels, depth, nodeCountPerLevel);
-            
         }
         this.assignNodePositions();
     }

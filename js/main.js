@@ -1,4 +1,4 @@
-//import { assignNodePositions } from "./assign-positions.js";
+// import { assignNodePositions } from "./assign-positions.js";
 import { drawTree } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree } from "./balancedTree.js";
@@ -79,7 +79,7 @@ function moveCanvas(direction) {
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
+    drawTree(tree.root,  canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -93,7 +93,7 @@ function zoomCanvas(zoom) {
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    drawTree(tree.root, canvas.width / 2 - 60, 50, canvas);
+    drawTree(tree.root, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -166,7 +166,7 @@ function areBTreesEqual(tree1, tree2) {
     }
 
     for (let i = 0; i < keys1.length; i++) {
-        if (keys1[i].value !== keys2[i].value) {
+        if (keys1[i] !== keys2[i]) {
             return false;
         }
     }
