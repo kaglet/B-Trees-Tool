@@ -26,4 +26,3 @@ class userTree {
         this.root = null; // The userTreeNode that is the root node
     }
 }
-

@@ -31,7 +31,7 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    drawTree(tree.root, canvas);
+    drawTree(tree.root, canvas.width / 2, 30, canvas);
 }
 
 function drawQuestion() {
@@ -43,7 +43,7 @@ function drawQuestion() {
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
     
-    drawTree(tree.root, canvas);
+    drawTree(tree.root, canvas.width / 2, 30, canvas);
 
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
@@ -59,7 +59,7 @@ function generateRandomTree(numKeys) {
         // userTree.traverse();
     }
     console.log(tree);
-    // drawCreate();
+    drawCreate();
 }
 
 function moveCanvas(direction) {
@@ -343,5 +343,4 @@ randomTreeButton.addEventListener('click', () => {
 randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 validateButton.addEventListener('click', validateTree);
-
 
