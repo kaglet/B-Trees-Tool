@@ -174,13 +174,20 @@ function areBTreesEqual(tree1, tree2) {
     return true;
 }
 
-function findSelectedKey(levels) {
+function findSelectedKey(levels, mouseX, mouseY) {
+    console.log(`I am mouseX: ${mouseX}`);
+    console.log(`I am mouseY: ${mouseY}`);
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
             node.keys.forEach((key, k) => {
-                // if coordinate x and y are in range defined by key both then this is the key whose index must be saved
+                // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
                 if (!(key.value === undefined)) {
-                    console.log(`I am key ${k} in node ${j} in level ${i}`);
+                    // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                    let inXBounds = key.x <= mouseX && mouseX <= key.x + 30;
+                    let inYBounds = key.y <= mouseY && mouseY <= key.y + 30;
+                    if (inXBounds && inYBounds) {
+                        console.log(`I am key ${k} in node ${j} in level ${i}`);
+                    }
                 }
             });
         });
@@ -364,6 +371,6 @@ canvas.addEventListener('click', (e) => {
     // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
     if (tree !== undefined) {
-        findSelectedKey(tree.levels); 
+        findSelectedKey(tree.levels, mouseX, mouseY); 
     }
 });
