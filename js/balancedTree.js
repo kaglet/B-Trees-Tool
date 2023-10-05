@@ -372,11 +372,13 @@ export class BTree {
             const availableWidth = canvasWidth - totalKeyWidth;
             const nodeSpacing = availableWidth / (numNodes + 1); // Add 1 for space before the first node
             const startX = nodeSpacing; // Start from the first node position
-    
+            
             let accumulatedNodeWidth = 0;
+
             
             // loop over each node in level
             for (let j = 0; j < numNodes; j++) {
+
                 const currNode = this.levels[i][j];
                 if (currNode!= undefined){
                     const currKeys = currNode.keys //filter((key) => key.value !== undefined); //DOESNT WORK WTF!!!
@@ -467,6 +469,7 @@ export class BTree {
             nodeCountPerLevel[depth] = 1;
             this.root.traverse(this.levels, depth, nodeCountPerLevel);
         }
+        this.assignNodePositions();
     }
 }
 
