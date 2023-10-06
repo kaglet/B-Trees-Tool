@@ -64,6 +64,30 @@ function generateRandomTree(numKeys) {
     drawCreate();
 }
 
+function clear(){
+    // Find the rightmost and bottommost nodes
+    let maxX = 0;
+    let maxY = 0;
+
+    tree.levels.forEach((level) => {
+        level.forEach((node) => {
+            if (node && node.keys && node.keys.length > 0) {
+                node.keys.forEach((key) => {
+                    if (key.x > maxX) {
+                        maxX = key.x;
+                    }
+                    if (key.y > maxY) {
+                        maxY = key.y;
+                    }
+                });
+            }
+        });
+    });
+
+    // Clear the canvas based on the rightmost and bottommost node coordinates
+    graphics.clearRect(-10, 0, maxX + 60, maxY + 60);
+}
+
 function moveCanvas(direction) {
     if (direction == 'l') {
         // Move canvas's graphics to the left
@@ -77,12 +101,17 @@ function moveCanvas(direction) {
         scaleFactor = 1;
     }
 
+    clear();
     graphics.clearRect(0, 0, canvas.width , canvas.height );
+
+    // Apply the transformation
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
-    // TODO: logic to be handeld between create and question
+
+    // TODO: logic to be handled between create and question
     tree.assignNodePositions();
-    drawTree(tree.root,  canvas);
+    drawTree(tree.root, canvas);
 }
+
 
 function zoomCanvas(zoom) {
     if (zoom == 'zoom-out') {
@@ -91,6 +120,7 @@ function zoomCanvas(zoom) {
         scaleFactor /= 0.9;
     } 
 
+    clear();
     graphics.clearRect(0, 0, canvas.width  , canvas.height  );
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question

@@ -2,7 +2,7 @@ let graphics;
 
 export function drawTree(node, canvas) {
     graphics = canvas.getContext("2d");
-    const canvasWidth = canvas.width;
+    let canvasWidth = canvas.width;
     if (!node) return;
 
     const keys = node.keys;

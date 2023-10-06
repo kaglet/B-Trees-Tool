@@ -396,7 +396,7 @@ export class BTree {
            // const startX = nodeSpacing; // start from the first node position
             canvasWidth+=20;
             }
-
+        
             let accumulatedLevelWidth = nodeSpacing + 20;
             
            // debug
