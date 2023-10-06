@@ -366,13 +366,13 @@ export class BTree {
         */
         const ySpacing = 120;
         const keySpacing = 60;
-        const canvasWidth = 900;
+        let canvasWidth = 900;
         console.clear();
         console.log(this);
 
         
         // for each level
-        for (let i = 0; i < this.levels.length; i++) {
+        for (let i = this.levels.length - 1; i >=0 ; i--) {
      
             //calculates the number of keys on each row
             const numNodes = this.levels[i].length;
@@ -386,15 +386,17 @@ export class BTree {
                         }
                     });
                 }
-            }
-
-            console.log(numNodes);
-            
+            }            
           
+            let nodeSpacing = 0
+            while (nodeSpacing < 10){ //this loop increases the canvas size if we do not have enough space, then recals everything
             const totalKeyWidth = totalKeyCount * keySpacing; //space taken up by keys    
             const availableWidth = canvasWidth - totalKeyWidth; //space left over
-            const nodeSpacing = availableWidth / (numNodes + 1); //space between nodes
+            nodeSpacing = availableWidth / (numNodes + 1); //space between nodes
            // const startX = nodeSpacing; // start from the first node position
+            canvasWidth+=20;
+            }
+
             let accumulatedLevelWidth = nodeSpacing + 20;
             
            // debug
