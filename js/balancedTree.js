@@ -387,6 +387,8 @@ export class BTree {
                     });
                 }
             }
+
+            console.log(numNodes);
             
           
             const totalKeyWidth = totalKeyCount * keySpacing; //space taken up by keys    
