@@ -346,7 +346,8 @@ randomTreeButton.addEventListener('click', () => {
         
             // if (!insertDeleteSection.classList.contains('invisible')) {
                 insertDeleteSection.classList.toggle('invisible');
-            // }       
+            // }  
+         
             tree = new BTree(+maxDegreeInput.value);
             userTree = new BTree(+maxDegreeInput.value);
             generateRandomTree(+numKeysInput.value);
@@ -359,6 +360,7 @@ randomTreeButton.addEventListener('click', () => {
             // there is already a random tree created then run this
             insertDeleteSection.classList.toggle('invisible');
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            clear();
             randomTreePresent = false;
             randomTreeButton.textContent = "Random Tree";
             errorMessageLabel.textContent = "";
