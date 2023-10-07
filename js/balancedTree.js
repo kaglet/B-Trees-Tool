@@ -4,7 +4,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//import { assignNodePositions } from "./assign-positions";
 class BTreeKey {
     constructor() {
         this.value; 
@@ -268,9 +267,12 @@ class BTreeNode {
             idx++;
         }
 
-        if (this.keys[idx].value === k) {
-            return this;
+        if (this.keys[idx].value !=undefined){
+            if (this.keys[idx].value === k) {
+                return this;
+            }
         }
+        
 
         if (this.leaf) {
             return null;
@@ -363,43 +365,80 @@ export class BTree {
         Given these convenient known sizes, we can divide them on the canvas space however we wish.
         */
         const ySpacing = 120;
-        const keySpacing = 30;
-        const canvasWidth = 900;
+        const keySpacing = 60;
+        let canvasWidth = 900;
+        console.clear();
+        console.log(this);
+
         
-        for (let i = 0; i < this.levels.length; i++) {
+        // for each level
+        for (let i = this.levels.length - 1; i >=0 ; i--) {
+     
+            //calculates the number of keys on each row
             const numNodes = this.levels[i].length;
-            const totalKeyWidth = numNodes * 60 + (numNodes - 1) * keySpacing;
-            const availableWidth = canvasWidth - totalKeyWidth;
-            const nodeSpacing = availableWidth / (numNodes + 1); // Add 1 for space before the first node
-            const startX = nodeSpacing; // Start from the first node position
-    
-            let accumulatedNodeWidth = 0;
+            let totalKeyCount = 0;
+            for (let j = 0; j < numNodes; j++) {
+                let tempNode = this.levels[i][j];
+                if (tempNode!= undefined){
+                    tempNode.keys.forEach(key => {
+                        if (key.value!=undefined){
+                            totalKeyCount++;
+                        }
+                    });
+                }
+            }            
+          
+            let nodeSpacing = 0
+            while (nodeSpacing < 10){ //this loop increases the canvas size if we do not have enough space, then recals everything
+            const totalKeyWidth = totalKeyCount * keySpacing; //space taken up by keys    
+            const availableWidth = canvasWidth - totalKeyWidth; //space left over
+            nodeSpacing = availableWidth / (numNodes + 1); //space between nodes
+           // const startX = nodeSpacing; // start from the first node position
+            canvasWidth+=20;
+            }
+        
+            let accumulatedLevelWidth = nodeSpacing + 20;
             
-            // loop over each node in level
+           // debug
+            // console.log("LEVEL: " + (i + 1));
+            // console.log("Available Width: " + availableWidth);
+            // console.log("Node Spacing: " + nodeSpacing);
+         //   console.log("startX: " + startX);
+
+           
+ 
+            // for each node in level
             for (let j = 0; j < numNodes; j++) {
                 const currNode = this.levels[i][j];
+
                 if (currNode!= undefined){
-                    const currKeys = currNode.keys //filter((key) => key.value !== undefined); //DOESNT WORK WTF!!!
+                  //  const currKeys = currNode.keys;
+                  const currKeys = currNode.keys.filter((key) => key.value !== undefined);
+                  const numKeys = currKeys.length;
                 
-                    //   let currKeys = currNode.keys.filter(function( element ) {
-                    //     return element.value !== undefined;
-                    //  });
-                    const numKeys = currKeys.length;
-        
+                    let nodelength = 0;
                     for (let k = 0; k < numKeys; k++) {
-                        const keyX = startX + accumulatedNodeWidth + k * 60;
-                        const keyY = i * ySpacing + 30;
+                        // 60 is the spacing between each key (blue section)
+                        const keyX = accumulatedLevelWidth + k * 60;
+                        
+                        nodelength += 60;
+
+                        // 60 moves the entire tree down by 60 units
+                        const keyY = i * ySpacing + 60;
         
-                        // Assign x and y values to the BTreeKey
+                        // Assign x and y values to the BTreeKey if the node exists
                         if (currNode.keys[k].value != undefined){
                             currNode.keys[k].x = keyX;
                             currNode.keys[k].y = keyY;
+                        } else {
+                            break;
                         }
                     }
         
-                    accumulatedNodeWidth += nodeSpacing + nodeSpacing;
-                }
+                    accumulatedLevelWidth += nodelength + nodeSpacing;
+                }    
             }
+           
         }
         
     }
@@ -469,6 +508,10 @@ export class BTree {
         }
     }
 }
+
+// export default BTree;
+
+//comment for pull - kago
 
 
 
