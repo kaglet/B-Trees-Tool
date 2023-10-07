@@ -216,8 +216,8 @@ function findSelectedKey(levels, mouseX, mouseY) {
                 // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
                 if (!(key.value === undefined)) {
                     // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                    let inXBounds = key.x <= mouseX && mouseX <= key.x + 30;
-                    let inYBounds = key.y <= mouseY && mouseY <= key.y + 30;
+                    let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
+                    let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
                     if (inXBounds && inYBounds) {
                         console.log(`I am key ${k} in node ${j} in level ${i}`);
                     }
@@ -411,5 +411,9 @@ canvas.addEventListener('click', (e) => {
     }
 });
 
+// TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
 
-
+// They are the coordinates of the center and 30 is the width and height 
+// So check 15 to right and left, and 15 up and down to see if mouse click is within that key.
+// from mouse click check horizontal bounds and vertical bounds with withinBounds booleans
+// In fact its 30 in both directions
