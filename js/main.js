@@ -31,7 +31,9 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    drawTree(tree.root, canvas.width / 2, 30, canvas);
+    
+    tree.assignNodePositions();
+    drawTree(tree.root, canvas);
 }
 
 function drawQuestion() {
@@ -42,8 +44,8 @@ function drawQuestion() {
     // draw tree is used when creating the tree, and seeting up for questions
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
-    
-    drawTree(tree.root, canvas.width / 2, 30, canvas);
+    tree.assignNodePositions();
+    drawTree(tree.root, canvas);
 
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
@@ -122,6 +124,7 @@ function zoomCanvas(zoom) {
     graphics.clearRect(0, 0, canvas.width  , canvas.height  );
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
+    tree.assignNodePositions();
     drawTree(tree.root, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
@@ -252,6 +255,8 @@ let errorMessageLabel = document.getElementById('error-message');
 let createTreeParamtersContainer = document.getElementById('parameters-container-c');
 let questionsParamtersContainer = document.getElementById('parameters-container-q');
 let questionLabel = document.getElementById('question');
+
+canvas = document.getElementById("canvas");
 
 window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
 
@@ -396,7 +401,6 @@ randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 validateButton.addEventListener('click', validateTree);
 
-canvas = document.getElementById("canvas");
 canvas.addEventListener('click', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
@@ -406,3 +410,6 @@ canvas.addEventListener('click', (e) => {
         findSelectedKey(tree.levels, mouseX, mouseY); 
     }
 });
+
+
+
