@@ -12,6 +12,10 @@ let offsetX = 0;
 let scaleFactor = 1;
 let customTreePresent = false;
 let randomTreePresent = false;
+let isDragMode = false;
+let draggedKeyIndex;
+let draggedKeyNodeIndex;
+let draggedKeyLevelIndex;
 
 // Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
@@ -219,7 +223,11 @@ function findSelectedKey(levels, mouseX, mouseY) {
                     let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
                     let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
                     if (inXBounds && inYBounds) {
-                        console.log(`I am key ${k} in node ${j} in level ${i}`);
+                        isDragMode = true;
+                        draggedKeyIndex = k;
+                        draggedKeyNodeIndex = j;
+                        draggedKeyLevelIndex = i;
+                        console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex}`);
                     }
                 }
             });
@@ -401,14 +409,28 @@ randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 validateButton.addEventListener('click', validateTree);
 
-canvas.addEventListener('click', (e) => {
+
+// on mouse down key is selected if possible then translated else searched for if not, dragMode is turned on.
+// on mouse up dragMode is turned off so mouse coordinates are not used for dragging, only during mouse down.
+// or don't even need to track a drag mode, it just won't be dragged.
+// so that a new node is selected
+// to detect a mouseup for redragging
+canvas.addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
-    if (tree !== undefined) {
+    if (tree !== undefined && !isDragMode) {
         findSelectedKey(tree.levels, mouseX, mouseY); 
+    } else if (isDragMode) {
+        // drag selected key in levels to match mouse coordinates, mouse already matches center of bounds the way I've done it
+        // call redraw based on levels
     }
+});
+
+// Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
+window.addEventListener('mouseup', (e) => {
+    isDragMode = false;
 });
 
 // TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
