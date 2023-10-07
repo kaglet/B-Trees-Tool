@@ -227,7 +227,7 @@ function findSelectedKey(levels, mouseX, mouseY) {
                         draggedKeyIndex = k;
                         draggedKeyNodeIndex = j;
                         draggedKeyLevelIndex = i;
-                        console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex}`);
+                        console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex} at coordinates ${key.x} in x and ${key.y} in y`);
                     }
                 }
             });
@@ -420,16 +420,38 @@ canvas.addEventListener('mousedown', (e) => {
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
-    if (tree !== undefined && !isDragMode) {
+    if (tree !== undefined && isDragMode == false) {
         findSelectedKey(tree.levels, mouseX, mouseY); 
-    } else if (isDragMode) {
+    }
+    // after key selected if drag mode turned on now drag here in same method until mouse up event
+    
+    if (isDragMode) {
+        // alter coordinates and call draw tree based off changed levels
         // drag selected key in levels to match mouse coordinates, mouse already matches center of bounds the way I've done it
         // call redraw based on levels
+        // render animation in frames maybe though its not an animation with updated frames
+        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
+        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+        // Call drawTree because tree has not changed
+        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        drawTree(tree.root, canvas);
+    }
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+    if (isDragMode) {
+        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
+        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+        // Call drawTree because tree has not changed
+        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        drawTree(tree.root, canvas);
     }
 });
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
-window.addEventListener('mouseup', (e) => {
+window.addEventListener('mouseup', () => {
     isDragMode = false;
 });
 
