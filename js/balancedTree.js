@@ -4,11 +4,25 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class BTreeKey {
+export class BTreeKey {
     constructor() {
-        this.value; 
+        this.value;
         this.x;
         this.y;
+        this.arrowHitbox = {
+            centerX: null,
+            centerY: null,
+            radius: null,
+        };
+    }
+
+    calculateArrowHitbox(keySize) {
+        // Calculate the center of the key
+        this.arrowHitbox.centerX = this.x;
+        this.arrowHitbox.centerY = this.y + keySize;
+
+        // Calculate the radius of the arrow hitbox (1/4 of the key width)
+        this.arrowHitbox.radius = keySize / 10;
     }
 }
 
@@ -430,6 +444,9 @@ export class BTree {
                         if (currNode.keys[k].value != undefined){
                             currNode.keys[k].x = keyX;
                             currNode.keys[k].y = keyY;
+                            currNode.keys[k].calculateArrowHitbox(30);
+                            
+
                         } else {
                             break;
                         }
@@ -509,7 +526,7 @@ export class BTree {
     }
 }
 
-// export default BTree;
+//export default BTreeKey;
 
 //comment for pull - kago
 

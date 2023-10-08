@@ -1,13 +1,14 @@
 let graphics;
+import { BTree, BTreeKey } from "./balancedTree.js";
 
 export function drawTree(node, canvas) {
     graphics = canvas.getContext("2d");
-    let canvasWidth = canvas.width;
+    //let canvasWidth = canvas.width;
     if (!node) return;
 
-    const keys = node.keys;
+    const keys = getNodeKeys(node);
     // const keys = node.keys.filter((key) => key.value !== undefined);
-    const nodeWidth = keys.length * 60;
+    const nodeWidth = getNodeWidth(keys);
     const nodeSpacing = 40;
     const arrowSize = 15; // Size of the arrowhead
 
@@ -41,6 +42,14 @@ export function drawTree(node, canvas) {
 }
 
 
+function getNodeWidth(keys) {
+    return keys.length * 60;
+}
+
+function getNodeKeys(node) {
+    return node.keys;
+}
+
 function getChildY(child) {
     return child.keys[0].y - 30;
 }
@@ -57,21 +66,32 @@ function isChildLessThanKey(childKeys, keyValues, index) {
         : false;
 }
 
-function drawKey(x, y, key, graphics = graphics) {
+function drawKey(key, graphics = graphics) {
     const keySize = 60; //size of blue square -- hopefull make into draggable
     graphics.fillStyle = "lightblue";
 
     graphics.strokeStyle = "black";
     graphics.lineWidth = 2;
-    graphics.strokeRect(x, y, keySize, keySize);
+    graphics.strokeRect(key.x-30, key.y-30, keySize, keySize);
 
-    graphics.fillRect(x, y, keySize, keySize);  //fills blue small rect
+    graphics.fillRect(key.x-30, key.y-30, keySize, keySize);  //fills blue small rect
 
     graphics.fillStyle = "black";
     graphics.font = "14px Arial";
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
-    graphics.fillText(key, x + 30, y + 30);  //drawing key text, numbers
+    graphics.fillText(key.value, key.x, key.y);  //drawing key text, numbers
+
+    if(key.arrowHitbox){
+
+        graphics.beginPath();
+        graphics.arc(key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius, 0, 2 * Math.PI);
+        graphics.fillStyle = "red";
+        graphics.lineWidth = 2;
+        graphics.fill();
+        graphics.closePath();
+    }
+    
 }
 
 export function drawNode(keys, graphics) {
@@ -90,7 +110,9 @@ export function drawNode(keys, graphics) {
     graphics.textBaseline = "middle";
 
     validKeys.forEach((key, index) => {
-        drawKey(key.x - 30, key.y - 30, key.value, graphics);
+
+        drawKey(key, graphics);
+        
     });
 }
 
