@@ -19,7 +19,7 @@ export function drawTree(node, canvas) {
         const childXPositions = [];
 
         node.C.forEach((child, index) => {
-            if (child && child.keys && child.keys.length > 0) {
+            if (childExists(child) && hasChildKeys(child)) {
                 const childKeys = child.keys.filter((key) => key.value != undefined);
                 let childWidth = 0;
 
@@ -44,10 +44,6 @@ export function drawTree(node, canvas) {
                 const arrowCoordinates = calculateArrowCoordinates(isLessThanKey,keys,nodeWidth,index,node,childX,childWidth,childY);
                 drawArrowLine(graphics,arrowCoordinates);
                 drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
-
-                //drawArrowhead(graphics, childX, childY, keys, arrowCoordinates, arrowSize);
-
-                //drawArrowhead(graphics,arrowCoordinates);
 
                 childXPositions.push(childX);
 
@@ -167,6 +163,14 @@ function drawArrowhead(graphics, arrowCoordinates, arrowSize, childWidth){
 
     graphics.restore();
 
+}
+
+function childExists(child){
+    return child;
+}
+
+function hasChildKeys(child) {
+    return child.keys && child.keys.length > 0;
 }
 
 function drawArrow(){
