@@ -48,9 +48,9 @@ export function drawTree(node, canvas) {
                     : keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
                 */
                 const arrowStartX = calculateArrowStartX(isLessThanKey,keys,nodeWidth,index,node);
-                const arrowStartY = keys[0].y+30;
-                const arrowEndX = childX + childWidth;
-                const arrowEndY = childY;
+                const arrowStartY = calculateArrowStartY(keys);
+                const arrowEndX = calculateArrowEndX(childX,childWidth);
+                const arrowEndY = calculateArrowEndY(childY);
 
                 drawArrowLine(graphics,arrowStartX,arrowStartY,arrowEndX,arrowEndY);
 
@@ -140,6 +140,18 @@ function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
     } else {
         return keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
     }
+}
+
+function calculateArrowStartY(keys){
+    return keys[0].y+30;
+}
+
+function calculateArrowEndX(childX,childWidth){
+    return childX + childWidth;
+}
+
+function calculateArrowEndY(childY){
+    return childY;
 }
 
 function drawArrowLine(graphics,arrowStartX,arrowStartY,arrowEndX,arrowEndY){
