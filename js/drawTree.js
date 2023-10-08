@@ -42,9 +42,13 @@ export function drawTree(node, canvas) {
 
 
                 // Calculate the arrow starting point
+                /*
                 const arrowStartX = isLessThanKey
                     ? keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60
                     : keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
+                */
+               const arrowStartX = calculateArrowStartX(isLessThanKey,keys,nodeWidth,index,node);
+                
 
                 graphics.save();
                 graphics.beginPath();
@@ -90,7 +94,7 @@ export function drawTree(node, canvas) {
 function drawKey(x, y, key, graphics = graphics) {
     const keySize = 60; //size of blue square -- hopefull make into draggable
     graphics.fillStyle = "lightblue";
-    
+
     graphics.strokeStyle = "black";
     graphics.lineWidth = 2;
     graphics.strokeRect(x, y, keySize, keySize);
@@ -122,4 +126,16 @@ export function drawNode(keys, graphics) {
     validKeys.forEach((key, index) => {
         drawKey(key.x - 30, key.y - 30, key.value, graphics);
     });
+}
+
+function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
+    if (isLessThanKey) {
+        return keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60;
+    } else {
+        return keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
+    }
+}
+
+function drawArrow(){
+
 }
