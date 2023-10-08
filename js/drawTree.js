@@ -40,48 +40,14 @@ export function drawTree(node, canvas) {
                     ? childKeyValue < keyToCompare
                     : false;
 
-
-                // Calculate the arrow starting point
-                /* boat anchor
-                const arrowStartX = isLessThanKey
-                    ? keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60
-                    : keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
-                */
                //arrowCoordinates = [startX,startY,endX,endY]
                 const arrowCoordinates = calculateArrowCoordinates(isLessThanKey,keys,nodeWidth,index,node,childX,childWidth,childY);
                 drawArrowLine(graphics,arrowCoordinates);
+                drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
 
-                // graphics.save();
-                // graphics.beginPath();
-                // graphics.moveTo(arrowStartX, keys[0].y + 30); // Arrow starts from the appropriate side of the key
-                // graphics.lineTo(childX + childWidth, childY);
-                // graphics.lineWidth = 3;
-                // graphics.strokeStyle = "orange";
-                // graphics.stroke();
-                // graphics.closePath();
+                //drawArrowhead(graphics, childX, childY, keys, arrowCoordinates, arrowSize);
 
-
-
-                graphics.beginPath();
-                graphics.moveTo(childX + childWidth, childY);
-
-                // Calculate the angle between the arrow line and the horizontal axis
-                const angle = Math.atan2(childY - (keys[0].y + 30), childX + childWidth - arrowCoordinates[0]);
-
-                // Calculate the coordinates of the arrowhead
-                const arrowheadX1 = (childX + childWidth) - arrowSize * Math.cos(angle - Math.PI / 6);
-                const arrowheadY1 = childY - arrowSize * Math.sin(angle - Math.PI / 6);
-                const arrowheadX2 = (childX + childWidth) - arrowSize * Math.cos(angle + Math.PI / 6);
-                const arrowheadY2 = childY - arrowSize * Math.sin(angle + Math.PI / 6);
-
-                // Draw the arrowhead triangle
-                graphics.lineTo(arrowheadX1, arrowheadY1);
-                graphics.lineTo(arrowheadX2, arrowheadY2);
-                graphics.fillStyle = "orange";
-                graphics.fill();
-                graphics.closePath();
-
-                graphics.restore();
+                //drawArrowhead(graphics,arrowCoordinates);
 
                 childXPositions.push(childX);
 
@@ -170,6 +136,37 @@ function drawArrowLine(graphics,arrowCoordinates){
     graphics.stroke();
     graphics.closePath();
     graphics.restore();
+}
+
+function calculateArrowHeadAngle(arrowCoordinates,childWidth){
+    return Math.atan2(arrowCoordinates[3] - arrowCoordinates[1], arrowCoordinates[2] - arrowCoordinates[0]);
+}
+
+function calculateArrowHeadCoordinates(arrowCoordinates,arrowSize,angle){
+    const arrowheadStartX = arrowCoordinates[2]- arrowSize * Math.cos(angle - Math.PI / 6);
+    const arrowheadStartY = arrowCoordinates[3] - arrowSize * Math.sin(angle - Math.PI / 6);
+    const arrowheadEndX = arrowCoordinates[2] - arrowSize * Math.cos(angle + Math.PI / 6);
+    const arrowheadEndY = arrowCoordinates[3] - arrowSize * Math.sin(angle + Math.PI / 6);
+
+    return [arrowheadStartX, arrowheadStartY, arrowheadEndX, arrowheadEndY];
+}
+
+function drawArrowhead(graphics, arrowCoordinates, arrowSize, childWidth){
+    graphics.beginPath();
+    graphics.moveTo(arrowCoordinates[2], arrowCoordinates[3]);
+
+    const angle = calculateArrowHeadAngle(arrowCoordinates,childWidth);
+
+    const arrowHeadCoordinates = calculateArrowHeadCoordinates(arrowCoordinates,arrowSize,angle);
+
+    graphics.lineTo(arrowHeadCoordinates[0], arrowHeadCoordinates[1]);
+    graphics.lineTo(arrowHeadCoordinates[2], arrowHeadCoordinates[3]);
+    graphics.fillStyle = "orange";
+    graphics.fill();
+    graphics.closePath();
+
+    graphics.restore();
+
 }
 
 function drawArrow(){
