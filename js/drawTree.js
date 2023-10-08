@@ -88,7 +88,7 @@ export function drawTree(node, canvas) {
 
 
 function drawKey(x, y, key, graphics = graphics) {
-    const keySize = 30; //size of blue square -- hopefull make into draggable
+    const keySize = 60; //size of blue square -- hopefull make into draggable
     graphics.fillStyle = "lightblue";
 
     graphics.fillRect(x, y, keySize, keySize);  //fills blue small rect
@@ -97,17 +97,17 @@ function drawKey(x, y, key, graphics = graphics) {
     graphics.font = "14px Arial";
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
-    graphics.fillText(key, x + 15, y + 15);  //drawing key text, numbers
+    graphics.fillText(key, x + 30, y + 30);  //drawing key text, numbers
 }
 
 export function drawNode(keys, graphics) {
     const nodeHeight = 60;
     // const validKeys = keys;
     const validKeys = keys.filter((key) => key.x !== undefined);  //tking away undefined from array
-    const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
-
+    // const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
+    const nodeWidth = 60;
     // draw the node rectangle
-    graphics.strokeRect(validKeys[0].x - 30, validKeys[0].y - 30, nodeWidth, nodeHeight);
+    // graphics.strokeRect(validKeys[0].x - 30, validKeys[0].y - 30, nodeWidth, nodeHeight);
 
     // draw keys in the node
     graphics.fillStyle = "black";
@@ -116,6 +116,6 @@ export function drawNode(keys, graphics) {
     graphics.textBaseline = "middle";
 
     validKeys.forEach((key, index) => {
-        drawKey(key.x - 15, key.y - 15, key.value, graphics);
+        drawKey(key.x - 30, key.y - 30, key.value, graphics);
     });
 }
