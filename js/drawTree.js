@@ -22,21 +22,13 @@ export function drawTree(node, canvas) {
             if (childExists(child) && hasChildKeys(child)) {
                 const childKeys = getChildKeys(child);
                 let childWidth = calculateChildWidth(child);
+                const childX = getChildX(child);
+                const childY = getChildY(child);
+                const isLessThanKey = isChildLessThanKey(childKeys,keys,index);
 
-                const childX = child.keys[0].x - 30;
-                const childY = child.keys[0].y - 30;
-
-                // Determine if the child is less than or greater than the key
-                const childKeyValue = childKeys[0] ? childKeys[0].value : undefined;
-                const keyToCompare = keys[index] ? keys[index].value : undefined;
-                const isLessThanKey = childKeyValue !== undefined && keyToCompare !== undefined
-                    ? childKeyValue < keyToCompare
-                    : false;
-
-               //arrowCoordinates = [startX,startY,endX,endY]
+                //arrowCoordinates = [startX,startY,endX,endY]
                 const arrowCoordinates = calculateArrowCoordinates(isLessThanKey,keys,nodeWidth,index,node,childX,childWidth,childY);
-                drawArrowLine(graphics,arrowCoordinates);
-                drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
+                drawArrow(graphics,arrowCoordinates,arrowSize,childWidth);
 
                 childXPositions.push(childX);
 
@@ -48,6 +40,22 @@ export function drawTree(node, canvas) {
 
 }
 
+
+function getChildY(child) {
+    return child.keys[0].y - 30;
+}
+
+function getChildX(child) {
+    return child.keys[0].x - 30;
+}
+
+function isChildLessThanKey(childKeys, keyValues, index) {
+    const childKeyValue = childKeys[0] ? childKeys[0].value : undefined;
+    const keyToCompare = keyValues[index] ? keyValues[index].value : undefined;
+    return childKeyValue !== undefined && keyToCompare !== undefined
+        ? childKeyValue < keyToCompare
+        : false;
+}
 
 function drawKey(x, y, key, graphics = graphics) {
     const keySize = 60; //size of blue square -- hopefull make into draggable
@@ -182,6 +190,7 @@ function calculateChildWidth(child) {
     return childWidth;
 }
 
-function drawArrow(){
-
+function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
+    drawArrowLine(graphics,arrowCoordinates);
+    drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
 }
