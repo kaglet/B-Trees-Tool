@@ -235,6 +235,43 @@ function findSelectedKey(levels, mouseX, mouseY) {
     });
 }
 
+function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
+    let isHovering = false;
+
+    tree.levels.forEach((level, i) => {
+        level.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                if (key && key.value !== undefined) {
+                    
+                    const inXBounds = mouseX >= key.arrowHitbox.centerX-15 && mouseX <= key.arrowHitbox.centerX+15; 
+                    const inYBounds = mouseY >= key.arrowHitbox.centerY-15 && mouseY <= key.arrowHitbox.centerY+15; 
+                    if (inXBounds && inYBounds) {
+                        // Mouse is hovering over this key
+                        // You can perform any desired actions here
+                        console.log(`Mouse is hovering over key with value ${key.value}`);
+                        isHovering = true;
+
+                        graphics.beginPath();
+                        graphics.arc(key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius, 0, 2 * Math.PI);
+                        graphics.fillStyle = "red";
+                        graphics.lineWidth = 2;
+                        graphics.fill();
+                        graphics.closePath();
+                    }
+                }
+            });
+        });
+    });
+
+    if (!isHovering) {
+        // Mouse is not hovering over any key
+        // You can perform any desired actions here
+        console.log("Mouse is not hovering over any key");
+        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        drawTree(tree.root,canvas);
+    }
+}
+
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
@@ -448,6 +485,10 @@ canvas.addEventListener('mousemove', (e) => {
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
         drawTree(tree.root, canvas);
     }
+    if(tree){
+        detectMouseHoverOverArrowHitbox(mouseX,mouseY);
+    }
+    
 });
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas

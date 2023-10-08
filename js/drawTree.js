@@ -82,15 +82,15 @@ function drawKey(key, graphics = graphics) {
     graphics.textBaseline = "middle";
     graphics.fillText(key.value, key.x, key.y);  //drawing key text, numbers
 
-    if(key.arrowHitbox){
+    // if(key.arrowHitbox){
 
-        graphics.beginPath();
-        graphics.arc(key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius, 0, 2 * Math.PI);
-        graphics.fillStyle = "red";
-        graphics.lineWidth = 2;
-        graphics.fill();
-        graphics.closePath();
-    }
+    //     graphics.beginPath();
+    //     graphics.arc(key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius, 0, 2 * Math.PI);
+    //     graphics.fillStyle = "red";
+    //     graphics.lineWidth = 2;
+    //     graphics.fill();
+    //     graphics.closePath();
+    // }
     
 }
 
