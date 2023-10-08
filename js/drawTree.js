@@ -90,6 +90,10 @@ export function drawTree(node, canvas) {
 function drawKey(x, y, key, graphics = graphics) {
     const keySize = 60; //size of blue square -- hopefull make into draggable
     graphics.fillStyle = "lightblue";
+    
+    graphics.strokeStyle = "black";
+    graphics.lineWidth = 2;
+    graphics.strokeRect(x, y, keySize, keySize);
 
     graphics.fillRect(x, y, keySize, keySize);  //fills blue small rect
 
