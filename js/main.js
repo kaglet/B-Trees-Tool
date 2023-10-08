@@ -16,6 +16,7 @@ let isDragMode = false;
 let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
+let isMouseHoveringOverHitbox = false;
 
 // Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
@@ -252,10 +253,14 @@ function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
         });
     });
 
-    if (!isHovering) {
+    isMouseHoveringOverHitbox = isHovering;
+
+    if (!isMouseHoveringOverHitbox) {
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
         drawTree(tree.root,canvas);
     }
+
+    return isHovering;
 }
 
 function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
@@ -474,6 +479,10 @@ canvas.addEventListener('mousedown', (e) => {
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
         drawTree(tree.root, canvas);
     }
+
+    if (isMouseHoveringOverHitbox){
+        console.log("detected");
+    }
 });
 
 canvas.addEventListener('mousemove', (e) => {
@@ -487,7 +496,7 @@ canvas.addEventListener('mousemove', (e) => {
         drawTree(tree.root, canvas);
     }
     if(tree){
-        detectMouseHoverOverArrowHitbox(mouseX,mouseY);
+        isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(mouseX,mouseY);
     }
     
 });
