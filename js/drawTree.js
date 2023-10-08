@@ -47,12 +47,9 @@ export function drawTree(node, canvas) {
                     ? keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60
                     : keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
                 */
-                const arrowStartX = calculateArrowStartX(isLessThanKey,keys,nodeWidth,index,node);
-                const arrowStartY = calculateArrowStartY(keys);
-                const arrowEndX = calculateArrowEndX(childX,childWidth);
-                const arrowEndY = calculateArrowEndY(childY);
-
-                drawArrowLine(graphics,arrowStartX,arrowStartY,arrowEndX,arrowEndY);
+               //arrowCoordinates = [startX,startY,endX,endY]
+                const arrowCoordinates = calculateArrowCoordinates(isLessThanKey,keys,nodeWidth,index,node,childX,childWidth,childY);
+                drawArrowLine(graphics,arrowCoordinates);
 
                 // graphics.save();
                 // graphics.beginPath();
@@ -69,7 +66,7 @@ export function drawTree(node, canvas) {
                 graphics.moveTo(childX + childWidth, childY);
 
                 // Calculate the angle between the arrow line and the horizontal axis
-                const angle = Math.atan2(childY - (keys[0].y + 30), childX + childWidth - arrowStartX);
+                const angle = Math.atan2(childY - (keys[0].y + 30), childX + childWidth - arrowCoordinates[0]);
 
                 // Calculate the coordinates of the arrowhead
                 const arrowheadX1 = (childX + childWidth) - arrowSize * Math.cos(angle - Math.PI / 6);
@@ -154,11 +151,20 @@ function calculateArrowEndY(childY){
     return childY;
 }
 
-function drawArrowLine(graphics,arrowStartX,arrowStartY,arrowEndX,arrowEndY){
+function calculateArrowCoordinates(isLessThanKey, keys, nodeWidth, index, node, childX, childWidth, childY){
+    const arrowStartX = calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node);
+    const arrowStartY = calculateArrowStartY(keys);
+    const arrowEndX = calculateArrowEndX(childX, childWidth);
+    const arrowEndY = calculateArrowEndY(childY);
+
+    return [arrowStartX, arrowStartY, arrowEndX, arrowEndY];
+}
+
+function drawArrowLine(graphics,arrowCoordinates){
     graphics.save();
     graphics.beginPath();
-    graphics.moveTo(arrowStartX, arrowStartY); // Arrow starts from the appropriate side of the key
-    graphics.lineTo(arrowEndX, arrowEndY);
+    graphics.moveTo(arrowCoordinates[0], arrowCoordinates[1]); // Arrow starts from the appropriate side of the key
+    graphics.lineTo(arrowCoordinates[2], arrowCoordinates[3]);
     graphics.lineWidth = 3;
     graphics.strokeStyle = "orange";
     graphics.stroke();
