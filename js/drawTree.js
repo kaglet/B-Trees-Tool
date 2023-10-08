@@ -20,15 +20,8 @@ export function drawTree(node, canvas) {
 
         node.C.forEach((child, index) => {
             if (childExists(child) && hasChildKeys(child)) {
-                const childKeys = child.keys.filter((key) => key.value != undefined);
-                let childWidth = 0;
-
-                // Calculate childWidth using the length of child.keys with values
-                child.keys.forEach((key) => {
-                    if (key.value != undefined) {
-                        childWidth += 30;
-                    }
-                });
+                const childKeys = getChildKeys(child);
+                let childWidth = calculateChildWidth(child);
 
                 const childX = child.keys[0].x - 30;
                 const childY = child.keys[0].y - 30;
@@ -171,6 +164,22 @@ function childExists(child){
 
 function hasChildKeys(child) {
     return child.keys && child.keys.length > 0;
+}
+
+function getChildKeys(child){
+    return child.keys.filter((key) => key.value != undefined);
+}
+
+function calculateChildWidth(child) {
+    let childWidth = 0;
+
+    child.keys.forEach((key) => {
+        if (key.value != undefined) {
+            childWidth += 30;
+        }
+    });
+
+    return childWidth;
 }
 
 function drawArrow(){
