@@ -81,16 +81,6 @@ function drawKey(key, graphics = graphics) {
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
     graphics.fillText(key.value, key.x, key.y);  //drawing key text, numbers
-
-    // if(key.arrowHitbox){
-
-    //     graphics.beginPath();
-    //     graphics.arc(key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius, 0, 2 * Math.PI);
-    //     graphics.fillStyle = "red";
-    //     graphics.lineWidth = 2;
-    //     graphics.fill();
-    //     graphics.closePath();
-    // }
     
 }
 
@@ -157,7 +147,7 @@ function drawArrowLine(graphics,arrowCoordinates){
     graphics.restore();
 }
 
-function calculateArrowHeadAngle(arrowCoordinates,childWidth){
+export function calculateArrowHeadAngle(arrowCoordinates,childWidth){
     return Math.atan2(arrowCoordinates[3] - arrowCoordinates[1], arrowCoordinates[2] - arrowCoordinates[0]);
 }
 
@@ -170,7 +160,7 @@ function calculateArrowHeadCoordinates(arrowCoordinates,arrowSize,angle){
     return [arrowheadStartX, arrowheadStartY, arrowheadEndX, arrowheadEndY];
 }
 
-function drawArrowhead(graphics, arrowCoordinates, arrowSize, childWidth){
+export function drawArrowhead(graphics, arrowCoordinates, arrowSize, childWidth){
     graphics.beginPath();
     graphics.moveTo(arrowCoordinates[2], arrowCoordinates[3]);
 
@@ -212,7 +202,7 @@ function calculateChildWidth(child) {
     return childWidth;
 }
 
-function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
+export function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
     drawArrowLine(graphics,arrowCoordinates);
     drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
 }
