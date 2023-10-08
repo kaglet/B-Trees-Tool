@@ -242,21 +242,10 @@ function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
         level.forEach((node, j) => {
             node.keys.forEach((key, k) => {
                 if (key && key.value !== undefined) {
-                    
-                    const inXBounds = mouseX >= key.arrowHitbox.centerX-15 && mouseX <= key.arrowHitbox.centerX+15; 
-                    const inYBounds = mouseY >= key.arrowHitbox.centerY-15 && mouseY <= key.arrowHitbox.centerY+15; 
-                    if (inXBounds && inYBounds) {
-                        // Mouse is hovering over this key
-                        // You can perform any desired actions here
+                    if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY)) {
                         console.log(`Mouse is hovering over key with value ${key.value}`);
                         isHovering = true;
-
-                        graphics.beginPath();
-                        graphics.arc(key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius, 0, 2 * Math.PI);
-                        graphics.fillStyle = "red";
-                        graphics.lineWidth = 2;
-                        graphics.fill();
-                        graphics.closePath();
+                        drawRedCircleForHitbox(graphics, key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
                     }
                 }
             });
@@ -264,12 +253,24 @@ function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
     });
 
     if (!isHovering) {
-        // Mouse is not hovering over any key
-        // You can perform any desired actions here
-        console.log("Mouse is not hovering over any key");
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
         drawTree(tree.root,canvas);
     }
+}
+
+function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
+    const inXBounds = mouseX >= centerX - 10 && mouseX <= centerX + 10;
+    const inYBounds = mouseY >= centerY - 10 && mouseY <= centerY + 10;
+    return inXBounds && inYBounds;
+}
+
+function drawRedCircleForHitbox(graphics, centerX, centerY, radius) {
+    graphics.beginPath();
+    graphics.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    graphics.fillStyle = "red";
+    graphics.lineWidth = 2;
+    graphics.fill();
+    graphics.closePath();
 }
 
 // Initialize all GUI components
