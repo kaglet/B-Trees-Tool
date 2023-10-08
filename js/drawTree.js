@@ -42,22 +42,28 @@ export function drawTree(node, canvas) {
 
 
                 // Calculate the arrow starting point
-                /*
+                /* boat anchor
                 const arrowStartX = isLessThanKey
                     ? keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60
                     : keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
                 */
-               const arrowStartX = calculateArrowStartX(isLessThanKey,keys,nodeWidth,index,node);
-                
+                const arrowStartX = calculateArrowStartX(isLessThanKey,keys,nodeWidth,index,node);
+                const arrowStartY = keys[0].y+30;
+                const arrowEndX = childX + childWidth;
+                const arrowEndY = childY;
 
-                graphics.save();
-                graphics.beginPath();
-                graphics.moveTo(arrowStartX, keys[0].y + 30); // Arrow starts from the appropriate side of the key
-                graphics.lineTo(childX + childWidth, childY);
-                graphics.lineWidth = 3;
-                graphics.strokeStyle = "orange";
-                graphics.stroke();
-                graphics.closePath();
+                drawArrowLine(graphics,arrowStartX,arrowStartY,arrowEndX,arrowEndY);
+
+                // graphics.save();
+                // graphics.beginPath();
+                // graphics.moveTo(arrowStartX, keys[0].y + 30); // Arrow starts from the appropriate side of the key
+                // graphics.lineTo(childX + childWidth, childY);
+                // graphics.lineWidth = 3;
+                // graphics.strokeStyle = "orange";
+                // graphics.stroke();
+                // graphics.closePath();
+
+
 
                 graphics.beginPath();
                 graphics.moveTo(childX + childWidth, childY);
@@ -134,6 +140,18 @@ function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
     } else {
         return keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
     }
+}
+
+function drawArrowLine(graphics,arrowStartX,arrowStartY,arrowEndX,arrowEndY){
+    graphics.save();
+    graphics.beginPath();
+    graphics.moveTo(arrowStartX, arrowStartY); // Arrow starts from the appropriate side of the key
+    graphics.lineTo(arrowEndX, arrowEndY);
+    graphics.lineWidth = 3;
+    graphics.strokeStyle = "orange";
+    graphics.stroke();
+    graphics.closePath();
+    graphics.restore();
 }
 
 function drawArrow(){
