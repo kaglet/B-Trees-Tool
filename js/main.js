@@ -1,4 +1,4 @@
-import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
+import { drawTree } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree } from "./balancedTree.js";
 //import { SubtractiveBlending } from "three";
@@ -16,9 +16,6 @@ let isDragMode = false;
 let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
-let isMouseHoveringOverHitbox = false;
-let isDrawArrowMode = false;
-let selectedKeyForDrawArrow;
 
 // Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
@@ -51,6 +48,7 @@ function drawQuestion() {
     // draw tree is used when creating the tree, and seeting up for questions
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
+    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     tree.assignNodePositions();
     drawTree(tree.root, canvas);
 
@@ -115,7 +113,7 @@ function moveCanvas(direction) {
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
 
     // TODO: logic to be handled between create and question
-    tree.assignNodePositions();
+    // tree.assignNodePositions();
     drawTree(tree.root, canvas);
 }
 
@@ -131,7 +129,7 @@ function zoomCanvas(zoom) {
     graphics.clearRect(0, 0, canvas.width  , canvas.height  );
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    tree.assignNodePositions();
+    // tree.assignNodePositions();
     drawTree(tree.root, canvas);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
@@ -225,7 +223,7 @@ function findSelectedKey(levels, mouseX, mouseY) {
                     // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
                     let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
                     let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
-                    if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY)) {
+                    if (inXBounds && inYBounds) {
                         isDragMode = true;
                         draggedKeyIndex = k;
                         draggedKeyNodeIndex = j;
@@ -235,82 +233,8 @@ function findSelectedKey(levels, mouseX, mouseY) {
                 }
             });
         });
-    });    
-}
-
-function findSelectedKeyFromHitboxHover(levels,mouseX,mouseY){
-    let selectedKey = null;
-    levels.forEach((level, i) => {
-        level.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                if (!(key.value === undefined)) {  
-                    if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY)) {
-                        selectedKey = key;
-                    }
-                }
-            });
-        });
     });
-
-    return selectedKey;
 }
-
-function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
-    let isHovering = false;
-
-    tree.levels.forEach((level, i) => {
-        level.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                if (key && key.value !== undefined) {
-                    if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY)) {
-                        console.log(`Mouse is hovering over key with value ${key.value}`);
-                        isHovering = true;
-                        drawRedCircleForHitbox(graphics, key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                    }
-                }
-            });
-        });
-    });
-
-    isMouseHoveringOverHitbox = isHovering;
-
-    if (!isMouseHoveringOverHitbox) {
-        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(tree.root,canvas);
-    }
-
-    return isHovering;
-}
-
-function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
-    const inXBounds = mouseX >= centerX - 10 && mouseX <= centerX + 10;
-    const inYBounds = mouseY >= centerY - 10 && mouseY <= centerY + 10;
-    return inXBounds && inYBounds;
-}
-
-function drawRedCircleForHitbox(graphics, centerX, centerY, radius) {
-    graphics.beginPath();
-    graphics.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    graphics.fillStyle = "red";
-    graphics.lineWidth = 2;
-    graphics.fill();
-    graphics.closePath();
-}
-
-// function drawArrowhead(graphics, arrowCoordinates, arrowSize) {
-//     graphics.beginPath();
-//     graphics.moveTo(arrowCoordinates[2], arrowCoordinates[3]);
-
-//     const angle = calculateArrowHeadAngle(arrowCoordinates, childWidth);
-
-//     const arrowHeadCoordinates = calculateArrowHeadCoordinates(arrowCoordinates, arrowSize, angle);
-
-//     graphics.lineTo(arrowHeadCoordinates[0], arrowHeadCoordinates[1]);
-//     graphics.lineTo(arrowHeadCoordinates[2], arrowHeadCoordinates[3]);
-//     graphics.fillStyle = "orange";
-//     graphics.fill();
-//     graphics.closePath();
-// }
 
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
@@ -498,7 +422,7 @@ canvas.addEventListener('mousedown', (e) => {
     // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
     if (tree !== undefined && isDragMode == false) {
-        let selectedKey = findSelectedKey(tree.levels, mouseX, mouseY); 
+        findSelectedKey(tree.levels, mouseX, mouseY); 
     }
     // after key selected if drag mode turned on now drag here in same method until mouse up event
     
@@ -511,14 +435,8 @@ canvas.addEventListener('mousedown', (e) => {
         tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
         drawTree(tree.root, canvas);
-    }
-
-    if (isMouseHoveringOverHitbox){
-        isDrawArrowMode = true;
-        selectedKeyForDrawArrow = findSelectedKeyFromHitboxHover(tree.levels,mouseX,mouseY);
-        console.log("isDrawarrowMode: "+ isDrawArrowMode);
-        console.log(selectedKeyForDrawArrow);
     }
 });
 
@@ -530,23 +448,14 @@ canvas.addEventListener('mousemove', (e) => {
         tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
         drawTree(tree.root, canvas);
     }
-    if(tree){
-        isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(mouseX,mouseY);
-        if (isDrawArrowMode && selectedKeyForDrawArrow) {
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(tree.root, canvas); // Redraw the tree
-            drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.centerX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
-        }
-    }
-    
 });
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
 window.addEventListener('mouseup', () => {
     isDragMode = false;
-    isDrawArrowMode = false;
 });
 
 // TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
