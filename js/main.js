@@ -357,6 +357,17 @@ zoomButtons.forEach((button) => button.addEventListener('click', () => {
     zoomCanvas(button.className);
 }));
 
+const helpButton = document.getElementById("help-button");
+const helpGuide = document.getElementById("help-guide");
+const closeHelpGuide = document.getElementById("close-help-guide");
+
+helpButton.addEventListener("click", () => {
+    helpGuide.style.display = "block";
+});
+
+closeHelpGuide.addEventListener("click", () => {
+    helpGuide.style.display = "none";
+});
 
 darkModeButton.addEventListener('click', () => {
     body.classList.toggle("dark-mode");
