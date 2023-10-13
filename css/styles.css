@@ -167,3 +167,21 @@ div.canvas-scroll{
 #parameters-container-q.visible {
     display: flex;
 }
+
+body.dark-mode {
+    --side-panel-bg-color: #333; 
+    --main-container-bg-color: #444; 
+    --side-panel-input-color: #222; 
+    --main-container-input-color: #111; 
+    --canvas-color: #222; 
+    color: white !important;
+}
+
+body.dark-mode button,
+body.dark-mode .dark-mode button {
+    color: white;
+}
+
+body.dark-mode input {
+    color: white; /* Set the text color in input boxes to white in dark mode */
+}

@@ -333,7 +333,10 @@ let numKeysInput = document.getElementById('num-keys');
 
 let directionalButtons = document.querySelectorAll('.panning-controls button');
 
-let zoomButtons = document.querySelectorAll('.zoom-controls button')
+let zoomButtons = document.querySelectorAll('.zoom-controls button');
+
+const darkModeButton = document.getElementById('dark-mode-toggle');
+const body = document.body;
 
 let errorMessageLabel = document.getElementById('error-message');
 
@@ -353,6 +356,11 @@ directionalButtons.forEach((button) => button.addEventListener('click', () => {
 zoomButtons.forEach((button) => button.addEventListener('click', () => {
     zoomCanvas(button.className);
 }));
+
+
+darkModeButton.addEventListener('click', () => {
+    body.classList.toggle("dark-mode");
+});
 
 saveButton.addEventListener('click', () => {
     //hide
