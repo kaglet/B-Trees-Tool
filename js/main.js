@@ -236,9 +236,12 @@ function findSelectedKey(levels, mouseX, mouseY) {
 // it should find 2 at most unless there is messed up overlapping
 // other option is is far if its already present within a node group then unsnap otherwise I just unsnap from where it is currently saved indices at
 // it means its too far from others now and while being dragged must be unsnapped
-function closeToAnyNeighbors(draggedKey, levels) {
+function getCloseNeighbors(draggedKey, levels) {
     let draggedKeyX = draggedKey.x;
     let draggedKeyY = draggedKey.y;
+    let neighboringKeyInfoObject = {
+        neighborExists: false,
+    };
     // check if the key centers are close enough in the x, if at least 60 from each other than they are virtually touching their edges
     // the centers are useful since they are already defined that way
     let distanceFromKeyCenters = 60;
@@ -262,14 +265,28 @@ function closeToAnyNeighbors(draggedKey, levels) {
                         let neighborKeyIndex = k;
                         let neighborKeyNodeIndex = j;
                         let neighborKeyLevelIndex = i;
-                        console.log(`I am dragged key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex} at coordinates ${draggedKeyX} in x and ${draggedKeyY} in y`);
-                        console.log(`I am neighbor key ${neighborKeyIndex} in node ${neighborKeyNodeIndex} in level ${neighborKeyLevelIndex} at coordinates ${key.x} in x and ${key.y} in y`);
+                        // save actual right and left neighbor
+                        let neighbor = {
+                            neighborKeyIndex,
+                            neighborKeyNodeIndex,
+                            neighborKeyLevelIndex
+                        };
+
+                        if (draggedKeyX <= key.x) {
+                            console.log("I am right neighbor: ");
+                            console.log(neighbor);
+                            neighboringKeyInfoObject.leftNeighbor = neighbor;
+                        } else {
+                            console.log("I am left neighbor: ");
+                            console.log(neighbor);
+                            neighboringKeyInfoObject.rightNeighbor = neighbor;
+                        }
                     }
                 }
             });
         });
     });
-    return true;
+    return neighboringKeyInfoObject;
 }
 
 // Initialize all GUI components
@@ -435,9 +452,7 @@ randomTreeButton.addEventListener('click', () => {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Custom Tree Creation before creating a new Random Tree";
         return;
-
     }
-
 });
 
 randomQuestionButton.addEventListener('click', generateRandomQuestion);
@@ -482,7 +497,7 @@ canvas.addEventListener('mousemove', (e) => {
         // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
 
         // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
-        if (closeToAnyNeighbors(key, tree.levels)) {
+        if (getCloseNeighbors(key, tree.levels).exists) {
             // snap in
             // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
         } else {
