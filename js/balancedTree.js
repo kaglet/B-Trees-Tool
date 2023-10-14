@@ -351,19 +351,10 @@ export class BTree {
         this.root = null; // The BTreenode that is the root node
         this.t = t; // Minimum degree (number of keys=2*t-1)
         this.levels = [[]];
+        this.floatingNodes = [];
     }
 
     assignNodePositions() {
-        // TODO: Within this function do the following:
-        // Loop through this.levels for this tree's levels
-        // If a new node is encountered then loop through its keys, assigning them such that they are spaced them all together in a group
-        // Go to next node. Make sure it's key group is spaced apart from the key group in the previous node. 
-        // Knowing when we encounter a new node, we can easily space nodes apart per level, preventing overlap
-        /* 
-        Since the size of different arrays is known; like getting the size of the levels array at a depth 
-        gives the number of nodes at that depth. Or getting the size of the node.key array gives the number of keys in that node. 
-        Given these convenient known sizes, we can divide them on the canvas space however we wish.
-        */
         const ySpacing = 120;
         const keySpacing = 60;
         let canvasWidth = 900;
@@ -494,10 +485,6 @@ export class BTree {
     // Calling traverse on the method of the tree calls traverse on the methods of the nodes 
     traverse() {
         if (this.root) {
-            // Levels is updated with each traverse of tree and is a property of the tree
-            // It is an alternate representation of the tree, a visual representation as opposed to a logical one
-            // It has the same nodes as the logical representation of the tree so we can easily pop this node when we delete it from the tree
-            // Or just call traverse to refresh levels and update it with traverse
             let depth = 0;
             this.levels = [[]];
             let nodeCountPerLevel = [];
@@ -509,9 +496,6 @@ export class BTree {
     }
 }
 
-// export default BTree;
-
-//comment for pull - kago
 
 
 

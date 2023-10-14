@@ -16,9 +16,11 @@ let isDragMode = false;
 let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
+let threshold = 10;
+let closeToNeighbors;
 
 // Try initialize canvas and graphics else display unsupported canvas error
-function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
+function init(insertDeleteSection, validateButton, questionsParamtersContainer) {
     try {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
@@ -35,7 +37,7 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 function drawCreate() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     tree.assignNodePositions();
     drawTree(tree.root, canvas);
 }
@@ -43,11 +45,7 @@ function drawCreate() {
 function drawQuestion() {
     tree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    //to involve user interactivity
-    // TODO: this isnt working
-    // draw tree is used when creating the tree, and seeting up for questions
-    // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
-    // makeTree(tree.root, canvas.width / 2, 30, canvas);
+
     tree.assignNodePositions();
     drawTree(tree.root, canvas);
 
@@ -68,7 +66,7 @@ function generateRandomTree(numKeys) {
     drawCreate();
 }
 
-function clear(){
+function clear() {
     // Find the rightmost and bottommost nodes
     let maxX = 0;
     let maxY = 0;
@@ -106,7 +104,7 @@ function moveCanvas(direction) {
     }
 
     clear();
-    graphics.clearRect(0, 0, canvas.width , canvas.height );
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
 
     // Apply the transformation
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
@@ -122,10 +120,10 @@ function zoomCanvas(zoom) {
         scaleFactor *= 0.9;
     } else if (zoom == 'zoom-in') {
         scaleFactor /= 0.9;
-    } 
+    }
 
     clear();
-    graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     tree.assignNodePositions();
@@ -162,16 +160,16 @@ function generateRandomQuestion() {
         questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
         //search
-        key = Math.floor(Math.random() * 100); 
+        key = Math.floor(Math.random() * 100);
         console.log("Search: ", key)
-        document.getElementById("question").innerHTML  = "Search: "+ key;
+        document.getElementById("question").innerHTML = "Search: " + key;
     }
     drawQuestion();
 }
 
-function validateTree(){
+function validateTree() {
     var treeEqual = areBTreesEqual(tree, userTree);
-    if (treeEqual){
+    if (treeEqual) {
         console.log("Your tree is correct");
     } else {
         console.log("Your tree is in-correct");
@@ -235,6 +233,12 @@ function findSelectedKey(levels, mouseX, mouseY) {
     });
 }
 
+function closeToAnyNeighbors() {
+    // if intersecting in y and in x
+
+    return true;
+}
+
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
@@ -266,7 +270,7 @@ let questionLabel = document.getElementById('question');
 
 canvas = document.getElementById("canvas");
 
-window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
+window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParamtersContainer));
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -327,16 +331,16 @@ deleteButton.addEventListener('click', () => {
 });
 
 customTreeButton.addEventListener('click', () => {
-    if (!randomTreePresent){
+    if (!randomTreePresent) {
         // there is no random tree created then run this
-        if (!customTreePresent){
+        if (!customTreePresent) {
             // there is no custom tree created then run this
             if (maxDegreeInput.value) {
                 tree = new BTree(+maxDegreeInput.value);
                 userTree = new BTree(+maxDegreeInput.value);
                 graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
                 // if (insertDeleteSection.classList.contains('invisible')) {
-                    insertDeleteSection.classList.toggle('invisible');
+                insertDeleteSection.classList.toggle('invisible');
                 // }
                 errorMessageLabel.textContent = "";
                 customTreePresent = true;
@@ -352,7 +356,7 @@ customTreeButton.addEventListener('click', () => {
             customTreeButton.textContent = "Custom Tree";
             errorMessageLabel.textContent = "";
             return;
-        }  
+        }
     } else {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Random Tree Creation before creating a new Custom Tree";
@@ -362,9 +366,9 @@ customTreeButton.addEventListener('click', () => {
 });
 
 randomTreeButton.addEventListener('click', () => {
-    if (!customTreePresent){
+    if (!customTreePresent) {
         // there is no custom tree created then run this
-        if (!randomTreePresent){
+        if (!randomTreePresent) {
             // there is no random tree created then run this
             if (!maxDegreeInput.value) {
                 errorMessageLabel.textContent = "Please enter a max degree value before randomizing a tree";
@@ -373,11 +377,11 @@ randomTreeButton.addEventListener('click', () => {
                 errorMessageLabel.textContent = "Please enter a num keys value before randomizing a tree";
                 return;
             }
-        
+
             // if (!insertDeleteSection.classList.contains('invisible')) {
-                insertDeleteSection.classList.toggle('invisible');
+            insertDeleteSection.classList.toggle('invisible');
             // }  
-         
+
             tree = new BTree(+maxDegreeInput.value);
             userTree = new BTree(+maxDegreeInput.value);
             generateRandomTree(+numKeysInput.value);
@@ -395,14 +399,14 @@ randomTreeButton.addEventListener('click', () => {
             randomTreeButton.textContent = "Random Tree";
             errorMessageLabel.textContent = "";
             return;
-        }  
+        }
     } else {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Custom Tree Creation before creating a new Random Tree";
         return;
 
     }
-    
+
 });
 
 randomQuestionButton.addEventListener('click', generateRandomQuestion);
@@ -421,10 +425,10 @@ canvas.addEventListener('mousedown', (e) => {
     // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
     if (tree !== undefined && isDragMode == false) {
-        findSelectedKey(tree.levels, mouseX, mouseY); 
+        findSelectedKey(tree.levels, mouseX, mouseY);
     }
     // after key selected if drag mode turned on now drag here in same method until mouse up event
-    
+
     if (isDragMode) {
         // alter coordinates and call draw tree based off changed levels
         // drag selected key in levels to match mouse coordinates, mouse already matches center of bounds the way I've done it
@@ -433,7 +437,7 @@ canvas.addEventListener('mousedown', (e) => {
         tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
         tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
         // Call drawTree because tree has not changed
-        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        graphics.clearRect(0, 0, canvas.width, canvas.height);
         drawTree(tree.root, canvas);
     }
 });
@@ -442,10 +446,22 @@ canvas.addEventListener('mousemove', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     if (isDragMode) {
-        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
-        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+        let key = draggedKeyLevelIndex !== -1 ? tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex] : floatingNodes[draggedKeyNodeIndex].keys[draggedKeyIndex];
+        // TODO: Make work with the currently selected tree whether from floatingNodes representation if level = -1 or normal representation
+        // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
+
+        // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
+        if (closeToAnyNeighbors(key)) {
+            // snap in
+            // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
+        } else {
+            // snap out if key inside else 
+        }
+
+        key.x = mouseX;
+        key.y = mouseY;
         // Call drawTree because tree has not changed
-        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        graphics.clearRect(0, 0, canvas.width, canvas.height);
         drawTree(tree.root, canvas);
     }
 });
@@ -453,6 +469,7 @@ canvas.addEventListener('mousemove', (e) => {
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
 window.addEventListener('mouseup', () => {
     isDragMode = false;
+    console.log(tree);
 });
 
 // TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
@@ -461,3 +478,12 @@ window.addEventListener('mouseup', () => {
 // So check 15 to right and left, and 15 up and down to see if mouse click is within that key.
 // from mouse click check horizontal bounds and vertical bounds with withinBounds booleans
 // In fact its 30 in both directions
+
+// TODO: Define behavior on to snap and to unsnap during drag start (are we snapping in or out)
+// if threshold is within snap it in next to neighbors (is close to neighbors begin snap in else snap out alternate between two states)
+// snap in or out then drag if snapped in previously and still snapped in do nothing and vice versa for snapped out so it doesn't redo the snapping
+// after snap just call redraw
+// make it self node on snap, then we call draw node on everything in floating levels, wherever the coordinates of them are at, that is what is supplied
+// add to floating levels for it to be able to redraw
+// if threshold is without snap it out away from neighbors
+// test this behavior
