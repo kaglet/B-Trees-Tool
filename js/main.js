@@ -225,7 +225,6 @@ function findSelectedKey(levels, mouseX, mouseY) {
                         draggedKeyIndex = k;
                         draggedKeyNodeIndex = j;
                         draggedKeyLevelIndex = i;
-                        console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex} at coordinates ${key.x} in x and ${key.y} in y`);
                     }
                 }
             });
@@ -233,9 +232,43 @@ function findSelectedKey(levels, mouseX, mouseY) {
     });
 }
 
-function closeToAnyNeighbors() {
-    // if intersecting in y and in x
-
+// if they do intersect check immediate left and right neighbor and key that intersects there, except this code already finds immediate left and right neighbours
+// it should find 2 at most unless there is messed up overlapping
+// other option is is far if its already present within a node group then unsnap otherwise I just unsnap from where it is currently saved indices at
+// it means its too far from others now and while being dragged must be unsnapped
+function closeToAnyNeighbors(draggedKey, levels) {
+    let draggedKeyX = draggedKey.x;
+    let draggedKeyY = draggedKey.y;
+    // check if the key centers are close enough in the x, if at least 60 from each other than they are virtually touching their edges
+    // the centers are useful since they are already defined that way
+    let distanceFromKeyCenters = 60;
+    levels.forEach((level, i) => {
+        level.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                if (!(key.value === undefined) && draggedKeyIndex !== k) {
+                    // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                    // if they close in x regardless of which is left or right
+                    let closeInX = (Math.max(draggedKeyX, key.x) - Math.min(draggedKeyX, key.x)) <= distanceFromKeyCenters;
+                    // center of one y must lie within range of other
+                    // if you subtract one y from another they must be an absolute distance of 30 from each other
+                    let intersectingInY = Math.abs(draggedKeyY - key.y) <= 30;
+                    if (closeInX && intersectingInY) {
+                        // save left and right neighbor if left or right neighbor
+                        // check by x value if less than else if greater than
+                        // always insert to the left (see as right neighbor) if equal by convention
+                        // can mark this intersected key position on left and right
+                        // ideally there should be maximum two
+                        isDragMode = true;
+                        let neighborKeyIndex = k;
+                        let neighborKeyNodeIndex = j;
+                        let neighborKeyLevelIndex = i;
+                        console.log(`I am dragged key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex} at coordinates ${draggedKeyX} in x and ${draggedKeyY} in y`);
+                        console.log(`I am neighbor key ${neighborKeyIndex} in node ${neighborKeyNodeIndex} in level ${neighborKeyLevelIndex} at coordinates ${key.x} in x and ${key.y} in y`);
+                    }
+                }
+            });
+        });
+    });
     return true;
 }
 
@@ -264,13 +297,13 @@ let zoomButtons = document.querySelectorAll('.zoom-controls button')
 
 let errorMessageLabel = document.getElementById('error-message');
 
-let createTreeParamtersContainer = document.getElementById('parameters-container-c');
-let questionsParamtersContainer = document.getElementById('parameters-container-q');
+let createTreeParametersContainer = document.getElementById('parameters-container-c');
+let questionsParametersContainer = document.getElementById('parameters-container-q');
 let questionLabel = document.getElementById('question');
 
 canvas = document.getElementById("canvas");
 
-window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParamtersContainer));
+window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParametersContainer));
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -284,12 +317,12 @@ zoomButtons.forEach((button) => button.addEventListener('click', () => {
 saveButton.addEventListener('click', () => {
     //hide
     saveButton.classList.toggle('invisible');
-    createTreeParamtersContainer.classList.toggle('invisible');
+    createTreeParametersContainer.classList.toggle('invisible');
     insertDeleteSection.classList.toggle('invisible');
 
     //show
-    questionsParamtersContainer.classList.toggle('invisible');
-    questionsParamtersContainer.classList.toggle('visible');
+    questionsParametersContainer.classList.toggle('invisible');
+    questionsParametersContainer.classList.toggle('visible');
     validateButton.classList.toggle('invisible');
 
     validateTree();
@@ -378,9 +411,7 @@ randomTreeButton.addEventListener('click', () => {
                 return;
             }
 
-            // if (!insertDeleteSection.classList.contains('invisible')) {
-            insertDeleteSection.classList.toggle('invisible');
-            // }  
+            insertDeleteSection.classList.toggle('invisible'); 
 
             tree = new BTree(+maxDegreeInput.value);
             userTree = new BTree(+maxDegreeInput.value);
@@ -446,12 +477,12 @@ canvas.addEventListener('mousemove', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
     if (isDragMode) {
-        let key = draggedKeyLevelIndex !== -1 ? tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex] : floatingNodes[draggedKeyNodeIndex].keys[draggedKeyIndex];
+        let key = draggedKeyLevelIndex !== -1 ? tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex] : tree.floatingNodes[draggedKeyNodeIndex].keys[draggedKeyIndex];
         // TODO: Make work with the currently selected tree whether from floatingNodes representation if level = -1 or normal representation
         // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
 
         // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
-        if (closeToAnyNeighbors(key)) {
+        if (closeToAnyNeighbors(key, tree.levels)) {
             // snap in
             // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
         } else {
