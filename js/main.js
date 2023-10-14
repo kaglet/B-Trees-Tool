@@ -498,10 +498,27 @@ canvas.addEventListener('mousemove', (e) => {
 
         // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
         if (getCloseNeighbors(key, tree.levels).exists) {
+            // try find left neighbor and can just replace itself
+            if (getCloseNeighbors.leftNeighbor !== undefined) {
+                let neighborLevelIndex = getCloseNeighbors.leftNeighbor.neighborKeyLevelIndex;
+                let neighborNodeIndex = getCloseNeighbors.leftNeighbor.neighborKeyNodeIndex;
+                let neighborKeyIndex = getCloseNeighbors.leftNeighbor.neighborKeyIndex;
+                tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
+            } else if (getCloseNeighbors.rightNeighbor !== undefined){
+                let neighborLevelIndex = getCloseNeighbors.rightNeighbor.neighborKeyLevelIndex;
+                let neighborNodeIndex = getCloseNeighbors.rightNeighbor.neighborKeyNodeIndex;
+                let neighborKeyIndex = getCloseNeighbors.rightNeighbor.neighborKeyIndex;
+                tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+            }
+            // always find left neighbor index to insert from the left
+            // else if only right neighbor exists insert from left with splice method still
+            
+            // if left
             // snap in
             // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
         } else {
             // snap out if key inside else 
+            // pop off where it is without leaving a hole
         }
 
         key.x = mouseX;
