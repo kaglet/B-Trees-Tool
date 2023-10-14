@@ -497,19 +497,22 @@ canvas.addEventListener('mousemove', (e) => {
         // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
 
         // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
-        if (getCloseNeighbors(key, tree.levels).exists) {
+        let neighboringKeyInfoObject = getCloseNeighbors(key, tree.levels);
+        if (neighboringKeyInfoObject.exists) {
             // try find left neighbor and can just replace itself
-            if (getCloseNeighbors.leftNeighbor !== undefined) {
+            if (neighboringKeyInfoObject.leftNeighbor !== undefined) {
                 let neighborLevelIndex = getCloseNeighbors.leftNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = getCloseNeighbors.leftNeighbor.neighborKeyNodeIndex;
                 let neighborKeyIndex = getCloseNeighbors.leftNeighbor.neighborKeyIndex;
                 tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
-            } else if (getCloseNeighbors.rightNeighbor !== undefined){
+            } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
                 let neighborLevelIndex = getCloseNeighbors.rightNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = getCloseNeighbors.rightNeighbor.neighborKeyNodeIndex;
                 let neighborKeyIndex = getCloseNeighbors.rightNeighbor.neighborKeyIndex;
                 tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
             }
+            // use print statements to test for now, when it snaps in or out and print 
+            // need to draw key to be able to translate it if floating, from floatingNodes structure
             // always find left neighbor index to insert from the left
             // else if only right neighbor exists insert from left with splice method still
             
