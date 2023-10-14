@@ -508,7 +508,6 @@ canvas.addEventListener('mousemove', (e) => {
             } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
                 let neighborLevelIndex = getCloseNeighbors.rightNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = getCloseNeighbors.rightNeighbor.neighborKeyNodeIndex;
-                let neighborKeyIndex = getCloseNeighbors.rightNeighbor.neighborKeyIndex;
                 tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
             }
             // use print statements to test for now, when it snaps in or out and print 
@@ -520,6 +519,10 @@ canvas.addEventListener('mousemove', (e) => {
             // snap in
             // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
         } else {
+            tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys.splice(draggedKeyIndex, 1);
+            let floatingNode = new Node(tree.t, false);
+            floatingNode.keys.push(key);
+            tree.floatingNodes.push(floatingNode);
             // snap out if key inside else 
             // pop off where it is without leaving a hole
         }
@@ -533,6 +536,8 @@ canvas.addEventListener('mousemove', (e) => {
 });
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
+// mouse down can then call draw to redraw such that its only drawing translation of key but not other levels representations updates which is fine
+// as effective and easy to follow
 window.addEventListener('mouseup', () => {
     isDragMode = false;
     console.log(tree);
