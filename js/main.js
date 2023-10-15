@@ -538,6 +538,8 @@ canvas.addEventListener('mousemove', (e) => {
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
 // mouse down can then call draw to redraw such that its only drawing translation of key but not other levels representations updates which is fine
 // as effective and easy to follow
+// TODO: Make sure tree is not always redrawn on mouse up on window otherwise it bugs out when the user clicks cancels and mouses up and redraws the tree
+// TODO: better to set the tree to undefined on cancel
 window.addEventListener('mouseup', () => {
     if (tree !== undefined) {
         // I try to find a key where it doesn't exist because draggedKeyLevelIndex
@@ -560,13 +562,45 @@ window.addEventListener('mouseup', () => {
                 let neighborLevelIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyNodeIndex;
                 let neighborKeyIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyIndex;
+                let mappedKeys = tree.floatingNodes.flatMap(node => {
+                    return node[0];
+                }); 
+
                 // TODO: set breakpoint here and check if anything is added or if this is ever entered
-                tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
+                // TODO: if key is floating enter it otherwise do not
+                if (mappedKeys.includes(key)) {
+                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
+
+                    let nodeToRemoveIndex;
+                    tree.floatingNodes.forEach((node, i) => {
+                        if (node[0] == key) {
+                            nodeToRemoveIndex = i;
+                            return;
+                        }
+                    })
+                    
+                    tree.floatingNodes.splice(nodeToRemoveIndex, 1);
+                }
                 // TODO: Pop from floating levels representation
             } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
                 let neighborLevelIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyNodeIndex;
-                tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+                let mappedKeys = tree.floatingNodes.flatMap(node => {
+                    return node[0];
+                }); 
+                if (mappedKeys.includes(key)) {
+                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+
+                    let nodeToRemoveIndex;
+                    tree.floatingNodes.forEach((node, i) => {
+                        if (node[0] == key) {
+                            nodeToRemoveIndex = i;
+                            return;
+                        }
+                    })
+                    
+                    tree.floatingNodes.splice(nodeToRemoveIndex, 1);
+                }
                 // TODO: Pop from floating levels representation
             }
             
