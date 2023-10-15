@@ -194,3 +194,5 @@ function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
     drawArrowLine(graphics,arrowCoordinates);
     drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
 }
+
+// draw floating levels if present
