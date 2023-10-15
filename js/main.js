@@ -1,6 +1,7 @@
 import { drawTree } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree } from "./balancedTree.js";
+import { BTreeNode } from "./balancedTree.js";
 //import { SubtractiveBlending } from "three";
 
 // DECLARE GLOBAL VARIABLES
@@ -496,37 +497,6 @@ canvas.addEventListener('mousemove', (e) => {
         // TODO: Make work with the currently selected tree whether from floatingNodes representation if level = -1 or normal representation
         // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
 
-        // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
-        let neighboringKeyInfoObject = getCloseNeighbors(key, tree.levels);
-        if (neighboringKeyInfoObject.exists) {
-            // try find left neighbor and can just replace itself
-            if (neighboringKeyInfoObject.leftNeighbor !== undefined) {
-                let neighborLevelIndex = getCloseNeighbors.leftNeighbor.neighborKeyLevelIndex;
-                let neighborNodeIndex = getCloseNeighbors.leftNeighbor.neighborKeyNodeIndex;
-                let neighborKeyIndex = getCloseNeighbors.leftNeighbor.neighborKeyIndex;
-                tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
-            } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
-                let neighborLevelIndex = getCloseNeighbors.rightNeighbor.neighborKeyLevelIndex;
-                let neighborNodeIndex = getCloseNeighbors.rightNeighbor.neighborKeyNodeIndex;
-                tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
-            }
-            // use print statements to test for now, when it snaps in or out and print 
-            // need to draw key to be able to translate it if floating, from floatingNodes structure
-            // always find left neighbor index to insert from the left
-            // else if only right neighbor exists insert from left with splice method still
-            
-            // if left
-            // snap in
-            // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
-        } else {
-            tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys.splice(draggedKeyIndex, 1);
-            let floatingNode = new Node(tree.t, false);
-            floatingNode.keys.push(key);
-            tree.floatingNodes.push(floatingNode);
-            // snap out if key inside else 
-            // pop off where it is without leaving a hole
-        }
-
         key.x = mouseX;
         key.y = mouseY;
         // Call drawTree because tree has not changed
@@ -540,6 +510,42 @@ canvas.addEventListener('mousemove', (e) => {
 // as effective and easy to follow
 window.addEventListener('mouseup', () => {
     isDragMode = false;
+    let key = draggedKeyLevelIndex !== -1 ? tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex] : tree.floatingNodes[draggedKeyNodeIndex].keys[draggedKeyIndex];
+    // TODO: Make work with the currently selected tree whether from floatingNodes representation if level = -1 or normal representation
+    // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
+
+    // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
+    // Getting right neighbours of key but it does not exist on next mouse move if removed at previous mouse move
+    // snap in and out on mouse up for now
+    let neighboringKeyInfoObject = getCloseNeighbors(key, tree.levels);
+    if (neighboringKeyInfoObject.exists) {
+        // try find left neighbor and can just replace itself
+        if (neighboringKeyInfoObject.leftNeighbor !== undefined) {
+            let neighborLevelIndex = getCloseNeighbors.leftNeighbor.neighborKeyLevelIndex;
+            let neighborNodeIndex = getCloseNeighbors.leftNeighbor.neighborKeyNodeIndex;
+            let neighborKeyIndex = getCloseNeighbors.leftNeighbor.neighborKeyIndex;
+            tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
+        } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
+            let neighborLevelIndex = getCloseNeighbors.rightNeighbor.neighborKeyLevelIndex;
+            let neighborNodeIndex = getCloseNeighbors.rightNeighbor.neighborKeyNodeIndex;
+            tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+        }
+        // use print statements to test for now, when it snaps in or out and print 
+        // need to draw key to be able to translate it if floating, from floatingNodes structure
+        // always find left neighbor index to insert from the left
+        // else if only right neighbor exists insert from left with splice method still
+        
+        // if left
+        // snap in
+        // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
+    } else {
+        tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys.splice(draggedKeyIndex, 1);
+        let floatingNode = new BTreeNode(tree.t, false);
+        floatingNode.keys.push(key);
+        tree.floatingNodes.push(floatingNode);
+        // snap out if key inside else 
+        // pop off where it is without leaving a hole
+    }
     console.log(tree);
 });
 
@@ -558,3 +564,8 @@ window.addEventListener('mouseup', () => {
 // add to floating levels for it to be able to redraw
 // if threshold is without snap it out away from neighbors
 // test this behavior
+
+/* TODO: 
+    node to insert is inserted into free node structure 
+    node to delete is left free
+*/

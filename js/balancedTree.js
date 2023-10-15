@@ -15,7 +15,7 @@ class BTreeKey {
 
 
 // A BTree node
-class BTreeNode {
+export class BTreeNode {
     constructor(t, leaf) {
         this.t = t; // Minimum degree (number of keys=2*t-1)
         this.keys = new Array(2 * t - 1); // this the array strong the BTreeKeys for the node
