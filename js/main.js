@@ -1,6 +1,13 @@
-// USER INTERACTIVITY TO DO:
-//  ALlow keys to snap on a node
-//  fix arrows for both drawing and creating
+/*ToDo: (thursday night hopefully)
+Add snapping to free nodes  and update level tree and freeNodes
+fix arrows on drawing (only happens when a node is snapped off)
+add arrow functionality to free nodes and update level tree and freeNodes
+sort out question logic (figure out logic to do with delete... bin icon at bottom left)
+fix validate tree function
+
+ToDo: (eventually)
+NB!! limit the user in terms of degree and number of nodes and questions generated
+NB!! fix all canvas related bugs ie, resize and moving*/
 import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
