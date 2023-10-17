@@ -1,10 +1,15 @@
 let graphics;
-import { BTree, BTreeKey } from "./balancedTree.js";
+import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 
-export function drawTree(node, canvas) {
+
+export function drawTree(node, canvas, freeNodes, moveFullNodeMode) {
     graphics = canvas.getContext("2d");
     //let canvasWidth = canvas.width;
     if (!node) return;
+
+    if(node.parent === null){
+        drawFreeNodes(freeNodes,moveFullNodeMode );
+    }
 
     const keys = getNodeKeys(node);
     // const keys = node.keys.filter((key) => key.value !== undefined);
@@ -12,7 +17,9 @@ export function drawTree(node, canvas) {
     const nodeSpacing = 40;
     const arrowSize = 15; // Size of the arrowhead
 
-    drawNode(keys, graphics);
+    drawNode(keys, graphics, moveFullNodeMode);
+    fixSnapping(node, moveFullNodeMode);
+    
 
     if (!node.leaf) {
         const numChildren = node.C.length;
@@ -33,12 +40,28 @@ export function drawTree(node, canvas) {
 
                 childXPositions.push(childX);
 
-                drawTree(child, canvas);
+                drawTree(child, canvas, freeNodes, moveFullNodeMode);
             }
         });
 
     }
+}
 
+function drawFreeNodes(freeNodes, moveFullNodeMode){
+    
+    if(freeNodes.length > 0){
+        freeNodes.forEach((node, index) => {
+            const keys = getNodeKeys(node);
+            // const keys = node.keys.filter((key) => key.value !== undefined);
+            const nodeWidth = getNodeWidth(keys);
+            const nodeSpacing = 40;
+            const arrowSize = 15; // Size of the arrowhead
+
+            drawNode(keys, graphics, moveFullNodeMode);
+        });
+    }
+    
+    
 }
 
 
@@ -66,9 +89,13 @@ function isChildLessThanKey(childKeys, keyValues, index) {
         : false;
 }
 
-function drawKey(key, graphics = graphics) {
+function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode) {
     const keySize = 60; //size of blue square -- hopefull make into draggable
-    graphics.fillStyle = "lightblue";
+    if (moveFullNodeMode && keyZero === 0){
+        graphics.fillStyle = "lightgreen";
+    } else {
+        graphics.fillStyle = "lightblue";
+    }
 
     graphics.strokeStyle = "black";
     graphics.lineWidth = 2;
@@ -84,10 +111,11 @@ function drawKey(key, graphics = graphics) {
     
 }
 
-export function drawNode(keys, graphics) {
+export function drawNode(keys, graphics, moveFullNodeMode) {
     const nodeHeight = 60;
     // const validKeys = keys;
     const validKeys = keys.filter((key) => key.x !== undefined);  //tking away undefined from array
+  
     // const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
     const nodeWidth = 60;
     // draw the node rectangle
@@ -99,12 +127,42 @@ export function drawNode(keys, graphics) {
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
 
-    validKeys.forEach((key, index) => {
+    validKeys.forEach((key, keyZero) => {
 
-        drawKey(key, graphics);
+        drawKey(key, graphics, keyZero, moveFullNodeMode);
         
     });
 }
+
+function fixSnapping(node, moveFullNodeMode) {
+    if (moveFullNodeMode === false ){
+        let prevX;
+        node.keys.forEach((key, k) => {
+            if (key.value !== undefined) {
+                if (k != 0) {
+                    prevX = node.keys[k - 1].x + 60;
+                    key.x = prevX;
+                }
+            }
+        });
+    } else {
+        let prevX;
+        let prevY;
+        node.keys.forEach((key, k) => {
+            if (key.value !== undefined) {
+                if (k != 0) {
+                    prevX = node.keys[k - 1].x + 60;
+                    key.x = prevX;
+
+                    prevY = node.keys[k - 1].y;
+                    key.y = prevY;
+                } 
+            }
+        });      
+        
+    } 
+}
+
 
 function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
     if (isLessThanKey) {
