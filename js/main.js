@@ -1,3 +1,6 @@
+// USER INTERACTIVITY TO DO:
+//  ALlow keys to snap on a node
+//  fix arrows for both drawing and creating
 import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
@@ -192,24 +195,43 @@ function findSelectedKey(levels, mouseX, mouseY) {
                         draggedKeyNodeIndex = j;
                         draggedKeyLevelIndex = i;
                         console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex} at coordinates ${key.x} in x and ${key.y} in y`);
-                        freeNodeSelected =false;
-
-                        // this handles the freenode logic
-                        // selected the left most key
                         
-                        // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
+                        // set this to false as its not dealing with a free node but rather a node in the levels array
+                        freeNodeSelected =false;   
+
+                        // if the move full node option is not selected then do the following (allow user to break a key of a node)
                         if (moveFullNodeMode === false){
+                            // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
                             selectedKeyObject = key;
                             newBTreeNode =  new BTreeNode(node.t, node.leaf);
                             newBTreeNode.keys[0] = selectedKeyObject;
                             userDrawingTree.freeNodes.push(newBTreeNode);
+                            // this makes all the children of the selected key into free nodes 
+                            // case dependant
+                            if (k==0){
+                                //left case
+                                // if the key is on the left of the node, remove only the left child and the subtree
+                                addChildrenToFreeNode(node, 0,k);
+                            } else if (k === node.keys.filter((key) => key.value != undefined).length -1){
+                                //right case
+                                // if the key is on the right of the node, remove only the right child and the subtree
+                                addChildrenToFreeNode(node, 1,k);
+                            } else {
+                                // middle case
+                                // if the key is in the middle of the node, remove two of the children
+                                addChildrenToFreeNode(node, 2,k);
+                            }
+                            // checks the free node array and removes all nodes still in the levels representation
+                            removeFreeNodesFromLevel();
+
                             // this removes the selected key from the node
                             node.keys.splice(k,1);
+                            
                             // if the node is empty it removes the node from the tree
                             if (isEmptyNode(node)){
                                 levels[i].splice(j,1);                            
                             } 
-                            // debug
+                            // FOR DEBUG PURPOSES
                             console.log(userDrawingTree);
                         }                        
                         return;
@@ -232,6 +254,7 @@ function findSelectedKey(levels, mouseX, mouseY) {
                     draggedKeyIndex = k;
                     draggedKeyNodeIndex = j;
                     console.log(`I am a free node`);
+                    // TODO: add split logic here
                     return;
                 }
             }
@@ -239,6 +262,109 @@ function findSelectedKey(levels, mouseX, mouseY) {
     });
 }
 
+// does what is described above (split node and remove children functionality)
+function addChildrenToFreeNode(node , position, k){ 
+    // LEFT
+    if (position ===0 ){
+        userDrawingTree.levels.forEach((level, i) => {
+            level.forEach((comparingNode, j) => {
+                if (node.C[k]=== comparingNode){
+                    if (findParent(node, comparingNode)){
+                        userDrawingTree.freeNodes.push(comparingNode);
+                        node.C[k] =null;
+                    }
+                    comparingNode.C.forEach((comparingNodeChild) => {
+                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
+                            if (findParent(comparingNode, comparingNodeChild, j)){
+                                userDrawingTree.freeNodes.push(comparingNodeChild);
+                                comparingNode.C[j]= null;
+                            }
+                        }                        
+                    });
+                }                
+            });       
+        }); 
+    } 
+    
+    // RIGHT
+    if (position === 1 ){
+        userDrawingTree.levels.forEach((level, i) => {
+            level.forEach((comparingNode, j) => {
+                if (node.C[k+1]=== comparingNode){
+                    if (findParent(node, comparingNode)){
+                        userDrawingTree.freeNodes.push(comparingNode);
+                        node.C[k+1] =null;
+                    }
+                    comparingNode.C.forEach((comparingNodeChild, j) => {
+                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
+                            if (findParent(comparingNode, comparingNodeChild)){
+                                userDrawingTree.freeNodes.push(comparingNodeChild);
+                                comparingNode.C[j]= null;
+                            }
+                        }   
+                    });
+                }                
+            });       
+        }); 
+    } 
+
+    // MIDDLE
+    if (position === 2 ){
+        userDrawingTree.levels.forEach((level, i) => {
+            level.forEach((comparingNode, j) => {
+                if (node.C[k] === comparingNode || node.C[k+1] === comparingNode){
+                    if (findParent(node, comparingNode)){
+                        userDrawingTree.freeNodes.push(comparingNode);
+                        if (node.C[k] === comparingNode){
+                            node.C[k] =null;
+                        } else {
+                            node.C[k] =null;
+                        }
+
+                    }
+                    comparingNode.C.forEach((comparingNodeChild, j) => {
+                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
+                            if (findParent(comparingNode, comparingNodeChild)){
+                                userDrawingTree.freeNodes.push(comparingNodeChild);
+                                comparingNode.C[j]= null;
+                            }
+                        }   
+                    });
+                }               
+            });       
+        }); 
+    } 
+    
+}
+
+// checks the free node array and removes all nodes still in the levels representation
+function removeFreeNodesFromLevel() {
+    for (let i = userDrawingTree.levels.length - 1; i >= 0; i--) {
+      const level = userDrawingTree.levels[i];
+  
+      for (let j = level.length - 1; j >= 0; j--) {
+        const comparingNode = level[j];
+  
+        if (userDrawingTree.freeNodes.includes(comparingNode)) {
+          userDrawingTree.levels[i].splice(j, 1);
+        }
+      }
+    }
+}
+
+// used to find all children
+function findParent(node, comparingNode){
+
+    if (comparingNode.parent === null){
+        return false;
+    } else if (node === comparingNode.parent){
+        return true;
+    }
+
+    findParent(node, comparingNode.parent)
+}
+
+// checks if a node is empty and removes it from the levels
 function isEmptyNode(node){
     let emptyNode = true;
     node.keys.forEach((key, k) => {

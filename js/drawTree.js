@@ -9,6 +9,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode) {
 
     if(node.parent === null){
         drawFreeNodes(freeNodes,moveFullNodeMode );
+        
     }
 
     const keys = getNodeKeys(node);
@@ -25,6 +26,8 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode) {
         const numChildren = node.C.length;
 
         const childXPositions = [];
+
+        
 
         node.C.forEach((child, index) => {
             if (childExists(child) && hasChildKeys(child)) {
@@ -45,6 +48,9 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode) {
         });
 
     }
+
+    
+
 }
 
 function drawFreeNodes(freeNodes, moveFullNodeMode){
@@ -58,6 +64,7 @@ function drawFreeNodes(freeNodes, moveFullNodeMode){
             const arrowSize = 15; // Size of the arrowhead
 
             drawNode(keys, graphics, moveFullNodeMode);
+            fixSnapping(node, moveFullNodeMode);
         });
     }
     
