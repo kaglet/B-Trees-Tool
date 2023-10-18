@@ -383,7 +383,7 @@ export class BTree {
         const keySpacing = 60;
         let canvasWidth = 900;
         console.clear();
-        console.log(this);
+        // console.log(this);
 
         
         // for each level

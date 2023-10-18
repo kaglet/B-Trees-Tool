@@ -34,6 +34,8 @@ let isMouseHoveringOverHitbox = false;
 let isDrawArrowMode = false;
 let selectedKeyForDrawArrow;
 let moveFullNodeMode =false;
+let rootNodeSelcted = false;
+
 
 // Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
@@ -188,8 +190,7 @@ function generateRandomQuestion() {
 let selectedKeyObject;
 let newBTreeNode;
 function findSelectedKey(levels, mouseX, mouseY) {
-    console.log(`I am mouseX: ${mouseX}`);
-    console.log(`I am mouseY: ${mouseY}`);
+    selectedKeyObject=null;
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
             node.keys.forEach((key, k) => {
@@ -203,18 +204,30 @@ function findSelectedKey(levels, mouseX, mouseY) {
                         draggedKeyIndex = k;
                         draggedKeyNodeIndex = j;
                         draggedKeyLevelIndex = i;
-                        console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level ${draggedKeyLevelIndex} at coordinates ${key.x} in x and ${key.y} in y`);
+                        selectedKeyObject = key;
+                        console.log(`I am key in the tree`, selectedKeyObject);
+         
                         
                         // set this to false as its not dealing with a free node but rather a node in the levels array
                         freeNodeSelected =false;   
 
                         // if the move full node option is not selected then do the following (allow user to break a key of a node)
-                        if (moveFullNodeMode === false){
+                        if (node.parent === null && node.keys.filter((key) => key.value != undefined).length === 1 ){
+                            rootNodeSelcted = true;
+                        } else if (moveFullNodeMode === false){
                             // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
-                            selectedKeyObject = key;
                             newBTreeNode =  new BTreeNode(node.t, node.leaf);
                             newBTreeNode.keys[0] = selectedKeyObject;
                             userDrawingTree.freeNodes.push(newBTreeNode);
+                            
+                            if (node.parent !== null){
+                                node.parent.C.forEach(child => {
+                                    if (child === node){
+                                        child = null;
+                                    }                                
+                                });
+                            }
+                            
                             // this makes all the children of the selected key into free nodes  if nmber of keys is > 1
                             // case dependant                           
                             if (k==0 && node.keys.filter((key) => key.value != undefined).length > 1){
@@ -242,7 +255,8 @@ function findSelectedKey(levels, mouseX, mouseY) {
                                 levels[i].splice(j,1);                            
                             } 
                             // FOR DEBUG PURPOSES
-                            console.log(userDrawingTree);
+                            // console.log(userDrawingTree);
+
                         }                        
                         return;
                     }
@@ -262,15 +276,14 @@ function findSelectedKey(levels, mouseX, mouseY) {
                     isDragMode = true;
                     freeNodeSelected = true;    
                     draggedKeyIndex = k;
-                    draggedKeyNodeIndex = j;                
-                    console.log(`I am key ${draggedKeyIndex} in node ${draggedKeyNodeIndex} in level FreeNodes at coordinates ${key.x} in x and ${key.y} in y`);
-
+                    draggedKeyNodeIndex = j;    
+                    selectedKeyObject = key;
+                    console.log(`I am key in the free nodes`, selectedKeyObject);
                     // if the mode is not in move full node then  do this
                     if (moveFullNodeMode === false){
                             // if the node has more than one key then allow splitting else just move the node
                             if (node.keys.filter((key) => key.value != undefined).length >1){
                                 // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
-                                selectedKeyObject = key;
                                 newBTreeNode =  new BTreeNode(node.t, node.leaf);
                                 newBTreeNode.keys[0] = selectedKeyObject;
                                 userDrawingTree.freeNodes.push(newBTreeNode);
@@ -286,13 +299,15 @@ function findSelectedKey(levels, mouseX, mouseY) {
                                 } 
                         }                        
                         // FOR DEBUG PURPOSES
-                        console.log(userDrawingTree);
+                        // console.log(userDrawingTree);
+
                     }                       
                     return;
                 }
             }
         });
     });
+
 }
 
 // does what is described above (split node and remove children functionality)
@@ -333,6 +348,7 @@ function addChildrenToFreeNode(node , position, k){
                             if (findParent(comparingNode, comparingNodeChild)){
                                 userDrawingTree.freeNodes.push(comparingNodeChild);
                                 comparingNode.C[j]= null;
+
                             }
                         }   
                     });
@@ -352,6 +368,7 @@ function addChildrenToFreeNode(node , position, k){
                             node.C[k] =null;
                         } else {
                             node.C[k + 1] =null;
+
                         }
 
                     }
@@ -373,7 +390,7 @@ function addChildrenToFreeNode(node , position, k){
 //handles logic for node snap too
 let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
 function findDropOffArea(levels, mouseX, mouseY){
-    let keysThatNeedToChange = []
+    let keysThatNeedToChange = [];
     let isNodeAFreeNode = false;
         levels.forEach((level, i) => {
             level.forEach((node, j) => {
@@ -388,9 +405,10 @@ function findDropOffArea(levels, mouseX, mouseY){
                             dropOffNodeKeyIndex = j;
                             dropOffLevelKeyIndex = i;
                             // if the move full node option is not selected then do the following (allow user to break a key of a node)
-                            if (moveFullNodeMode === false){                                
-                                keysThatNeedToChange.push(level[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
-
+                            if (moveFullNodeMode === false){ 
+                                if (key !== selectedKeyObject){
+                                    keysThatNeedToChange.push(level[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
+                                }                                
                             }                        
                         }
                     }
@@ -409,8 +427,7 @@ function findDropOffArea(levels, mouseX, mouseY){
                         if (newBTreeNode!==node){
                             if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY)) {  
                                 dropOffKeyIndex = k;
-                                dropOffNodeKeyIndex = j;                
-                                console.log(`Drop off next to` , node.keys[dropOffKeyIndex]);
+                                dropOffNodeKeyIndex = j;               
         
                                     // if the mode is not in move full node then  do this
                                 if (moveFullNodeMode === false){
@@ -493,7 +510,7 @@ function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
             node.keys.forEach((key, k) => {
                 if (key && key.value !== undefined) {
                     if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY)) {
-                        console.log(`Mouse is hovering over key with value ${key.value}`);
+                        // console.log(`Mouse is hovering over key with value ${key.value}`);
                         isHovering = true;
                         drawRedCircleForHitbox(graphics, key.arrowHitbox.centerX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
                     }
@@ -846,35 +863,45 @@ window.addEventListener('mouseup', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
        
-    if (userDrawingTree !== undefined ) {
-
-    if (isDragMode) {
-        //  if a node is being dragged get the keys its trying to snap too
-        let functionResult = findDropOffArea(userDrawingTree.levels, mouseX, mouseY);
-        let insertToTheseKeys = functionResult[0];
-        let isNodeAFreeNodeChecker = functionResult[1];
-
-        if (insertToTheseKeys.length>0){
-            // snape the node to the new node
-            if (isNodeAFreeNodeChecker){
-                snapFreeNodeOntoNode(newBTreeNode, userDrawingTree.freeNodes[dropOffNodeKeyIndex] , insertToTheseKeys);
-            } else {
-                snapFreeNodeOntoNode(newBTreeNode, userDrawingTree.levels[dropOffLevelKeyIndex][dropOffNodeKeyIndex], insertToTheseKeys);
-            }
+    if (userDrawingTree !== undefined) {
+        if (isDragMode) {
+        isDragMode = false;
+            if (rootNodeSelcted===false){
+                //  if a node is being dragged get the keys its trying to snap too
+                let functionResult = findDropOffArea(userDrawingTree.levels, mouseX, mouseY);
+                let insertToTheseKeys = functionResult[0];
+                let isNodeAFreeNodeChecker = functionResult[1];
+                
+                if (insertToTheseKeys.length > 0 && selectedKeyObject!==null){
+                    // snape the node to the new node
+                    if (isNodeAFreeNodeChecker){
+                        snapFreeNodeOntoNode(newBTreeNode, userDrawingTree.freeNodes[dropOffNodeKeyIndex] , insertToTheseKeys);
+                    } else {
+                        snapFreeNodeOntoNode(newBTreeNode, userDrawingTree.levels[dropOffLevelKeyIndex][dropOffNodeKeyIndex], insertToTheseKeys);
+                    }
+                }
+            }                    
+        } else if (isDrawArrowMode) {
+            isDrawArrowMode = false;
+            if (rootNodeSelcted===false){
+                // child logic here
+            } 
         }
-    } else if (isDrawArrowMode) {
+         // Call drawTree because tree has not changed
+        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode);
+        console.log(userDrawingTree)
+        if (rootNodeSelcted){
+            rootNodeSelcted=false;
+        }
+    }
 
-    }
-    }
-    isDragMode = false;
-    isDrawArrowMode = false;
+   
 });
 
 // snaps the free node to the existing levelo node or free node
 function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
     // if there is only one node to snap to, it is the left end or right end
-    console.log(keysBetween)
-    console.log(selectedKeyObject)
 
     if (keysBetween.indexOf(selectedKeyObject)!==-1){
         keysBetween.splice(keysBetween.indexOf(selectedKeyObject),1);
@@ -884,15 +911,15 @@ function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
         // consider left or right
         if (nodeToSnap.keys[0].x < nodeToReceive.keys[0].x + 10){
             // left end
-            console.log('ADD to left end');
+            console.log('ADD LEFT ',nodeToSnap,' to end',nodeToReceive);
             //remove the node to snap from the free nodes and add the key to the beinging of the new nodes keys and fix the y value
-            userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(nodeToSnap,1));
+            userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(nodeToSnap),1);
             nodeToReceive.keys.unshift(nodeToSnap.keys[0]);
             nodeToReceive.keys[0].y = nodeToReceive.keys[1].y;
 
         } else {
             // right end
-            console.log('ADD to right end');
+            console.log('ADD RIGHT',nodeToSnap,' to end',nodeToReceive);
 
             // check for undefines in the node to recieve
             let areThereUndefines = false;
@@ -913,15 +940,20 @@ function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
                 // if there are undefines add the key to the index of the first undefined
                 nodeToReceive.keys[undefinedIndex] = nodeToSnap.keys[0];
                 nodeToReceive.keys[undefinedIndex].y = nodeToReceive.keys[0].y;
+                return nodeToReceive;
+
             } else {
                 // if there arent undefines, then push the key to the end of the array of keys
                 nodeToReceive.keys.push(nodeToSnap.keys[0]);
                 nodeToReceive.keys[nodeToReceive.keys.length-1].y = nodeToReceive.keys[1].y;
+
             }
+
         }
     } else {        
         // middle of a node
-        console.log('ADD to middle');
+        console.log('ADD MIDDLE',nodeToSnap,' to ',nodeToReceive);
+        console.log('between keys ', keysBetween)
         // find the first key from the keysBetween in the array
         let foundKey = false;
         let insertKeyInThisIndex = 0;
@@ -939,9 +971,11 @@ function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
             userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(nodeToSnap),1);
             nodeToReceive.keys.splice(insertKeyInThisIndex,0,nodeToSnap.keys[0]);
             nodeToReceive.keys[insertKeyInThisIndex].y = nodeToReceive.keys[0].y;
+
         } else {
             console.log("odd middle error look into it")
         }
+
     }
 }
 
