@@ -34,10 +34,13 @@ let isMouseHoveringOverHitbox = false;
 let isDrawArrowMode = false;
 let selectedKeyForDrawArrow;
 let selectedNodeForDrawArrow;
-let isSelectedListForDrawArrowLevel;
+let isSelectedLevelsForDrawArrowLevel;
+let SelectedLevelForDrawArrowLevel;
 let SelectedChildDrawArrowLevel;
 let moveFullNodeMode =false;
 let rootNodeSelcted = false;
+let selectedKeyObject;
+let newBTreeNode;
 
 
 // Try initialize canvas and graphics else display unsupported canvas error
@@ -190,507 +193,7 @@ function generateRandomQuestion() {
     // drawQuestion();
 }
 
-let selectedKeyObject;
-let newBTreeNode;
-function findSelectedKey(levels, mouseX, mouseY) {
-    selectedKeyObject=null;
-    levels.forEach((level, i) => {
-        level.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
-                if (!(key.value === undefined)) {
-                    // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                    let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
-                    let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
 
-                    if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
-                    && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                        isDragMode = true;
-                        draggedKeyIndex = k;
-                        draggedKeyNodeIndex = j;
-                        draggedKeyLevelIndex = i;
-                        selectedKeyObject = key;
-                        console.log(`I am key in the tree`, selectedKeyObject);
-         
-                        
-                        // set this to false as its not dealing with a free node but rather a node in the levels array
-                        freeNodeSelected =false;   
-
-                        // if the move full node option is not selected then do the following (allow user to break a key of a node)
-                        if (node.parent === null && node.keys.filter((key) => key.value != undefined).length === 1 ){
-                            rootNodeSelcted = true;
-                        } else if (moveFullNodeMode === false){
-                            // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
-                            newBTreeNode =  new BTreeNode(node.t, node.leaf);
-                            newBTreeNode.keys[0] = selectedKeyObject;
-                            userDrawingTree.freeNodes.push(newBTreeNode);                          
-
-                            // this makes all the children of the selected key into free nodes  if nmber of keys is > 1
-                            // case dependant                           
-                            if (k===0 && node.keys.filter((key) => key.value != undefined).length > 1){
-                                //left case
-                                // if the key is on the left of the node, remove only the left child and the subtree
-                                addChildrenToFreeNode(node, 0,k);
-                            } else if (k === node.keys.filter((key) => key.value != undefined).length -1 && node.keys.filter((key) => key.value != undefined).length > 1){
-                                //right case
-                                // if the key is on the right of the node, remove only the right child and the subtree
-                                addChildrenToFreeNode(node, 1,k);
-
-                            } else {
-                                // middle case
-                                // if the key is in the middle of the node, remove two of the children
-                                addChildrenToFreeNode(node, 2,k);
-                            }
-                            // checks the free node array and removes all nodes still in the levels representation
-                            removeFreeNodesFromLevel();
-
-                            // this removes the selected key from the node
-                            node.keys.splice(k,1);                           
-                            
-                            // if the node is empty it removes the node from the tree
-                            if (isEmptyNode(node)){
-                                console.log('parent slice HAPPNES NOW')
-                                removeParentFromFreeNode(node);                                
-                                levels[i].splice(j,1);                            
-                            } 
-                            // FOR DEBUG PURPOSES
-                            // console.log(userDrawingTree);
-
-                        }                        
-                        return;
-                    }
-                }
-            });
-        });       
-    }); 
-    
-    userDrawingTree.freeNodes.forEach((node, j) => {
-        node.keys.forEach((key, k) => {
-            // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
-            if (!(key.value === undefined)) {
-                // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
-                let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
-                if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
-                && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                    isDragMode = true;
-                    freeNodeSelected = true;    
-                    draggedKeyIndex = k;
-                    draggedKeyNodeIndex = j;    
-                    selectedKeyObject = key;
-                    console.log(`I am key in the free nodes`, selectedKeyObject);
-                    // if the mode is not in move full node then  do this
-                    if (moveFullNodeMode === false){
-                            // if the node has more than one key then allow splitting else just move the node
-                            if (node.keys.filter((key) => key.value != undefined).length >1){
-                                // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
-                                newBTreeNode =  new BTreeNode(node.t, node.leaf);
-                                newBTreeNode.keys[0] = selectedKeyObject;
-                                userDrawingTree.freeNodes.push(newBTreeNode);
-                                // get the new index in the free nodes stucture
-                                draggedKeyIndex = 0;
-                                draggedKeyNodeIndex = userDrawingTree.freeNodes.indexOf(newBTreeNode);   
-                                
-                                // rmove the key from the older node
-                                node.keys.splice(k,1);
-                                // if the node is empty it removes the node from the free node structure 
-                                if (isEmptyNode(node)){
-                                    userDrawingTree.freeNodes.splice(j,1);                            
-                                } 
-                        }                        
-                        // FOR DEBUG PURPOSES
-                        // console.log(userDrawingTree);
-
-                    }                       
-                    return;
-                }
-            }
-        });
-    });
-
-}
-
-// does what is described above (split node and remove children functionality)
-function addChildrenToFreeNode(node , position, k){ 
-    // LEFT
-    if (position === 0 ){
-        userDrawingTree.levels.forEach((level, i) => {
-            level.forEach((comparingNode, j) => {
-                if (node.C[k]=== comparingNode){
-                    console.log('is this happening left')
-
-                    if (findParent(node, comparingNode)){
-                        userDrawingTree.freeNodes.push(comparingNode);
-                        node.C.splice(k,1);
-                        removeParentFromFreeNode(comparingNode);
-                    }
-                    comparingNode.C.forEach((comparingNodeChild) => {
-                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
-                            if (findParent(comparingNode, comparingNodeChild, j)){
-                                userDrawingTree.freeNodes.push(comparingNodeChild);
-                                comparingNode.C.splice(j,1);
-                                removeParentFromFreeNode(comparingNodeChild);
-                            }
-                        }                        
-                    });
-                }                
-            });       
-        }); 
-    } 
-    
-    // RIGHT
-    if (position === 1 ){
-        userDrawingTree.levels.forEach((level, i) => {
-            level.forEach((comparingNode, j) => {
-                if (node.C[k+1]=== comparingNode){
-                    console.log('is this happening right')
-
-                    if (findParent(node, comparingNode)){
-                        userDrawingTree.freeNodes.push(comparingNode);
-                        node.C.splice(k+1,1);
-                        removeParentFromFreeNode(comparingNode);
-                    }
-                    comparingNode.C.forEach((comparingNodeChild, j) => {
-                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
-                            if (findParent(comparingNode, comparingNodeChild)){
-                                userDrawingTree.freeNodes.push(comparingNodeChild);
-                                comparingNode.C.splice(j,1);
-                                removeParentFromFreeNode(comparingNodeChild);
-                            }
-                        }   
-                    });
-                }                
-            });       
-        }); 
-    } 
-
-    // MIDDLE
-    if (position === 2 ){
-        userDrawingTree.levels.forEach((level, i) => {
-            level.forEach((comparingNode, j) => {
-                if (node.C[k] === comparingNode || node.C[k+1] === comparingNode){
-                    if (findParent(node, comparingNode)){
-                        userDrawingTree.freeNodes.push(comparingNode);
-                        console.log('is this happening middle')
-
-                        if (node.C[k] === comparingNode){
-                            node.C.splice(k,1);  
-                            removeParentFromFreeNode(comparingNode);
-                        } else {
-                            node.C.splice(k+1,1);   
-                            removeParentFromFreeNode(comparingNode);
-                        }
-
-                    }
-                    comparingNode.C.forEach((comparingNodeChild, j) => {
-                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
-                            if (findParent(comparingNode, comparingNodeChild)){
-                                userDrawingTree.freeNodes.push(comparingNodeChild);
-                                comparingNode.C.splice(j,1);
-                                removeParentFromFreeNode(comparingNodeChild);
-                            }
-                        }   
-                    });
-                }               
-            });       
-        }); 
-    } 
-    
-}
-
-function removeParentFromFreeNode(node){
-    if (node.parent!==null){
-        node.parent.C.splice(node.parent.C.indexOf(node),1);
-    }
-}
-//handles logic for node snap too
-let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
-function findDropOffArea(levels, mouseX, mouseY){
-    let keysThatNeedToChange = [];
-    let isNodeAFreeNode = false;
-        levels.forEach((level, i) => {
-            level.forEach((node, j) => {
-                node.keys.forEach((key, k) => {
-                    // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
-                    if (!(key.value === undefined)) {
-                        // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                        let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
-                        let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
-                        if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
-                        && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            dropOffKeyIndex = k;
-                            dropOffNodeKeyIndex = j;
-                            dropOffLevelKeyIndex = i;
-                            // if the move full node option is not selected then do the following (allow user to break a key of a node)
-                            if (moveFullNodeMode === false){ 
-                                if (key !== selectedKeyObject){
-                                    keysThatNeedToChange.push(level[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
-                                }                                
-                            }                        
-                        }
-                    }
-                });
-            });       
-        }); 
-        if (keysThatNeedToChange.length === 0) {
-            userDrawingTree.freeNodes.forEach((node, j) => {
-                node.keys.forEach((key, k) => {
-                    // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
-                    if (!(key.value === undefined)) {
-                        // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                        let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
-                        let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
-                        
-                        if (newBTreeNode!==node){
-                            if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
-                            && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {  
-                                dropOffKeyIndex = k;
-                                dropOffNodeKeyIndex = j;               
-        
-                                    // if the mode is not in move full node then  do this
-                                if (moveFullNodeMode === false){
-                                    if (key !== selectedKeyObject){
-                                        keysThatNeedToChange.push(userDrawingTree.freeNodes[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
-                                        isNodeAFreeNode =true;
-                                    }                                                      
-                                }                       
-                            }
-                        }
-                    
-                    }
-                });
-            });
-        }      
-    return [keysThatNeedToChange,isNodeAFreeNode];
-}
-// checks the free node array and removes all nodes still in the levels representation
-function removeFreeNodesFromLevel() {
-    for (let i = userDrawingTree.levels.length - 1; i >= 0; i--) {
-      const level = userDrawingTree.levels[i];
-  
-      for (let j = level.length - 1; j >= 0; j--) {
-        const comparingNode = level[j];
-  
-        if (userDrawingTree.freeNodes.includes(comparingNode)) {
-          userDrawingTree.levels[i].splice(j, 1);
-        }
-      }
-    }
-}
-
-// used to find all children
-function findParent(node, comparingNode){
-
-    if (comparingNode.parent === null){
-        return false;
-    } else if (node === comparingNode.parent){
-        return true;
-    }
-
-    findParent(node, comparingNode.parent)
-}
-
-// checks if a node is empty and removes it from the levels
-function isEmptyNode(node){
-    let emptyNode = true;
-    node.keys.forEach((key, k) => {
-        if(key.value !== undefined){
-            emptyNode = false;
-        }
-    });
-    return emptyNode;
-}
-
-// finds the selcted node, level and key when selecting the hit box
-function findselectedItemsFromArrowHitBoxClick(levels,mouseX,mouseY){
-    let selectedKey = null;
-    let selectedNode = null;
-    let selectedLevel = false;
-    let childIndex = null;
-
-    levels.forEach((level, i) => {
-        level.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                if (!(key.value === undefined)) {  
-                    // if the key is the first key give it a left and right hitbox
-                    
-                    if (k===0) {
-
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
-                            selectedKey = key;
-                            selectedNode = node;
-                            selectedLevel = true;
-                            childIndex=0;
-                        } else  if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            selectedKey = key;
-                            selectedNode = node;
-                            selectedLevel = true;
-                            childIndex = 1;
-                        }                        
-                    } else {
-                    // if the key is not the first key give it a right hitbox ONLY
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            selectedKey = key;
-                            selectedNode = node;
-                            selectedLevel = true;
-                            childIndex = k+1;
-                        }                       
-                    }   
-                   
-                }
-            });
-        });
-    });
-
-    if (!selectedLevel){
-        userDrawingTree.freeNodes.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                if (!(key.value === undefined)) {  
-                    // if the key is the first key give it a left and right hitbox
-                    if (k===0) {
-
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
-                            selectedKey = key;
-                            selectedNode = node;
-                            selectedLevel = false;
-                            childIndex = 0;
-                        } else  if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            selectedKey = key;
-                            selectedNode = node;
-                            selectedLevel = false;
-                            childIndex = 1;
-                        }                        
-                    } else {
-                    // if the key is not the first key give it a right hitbox ONLY
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            selectedKey = key;
-                            selectedNode = node;
-                            selectedLevel = false;
-                            childIndex = k+1;
-                        }                       
-                    }   
-                    
-                }
-            });
-        });
-    }
-
-    return [selectedKey, selectedNode, selectedLevel,childIndex];
-}
-
-// detects the mouse location and compares toi every nodes hitbox are, if so draws red circle
-function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
-    let isHovering = false;
-    userDrawingTree.levels.forEach((level, i) => {
-        level.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                // if index is undefined then ensure you first check lenght vs key number !!!!!!!!!!!!!!!!!!!!!!!!!!
-                if (key && key.value !== undefined) {
-                    // if the key is the first key give it a left and right hitbox
-                    if (k===0) {
-                        // if the hover is on the left end then the left hitbox is shown
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
-                            if (node.C[k]===null || node.C[k]===undefined){
-                                isHovering = true;
-                                drawRedCircleForHitbox(graphics, key.arrowHitbox.leftX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }                            
-                        } 
-                        // if the hover is on the right end then the right hitbox is shown
-                        else if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
-                                isHovering = true;
-                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }   
-                            
-                        }
-                    } else {
-                        // if the hover is on the right end then the right hitbox is shown
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
-                                isHovering = true;
-                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }
-                        }
-                    }                    
-                }
-            });
-        });
-    });
-
-    if (!isHovering){
-        userDrawingTree.freeNodes.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                // if index is undefined then ensure you first check lenght vs key number !!!!!!!!!!!!!!!!!!!!!!!!!!
-                if (key && key.value !== undefined) {
-                    // if the key is the first key give it a left and right hitbox
-                    if (k===0) {
-                        // if the hover is on the left end then the left hitbox is shown
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
-                            if (node.C[k]===null || node.C[k]===undefined){
-                                isHovering = true;
-                                drawRedCircleForHitbox(graphics, key.arrowHitbox.leftX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }                            
-                        } 
-                        // if the hover is on the right end then the right hitbox is shown
-                        else if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
-                                isHovering = true;
-                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }   
-                            
-                        }
-                    } else {
-                        // if the hover is on the right end then the right hitbox is shown
-                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
-                                isHovering = true;
-                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }
-                        }
-                    }                    
-                }
-            });
-        });
-    }
-
-    if (!isHovering) {
-        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
-    }
-
-    return isHovering;
-}
-
-// returns two booleans to check if the mouse click is within the hitbox bounds
-function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
-    const inXBounds = mouseX >= centerX - 10 && mouseX <= centerX + 10;
-    const inYBounds = mouseY >= centerY - 10 && mouseY <= centerY + 10;
-    return inXBounds && inYBounds;
-}
-
-function drawRedCircleForHitbox(graphics, centerX, centerY, radius) {
-    graphics.beginPath();
-    graphics.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    graphics.fillStyle = "red";
-    graphics.lineWidth = 2;
-    graphics.fill();
-    graphics.closePath();
-}
-
-// function drawArrowhead(graphics, arrowCoordinates, arrowSize) {
-//     graphics.beginPath();
-//     graphics.moveTo(arrowCoordinates[2], arrowCoordinates[3]);
-
-//     const angle = calculateArrowHeadAngle(arrowCoordinates, childWidth);
-
-//     const arrowHeadCoordinates = calculateArrowHeadCoordinates(arrowCoordinates, arrowSize, angle);
-
-//     graphics.lineTo(arrowHeadCoordinates[0], arrowHeadCoordinates[1]);
-//     graphics.lineTo(arrowHeadCoordinates[2], arrowHeadCoordinates[3]);
-//     graphics.fillStyle = "orange";
-//     graphics.fill();
-//     graphics.closePath();
-// }
 
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
@@ -896,7 +399,7 @@ canvas.addEventListener('mousedown', (e) => {
     // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
     if (userDrawingTree !== undefined && isDragMode == false) {
-        let selectedKey = findSelectedKey(userDrawingTree.levels, mouseX, mouseY); 
+        let selectedKey = pullKeyOffTheTree(userDrawingTree.levels, mouseX, mouseY); 
     }
     // after key selected if drag mode turned on now drag here in same method until mouse up event
     
@@ -936,8 +439,9 @@ canvas.addEventListener('mousedown', (e) => {
         let functionResult = findselectedItemsFromArrowHitBoxClick(userDrawingTree.levels,mouseX,mouseY);
         selectedKeyForDrawArrow = functionResult[0];
         selectedNodeForDrawArrow = functionResult[1];
-        isSelectedListForDrawArrowLevel = functionResult[2];
+        isSelectedLevelsForDrawArrowLevel = functionResult[2];
         SelectedChildDrawArrowLevel = functionResult[3];
+        SelectedLevelForDrawArrowLevel = functionResult[4]
 
 
         console.log("isDrawarrowMode: ", isDrawArrowMode);
@@ -971,8 +475,8 @@ canvas.addEventListener('mousemove', (e) => {
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
         drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode);
-    }
-    // draws the red dot
+    } else {
+        // draws the red dot
     if(userDrawingTree){
         isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(mouseX,mouseY);
         if (isDrawArrowMode && selectedKeyForDrawArrow) {
@@ -988,12 +492,14 @@ canvas.addEventListener('mousemove', (e) => {
             }else{
                 drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
             }
-            
+            // call function to make arrows display
+            recieveNodesRedCircles(userDrawingTree.freeNodes,mouseX,mouseY);
         }
     }
+    }
+    
     
 });
-
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
 window.addEventListener('mouseup', (e) => {
@@ -1005,7 +511,7 @@ window.addEventListener('mouseup', (e) => {
         isDragMode = false;
             if (rootNodeSelcted===false){
                 //  if a node is being dragged get the keys its trying to snap too
-                let functionResult = findDropOffArea(userDrawingTree.levels, mouseX, mouseY);
+                let functionResult = findDropOffAreaOfNode(userDrawingTree.levels, mouseX, mouseY);
                 let insertToTheseKeys = functionResult[0];
                 let isNodeAFreeNodeChecker = functionResult[1];
                 
@@ -1022,6 +528,7 @@ window.addEventListener('mouseup', (e) => {
             isDrawArrowMode = false;
             if (rootNodeSelcted===false){
                 // child logic here
+                makeNodeHaveChild(userDrawingTree.freeNodes,mouseX,mouseY)
             } 
         }
          // Call drawTree because tree has not changed
@@ -1035,6 +542,348 @@ window.addEventListener('mouseup', (e) => {
 
    
 });
+
+// spacebar used to activate move node
+document.addEventListener("keydown", function(event) {
+    if(userDrawingTree){
+        if (event.key === " " || event.key === "Spacebar") {
+            // Spacebar was pressed
+            moveFullNodeMode = !moveFullNodeMode;
+            if (moveFullNodeMode){
+              console.log("Move Full Node mode active");
+            } else {
+              console.log("Move Full Node mode NOT active");
+            }
+            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+            // You can add your code here to handle the spacebar event
+          }
+    }
+    
+});
+
+// PULLING OFF THE TREE =====================================================
+// ==========================================================================
+// ==========================================================================
+
+function pullKeyOffTheTree(levels, mouseX, mouseY) {
+    selectedKeyObject=null;
+    levels.forEach((level, i) => {
+        level.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
+                if (!(key.value === undefined)) {
+                    // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                    let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
+                    let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
+
+                    if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
+                    && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                        isDragMode = true;
+                        draggedKeyIndex = k;
+                        draggedKeyNodeIndex = j;
+                        draggedKeyLevelIndex = i;
+                        selectedKeyObject = key;
+                        console.log(`I am key in the tree`, selectedKeyObject);
+         
+                        
+                        // set this to false as its not dealing with a free node but rather a node in the levels array
+                        freeNodeSelected =false;   
+
+                        // if the move full node option is not selected then do the following (allow user to break a key of a node)
+                        if (node.parent === null && node.keys.filter((key) => key.value != undefined).length === 1 ){
+                            rootNodeSelcted = true;
+                        } else if (moveFullNodeMode === false){
+                            // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
+                            newBTreeNode =  new BTreeNode(node.t, node.leaf);
+                            newBTreeNode.keys[0] = selectedKeyObject;
+                            userDrawingTree.freeNodes.push(newBTreeNode);                          
+
+                            // this makes all the children of the selected key into free nodes  if nmber of keys is > 1
+                            // case dependant                           
+                            if (k===0 && node.keys.filter((key) => key.value != undefined).length > 1){
+                                //left case
+                                // if the key is on the left of the node, remove only the left child and the subtree
+                                addChildrenToFreeNode(node, 0,k);
+                            } else if (k === node.keys.filter((key) => key.value != undefined).length -1 && node.keys.filter((key) => key.value != undefined).length > 1){
+                                //right case
+                                // if the key is on the right of the node, remove only the right child and the subtree
+                                addChildrenToFreeNode(node, 1,k);
+
+                            } else {
+                                // middle case
+                                // if the key is in the middle of the node, remove two of the children
+                                addChildrenToFreeNode(node, 2,k);
+                            }
+                            // checks the free node array and removes all nodes still in the levels representation
+                            removeFreeNodesFromLevel();
+
+                            // this removes the selected key from the node
+                            node.keys.splice(k,1);                           
+                            
+                            // if the node is empty it removes the node from the tree
+                            if (isEmptyNode(node)){
+                                console.log('parent slice HAPPNES NOW')
+                                removeParentFromFreeNode(node);                                
+                                levels[i].splice(j,1);                            
+                            } 
+                            // FOR DEBUG PURPOSES
+                            // console.log(userDrawingTree);
+
+                        }                        
+                        return;
+                    }
+                }
+            });
+        });       
+    }); 
+    
+    userDrawingTree.freeNodes.forEach((node, j) => {
+        node.keys.forEach((key, k) => {
+            // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
+            if (!(key.value === undefined)) {
+                // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
+                let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
+                if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
+                && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                    isDragMode = true;
+                    freeNodeSelected = true;    
+                    draggedKeyIndex = k;
+                    draggedKeyNodeIndex = j;    
+                    selectedKeyObject = key;
+                    console.log(`I am key in the free nodes`, selectedKeyObject);
+                    // if the mode is not in move full node then  do this
+                    if (moveFullNodeMode === false){
+                            // if the node has more than one key then allow splitting else just move the node
+                            if (node.keys.filter((key) => key.value != undefined).length >1){
+                                // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
+                                newBTreeNode =  new BTreeNode(node.t, node.leaf);
+                                newBTreeNode.keys[0] = selectedKeyObject;
+                                userDrawingTree.freeNodes.push(newBTreeNode);
+                                // get the new index in the free nodes stucture
+                                draggedKeyIndex = 0;
+                                draggedKeyNodeIndex = userDrawingTree.freeNodes.indexOf(newBTreeNode);   
+                                
+                                // rmove the key from the older node
+                                node.keys.splice(k,1);
+                                // if the node is empty it removes the node from the free node structure 
+                                if (isEmptyNode(node)){
+                                    userDrawingTree.freeNodes.splice(j,1);                            
+                                } 
+                        }                        
+                        // FOR DEBUG PURPOSES
+                        // console.log(userDrawingTree);
+
+                    }                       
+                    return;
+                }
+            }
+        });
+    });
+}
+
+// does what is described above (split node and remove children functionality)
+function addChildrenToFreeNode(node , position, k){ 
+    // LEFT
+    if (position === 0 ){
+        userDrawingTree.levels.forEach((level, i) => {
+            level.forEach((comparingNode, j) => {
+                if (node.C[k]=== comparingNode){
+                    console.log('is this happening left')
+
+                    if (findParent(node, comparingNode)){
+                        userDrawingTree.freeNodes.push(comparingNode);
+                        node.C.splice(k,1);
+                        removeParentFromFreeNode(comparingNode);
+                    }
+                    comparingNode.C.forEach((comparingNodeChild) => {
+                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
+                            if (findParent(comparingNode, comparingNodeChild, j)){
+                                userDrawingTree.freeNodes.push(comparingNodeChild);
+                                comparingNode.C.splice(j,1);
+                                removeParentFromFreeNode(comparingNodeChild);
+                            }
+                        }                        
+                    });
+                }                
+            });       
+        }); 
+    } 
+    
+    // RIGHT
+    if (position === 1 ){
+        userDrawingTree.levels.forEach((level, i) => {
+            level.forEach((comparingNode, j) => {
+                if (node.C[k+1]=== comparingNode){
+                    console.log('is this happening right')
+
+                    if (findParent(node, comparingNode)){
+                        userDrawingTree.freeNodes.push(comparingNode);
+                        node.C.splice(k+1,1);
+                        removeParentFromFreeNode(comparingNode);
+                    }
+                    comparingNode.C.forEach((comparingNodeChild, j) => {
+                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
+                            if (findParent(comparingNode, comparingNodeChild)){
+                                userDrawingTree.freeNodes.push(comparingNodeChild);
+                                comparingNode.C.splice(j,1);
+                                removeParentFromFreeNode(comparingNodeChild);
+                            }
+                        }   
+                    });
+                }                
+            });       
+        }); 
+    } 
+
+    // MIDDLE
+    if (position === 2 ){
+        userDrawingTree.levels.forEach((level, i) => {
+            level.forEach((comparingNode, j) => {
+                if (node.C[k] === comparingNode || node.C[k+1] === comparingNode){
+                    if (findParent(node, comparingNode)){
+                        userDrawingTree.freeNodes.push(comparingNode);
+                        console.log('is this happening middle')
+
+                        if (node.C[k] === comparingNode){
+                            node.C.splice(k,1);  
+                            removeParentFromFreeNode(comparingNode);
+                        } else {
+                            node.C.splice(k+1,1);   
+                            removeParentFromFreeNode(comparingNode);
+                        }
+                    }
+                    comparingNode.C.forEach((comparingNodeChild, j) => {
+                        if (comparingNodeChild!= null || comparingNodeChild!= undefined){
+                            if (findParent(comparingNode, comparingNodeChild)){
+                                userDrawingTree.freeNodes.push(comparingNodeChild);
+                                comparingNode.C.splice(j,1);
+                                removeParentFromFreeNode(comparingNodeChild);
+                            }
+                        }   
+                    });
+                }               
+            });       
+        }); 
+    } 
+    
+}
+
+// checks the free node array and removes all nodes still in the levels representation
+function removeFreeNodesFromLevel() {
+    for (let i = userDrawingTree.levels.length - 1; i >= 0; i--) {
+      const level = userDrawingTree.levels[i];
+  
+      for (let j = level.length - 1; j >= 0; j--) {
+        const comparingNode = level[j];
+  
+        if (userDrawingTree.freeNodes.includes(comparingNode)) {
+          userDrawingTree.levels[i].splice(j, 1);
+        }
+      }
+    }
+}
+
+// removes the node from its parent child node
+function removeParentFromFreeNode(node){
+    if (node.parent!==null){
+        let index = node.parent.C.indexOf(node)
+        node.parent.C.splice(index,1);
+        node.parent.C.splice(index,0,undefined);
+    }
+}
+
+// used to find all children
+function findParent(node, comparingNode){
+
+    if (comparingNode.parent === null){
+        return false;
+    } else if (node === comparingNode.parent){
+        return true;
+    }
+
+    findParent(node, comparingNode.parent)
+}
+
+// checks if a node is empty and removes it from the levels
+function isEmptyNode(node){
+    let emptyNode = true;
+    node.keys.forEach((key, k) => {
+        if(key.value !== undefined){
+            emptyNode = false;
+        }
+    });
+    return emptyNode;
+}
+// ==========================================================================
+// ==========================================================================
+// ==========================================================================
+
+// SNAPPING FREE NODES TO OTHER NODES =======================================
+// ==========================================================================
+// ==========================================================================
+
+//handles logic for node snap too
+let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
+function findDropOffAreaOfNode(levels, mouseX, mouseY){
+    let keysThatNeedToChange = [];
+    let isNodeAFreeNode = false;
+        levels.forEach((level, i) => {
+            level.forEach((node, j) => {
+                node.keys.forEach((key, k) => {
+                    // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
+                    if (!(key.value === undefined)) {
+                        // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                        let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
+                        let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
+                        if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
+                        && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            dropOffKeyIndex = k;
+                            dropOffNodeKeyIndex = j;
+                            dropOffLevelKeyIndex = i;
+                            // if the move full node option is not selected then do the following (allow user to break a key of a node)
+                            if (moveFullNodeMode === false){ 
+                                if (key !== selectedKeyObject){
+                                    keysThatNeedToChange.push(level[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
+                                }                                
+                            }                        
+                        }
+                    }
+                });
+            });       
+        }); 
+        if (keysThatNeedToChange.length === 0) {
+            userDrawingTree.freeNodes.forEach((node, j) => {
+                node.keys.forEach((key, k) => {
+                    // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
+                    if (!(key.value === undefined)) {
+                        // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                        let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
+                        let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
+                        
+                        if (newBTreeNode!==node){
+                            if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
+                            && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {  
+                                dropOffKeyIndex = k;
+                                dropOffNodeKeyIndex = j;               
+        
+                                    // if the mode is not in move full node then  do this
+                                if (moveFullNodeMode === false){
+                                    if (key !== selectedKeyObject){
+                                        keysThatNeedToChange.push(userDrawingTree.freeNodes[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
+                                        isNodeAFreeNode =true;
+                                    }                                                      
+                                }                       
+                            }
+                        }
+                    
+                    }
+                });
+            });
+        }      
+    return [keysThatNeedToChange,isNodeAFreeNode];
+}
 
 // snaps the free node to the existing levelo node or free node
 function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
@@ -1116,24 +965,277 @@ function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
     }
 }
 
-// spacebar used to activate move node
-document.addEventListener("keydown", function(event) {
-    if(userDrawingTree){
-        if (event.key === " " || event.key === "Spacebar") {
-            // Spacebar was pressed
-            moveFullNodeMode = !moveFullNodeMode;
-            if (moveFullNodeMode){
-              console.log("Move Full Node mode active");
-            } else {
-              console.log("Move Full Node mode NOT active");
-            }
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
-            // You can add your code here to handle the spacebar event
-          }
+// ==========================================================================
+// ==========================================================================
+// ==========================================================================
+
+
+
+// ARROW FUNCTIONALITY ======================================================
+// ==========================================================================
+// ==========================================================================
+
+// finds the selcted node, level and key when selecting the hit box
+function findselectedItemsFromArrowHitBoxClick(levels,mouseX,mouseY){
+    let selectedKey = null;
+    let selectedNode = null;
+    let selectedLevel = false;
+    let childIndex = null;
+    let levelIndex = null;
+
+    levels.forEach((level, i) => {
+        level.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                if (!(key.value === undefined)) {  
+                    // if the key is the first key give it a left and right hitbox
+                    
+                    if (k===0) {
+
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
+                            selectedKey = key;
+                            selectedNode = node;
+                            selectedLevel = true;
+                            childIndex=0;
+                            levelIndex = i;
+                        } else  if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            selectedKey = key;
+                            selectedNode = node;
+                            selectedLevel = true;
+                            childIndex = 1;
+                            levelIndex = i;
+
+                        }                        
+                    } else {
+                    // if the key is not the first key give it a right hitbox ONLY
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            selectedKey = key;
+                            selectedNode = node;
+                            selectedLevel = true;
+                            childIndex = k+1;
+                            levelIndex = i;
+
+                        }                       
+                    }   
+                   
+                }
+            });
+        });
+    });
+
+    if (!selectedLevel){
+        userDrawingTree.freeNodes.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                if (!(key.value === undefined)) {  
+                    // if the key is the first key give it a left and right hitbox
+                    if (k===0) {
+
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
+                            selectedKey = key;
+                            selectedNode = node;
+                            selectedLevel = false;
+                            childIndex = 0;
+
+                        } else  if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            selectedKey = key;
+                            selectedNode = node;
+                            selectedLevel = false;
+                            childIndex = 1;
+
+                        }                        
+                    } else {
+                    // if the key is not the first key give it a right hitbox ONLY
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            selectedKey = key;
+                            selectedNode = node;
+                            selectedLevel = false;
+                        }                       
+                    }   
+                    
+                }
+            });
+        });
     }
-    
-});
+
+    return [selectedKey, selectedNode, selectedLevel,childIndex,levelIndex];
+}
+
+// detects the mouse location and compares toi every nodes hitbox are, if so draws red circle
+function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
+    let isHovering = false;
+    userDrawingTree.levels.forEach((level, i) => {
+        level.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                // if index is undefined then ensure you first check lenght vs key number !!!!!!!!!!!!!!!!!!!!!!!!!!
+                if (key && key.value !== undefined) {
+                    // if the key is the first key give it a left and right hitbox
+                    if (k===0) {
+                        // if the hover is on the left end then the left hitbox is shown
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
+                            if (node.C[k]===null || node.C[k]===undefined){
+                                isHovering = true;
+                                drawRedCircleForHitbox(graphics, key.arrowHitbox.leftX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
+                            }                            
+                        } 
+                        // if the hover is on the right end then the right hitbox is shown
+                        else if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                                isHovering = true;
+                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
+                            }   
+                            
+                        }
+                    } else {
+                        // if the hover is on the right end then the right hitbox is shown
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                                isHovering = true;
+                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
+                            }
+                        }
+                    }                    
+                }
+            });
+        });
+    });
+
+    if (!isHovering){
+        userDrawingTree.freeNodes.forEach((node, j) => {
+            node.keys.forEach((key, k) => {
+                // if index is undefined then ensure you first check lenght vs key number !!!!!!!!!!!!!!!!!!!!!!!!!!
+                if (key && key.value !== undefined) {
+                    // if the key is the first key give it a left and right hitbox
+                    if (k===0) {
+                        // if the hover is on the left end then the left hitbox is shown
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
+                            if (node.C[k]===null || node.C[k]===undefined){
+                                isHovering = true;
+                                drawRedCircleForHitbox(graphics, key.arrowHitbox.leftX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
+                            }                            
+                        } 
+                        // if the hover is on the right end then the right hitbox is shown
+                        else if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                                isHovering = true;
+                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
+                            }   
+                            
+                        }
+                    } else {
+                        // if the hover is on the right end then the right hitbox is shown
+                        if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                                isHovering = true;
+                                drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
+                            }
+                        }
+                    }                    
+                }
+            });
+        });
+    }
+
+    if (!isHovering) {
+        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+    }
+
+    return isHovering;
+}
+
+function drawRedCircleForHitbox(graphics, centerX, centerY, radius) {
+    graphics.beginPath();
+    graphics.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    graphics.fillStyle = "red";
+    graphics.lineWidth = 2;
+    graphics.fill();
+    graphics.closePath();
+}
+
+function recieveNodesRedCircles(freeNodes,mouseX,mouseY){
+    freeNodes.forEach(node => {
+        let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
+        let receiveArrowY = node.keys[0].y -30;
+        let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
+        drawRedCircleForHitbox(graphics,receiveArrowX,receiveArrowY,node.keys[0].arrowHitbox.radius);
+        
+    });
+}
+
+function makeNodeHaveChild(freeNodes,mouseX,mouseY){
+    freeNodes.forEach(node => {
+        let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
+        let receiveArrowY = node.keys[0].y -30;
+        let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
+
+        if (isMouseWithinHitboxBounds(mouseX,mouseY,receiveArrowX,receiveArrowY)){
+
+
+            // if the a new level need to be created, do it here and push the new lowest node to that newly created level
+            if(SelectedLevelForDrawArrowLevel > userDrawingTree.levels.length-2){
+                if (isSelectedLevelsForDrawArrowLevel) {
+                    // creates new level and adds node
+                    userDrawingTree.levels.push([]);       
+                    userDrawingTree.levels[SelectedLevelForDrawArrowLevel +1].push(node);
+                    // removes newly add node from free nodes
+                    freeNodes.splice(freeNodes.indexOf(node),1);
+                    // set the parent node to have the new child node and make it not a leaf
+                    selectedNodeForDrawArrow.C[SelectedChildDrawArrowLevel] = node;
+                    selectedNodeForDrawArrow.leaf=false;
+                    //  set the new nodes parent node to the parent and make it a leaf
+                    node.parent = selectedNodeForDrawArrow;
+                    node.leaf = true;
+                }              
+            } else {
+                // if its not a new level
+                if (isSelectedLevelsForDrawArrowLevel) {
+                    console.log("PARENT Level : ",SelectedLevelForDrawArrowLevel)
+                    console.log("INDEX to insters into parent child : ",SelectedChildDrawArrowLevel)
+
+                    let parentNodeIndex = userDrawingTree.levels[SelectedLevelForDrawArrowLevel].indexOf(selectedNodeForDrawArrow);
+                    let numChildrenInLevel = 0;
+                    for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
+                        let numChildrenInNode = userDrawingTree.levels[SelectedLevelForDrawArrowLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
+                        numChildrenInLevel += numChildrenInNode;
+                    }
+                    numChildrenInLevel += SelectedChildDrawArrowLevel;
+                    console.log(numChildrenInLevel)
+
+
+                    // adds the node to the designated spot in levels
+                    userDrawingTree.levels[SelectedLevelForDrawArrowLevel +1].splice(numChildrenInLevel,0,node);
+                    // removes newly add node from free nodes
+                    freeNodes.splice(freeNodes.indexOf(node),1);
+                    // set the parent node to have the new child node and make it not a leaf
+                    selectedNodeForDrawArrow.C[SelectedChildDrawArrowLevel] = node;
+                    //  set the new nodes parent node to the parent and make it a leaf
+                    node.parent = selectedNodeForDrawArrow;
+                }  
+            }
+
+        } else {
+
+        }
+    });
+}
+
+// ==========================================================================
+// ==========================================================================
+// ==========================================================================
+
+// GENERAL HELPERS ===========================================================
+// ==========================================================================
+// ==========================================================================
+
+function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
+    const inXBounds = mouseX >= centerX - 10 && mouseX <= centerX + 10;
+    const inYBounds = mouseY >= centerY - 10 && mouseY <= centerY + 10;
+    return inXBounds && inYBounds;
+}
+
+// ==========================================================================
+// ==========================================================================
+// ==========================================================================
+// returns two booleans to check if the mouse click is within the hitbox bounds
 
 
 // TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
