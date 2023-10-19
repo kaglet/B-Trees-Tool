@@ -11,7 +11,9 @@ export class BTreeKey {
         this.y;
         this.arrowHitbox = {
             centerX: null,
+            leftX: null,
             centerY: null,
+            rightX: null,
             radius: null,
         };
     }
@@ -19,6 +21,8 @@ export class BTreeKey {
     calculateArrowHitbox(keySize) {
         // Calculate the center of the key
         this.arrowHitbox.centerX = this.x;
+        this.arrowHitbox.leftX = this.x  - keySize;
+        this.arrowHitbox.rightX = this.x + keySize;
         this.arrowHitbox.centerY = this.y + keySize;
 
         // Calculate the radius of the arrow hitbox (1/4 of the key width)

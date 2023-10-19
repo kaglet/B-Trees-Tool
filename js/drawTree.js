@@ -97,6 +97,8 @@ function isChildLessThanKey(childKeys, keyValues, index) {
 }
 
 function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode) {
+    key.calculateArrowHitbox(30);
+
     const keySize = 60; //size of blue square -- hopefull make into draggable
     if (moveFullNodeMode && keyZero === 0){
         graphics.fillStyle = "lightgreen";
