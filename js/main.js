@@ -159,7 +159,9 @@ function zoomCanvas(zoom) {
 }
 
 function generateRandomQuestion() {
-    const question = Math.floor(Math.random() * 3);
+    // const question = Math.floor(Math.random() * 3);
+    const question = 0;
+
     let key = +Math.floor(Math.random() * 100);
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
@@ -168,8 +170,20 @@ function generateRandomQuestion() {
         logicTree.traverse();
 
         // TODO: this needs to be changed as the user must do it manually
-        userDrawingTree.insert(key);
-        userDrawingTree.traverse();
+        let tempNode =  new BTreeNode(userDrawingTree.t, false);
+        for (let keyIndex = 0; keyIndex<tempNode.keys; keyIndex++) {
+            tempNode.keys[keyIndex].value = undefined;
+        }
+        tempNode.keys[0].value = key;
+        tempNode.keys[0].x = 30;
+        tempNode.keys[0].y = 50;
+        tempNode.keys[0].calculateArrowHitbox();
+
+
+        console.log(tempNode)
+        userDrawingTree.freeNodes.push(tempNode);
+        // userDrawingTree.insert(key);
+        // userDrawingTree.traverse();
 
         questionDisplay.textContent = "Insert: " + key;
     } else if (question == 1) {
@@ -181,8 +195,8 @@ function generateRandomQuestion() {
         logicTree.traverse();
 
         // TODO:  this needs to be changed as the user must do it manually
-        userDrawingTree.remove(key);
-        userDrawingTree.traverse();
+        // userDrawingTree.remove(key);
+        // userDrawingTree.traverse();
         questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
         //search
@@ -190,7 +204,8 @@ function generateRandomQuestion() {
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
-    // drawQuestion();
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+    graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 
@@ -671,7 +686,9 @@ function pullKeyOffTheTree(levels, mouseX, mouseY) {
                                 if (isEmptyNode(node)){
                                     userDrawingTree.freeNodes.splice(j,1);                            
                                 } 
-                        }                        
+                            } else {
+                                newBTreeNode = node;
+                            }                     
                         // FOR DEBUG PURPOSES
                         // console.log(userDrawingTree);
 
@@ -888,7 +905,7 @@ function findDropOffAreaOfNode(levels, mouseX, mouseY){
 // snaps the free node to the existing levelo node or free node
 function snapFreeNodeOntoNode(nodeToSnap, nodeToReceive, keysBetween){
     // if there is only one node to snap to, it is the left end or right end
-
+    console.log(nodeToSnap)
     if (keysBetween.indexOf(selectedKeyObject)!==-1){
         keysBetween.splice(keysBetween.indexOf(selectedKeyObject),1);
     }
@@ -1257,33 +1274,72 @@ function validateTree(){
 
 function areBTreesEqual(tree1, tree2) {
     // Helper function for in-order traversal
-    function inOrderTraversal(node, keys) {
-        if (node) {
-            for (let i = 0; i < node.n; i++) {
-                inOrderTraversal(node.C[i], keys);
-                keys.push(node.keys[i]);
-            }
-            inOrderTraversal(node.C[node.n], keys);
-        }
+    let isCorrect = true;
+    if (tree2.freeNodes.length>0){
+        isCorrect =false;
+        return isCorrect;
     }
+    tree1.levels.forEach((logicLevel,levelIndex) => {
+        logicLevel.forEach((logicNode,nodeIndex) => {
+            let logicKeyValues = [];
+            let userKeyValues = [];
+            let tempLogicKeys = logicNode.keys.filter((key) => key.value != undefined);
+            let tempUserKeys = tree2.levels[levelIndex][nodeIndex].keys.filter((key) => key.value != undefined);
+            tempLogicKeys.forEach(key => {
+                logicKeyValues.push(key.value);
+            });
+            tempUserKeys.forEach(key => {
+                userKeyValues.push(key.value);
+            });
+             for (let keyIndex = 0; keyIndex < logicKeyValues.length; keyIndex++){
 
-    const keys1 = [];
-    const keys2 = [];
+             }
+            if (!deepArrayCompare(logicKeyValues,userKeyValues)){
+                isCorrect = false;
+                console.log("USER  : ",userKeyValues);
+                console.log("LOGIC : ",logicKeyValues);
+            }
+        });
+    });
+    return isCorrect;
 
-    // Perform in-order traversal on both trees and collect keys
-    inOrderTraversal(tree1.root, keys1);
-    inOrderTraversal(tree2.root, keys2);
+}
 
-    // Compare the collected key sequences
-    if (keys1.length !== keys2.length) {
+function deepArrayCompare(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
         return false;
     }
-
-    for (let i = 0; i < keys1.length; i++) {
-        if (keys1[i] !== keys2[i]) {
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
             return false;
         }
     }
-
     return true;
 }
+
+
+// function areBTreesEqual(tree1, tree2) {
+//     // Helper function for deep array comparison
+    
+//     let isCorrect = true;
+//     tree1.levels.forEach((logicLevel, levelIndex) => {
+//         logicLevel.forEach((logicNode, nodeIndex) => {
+//             let logicKeyValues = [];
+//             let userKeyValues = [];
+//             let tempLogicKeys = logicNode.keys.filter((key) => key.value !== undefined);
+//             let tempUserKeys = tree2.levels[levelIndex][nodeIndex].keys.filter((key) => key.value !== undefined);
+//             tempLogicKeys.forEach(key => {
+//                 logicKeyValues.push(key.value);
+//             });
+//             tempUserKeys.forEach(key => {
+//                 userKeyValues.push(key.value);
+//             });
+//             if (!deepArrayCompare(logicKeyValues, userKeyValues)) {
+//                 isCorrect = false;
+//                 console.log("USER  : ", userKeyValues);
+//                 console.log("LOGIC : ", logicKeyValues);
+//             }
+//         });
+//     });
+//     return isCorrect;
+// }

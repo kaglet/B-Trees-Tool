@@ -73,11 +73,12 @@ function drawFreeNodes(freeNodes, moveFullNodeMode){
 
 
 function getNodeWidth(keys) {
+    
     return keys.length * 60;
 }
 
 function getNodeKeys(node) {
-    return node.keys;
+    return node.keys.filter((key) => key.value != undefined);
 }
 
 function getChildY(child) {
@@ -174,11 +175,7 @@ function fixSnapping(node, moveFullNodeMode) {
 
 
 function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
-    if (isLessThanKey) {
-        return keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60;
-    } else {
-        return keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
-    }
+    return keys[0].x-30 + (index) * 60;
 }
 
 function calculateArrowStartY(keys){
