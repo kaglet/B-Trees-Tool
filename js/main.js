@@ -1,15 +1,27 @@
-/*ToDo: (thursday night hopefully)
-Add snapping to free nodes  and update level tree and freeNodes - DONE
-NB ensure there is always a root node in the levels array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-NB a key never slighty overlaps another key !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-fix arrows on drawing (only happens when a node is snapped off)
-add arrow functionality to free nodes and update level tree and freeNodes
-sort out question logic (figure out logic to do with delete... bin icon at bottom left)
-fix validate tree function
+/*ToDo: 
+Sort out question logic (figure out logic to do with delete... bin icon at bottom left)
+Clean up Create Tree Interface and add an option to go staright to a question
+Fix all canvas related bugs ie, resize and moving
+Limit the user in terms of degree and number of keys
+FREE NODE SUBTREE - figure out logistics
 
-ToDo: (eventually)
-NB!! limit the user in terms of degree and number of nodes and questions generated
-NB!! fix all canvas related bugs ie, resize and moving*/
+Nice To haves:
+Add user experience where when snapping to middle of node, while hovering the two adjacvent nodes move away slightly as if to give room for the hovering key
+Add user experience to change colour of node when it is the node being dragged to orange/red? and when able to snap then change colour to green
+Make dark mode button small and in top corner with just an icon
+Make side bar into top bar? especially for random question section
+
+DONE:
+Snapping Nodes together
+Snap key off a node 
+Vaidate logic tree and user tree
+Draw arrows and make children
+
+Bugs:
+-When breaking off 1st key in node the children of the node all disappear sometimes (ie fix addChildrenToFreeNode)
+-NB a key never slighty overlaps another key (only if bugs arrise)
+*/
+
 import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
@@ -40,7 +52,7 @@ let SelectedChildDrawArrowLevel;
 let moveFullNodeMode =false;
 let rootNodeSelcted = false;
 let selectedKeyObject;
-let newBTreeNode;
+let selectedNodeObject;
 
 
 // Try initialize canvas and graphics else display unsupported canvas error
@@ -533,9 +545,9 @@ window.addEventListener('mouseup', (e) => {
                 if (insertToTheseKeys.length > 0 && selectedKeyObject!==null){
                     // snape the node to the new node
                     if (isNodeAFreeNodeChecker){
-                        snapFreeNodeOntoNode(newBTreeNode, userDrawingTree.freeNodes[dropOffNodeKeyIndex] , insertToTheseKeys);
+                        snapFreeNodeOntoNode(selectedNodeObject, userDrawingTree.freeNodes[dropOffNodeKeyIndex] , insertToTheseKeys);
                     } else {
-                        snapFreeNodeOntoNode(newBTreeNode, userDrawingTree.levels[dropOffLevelKeyIndex][dropOffNodeKeyIndex], insertToTheseKeys);
+                        snapFreeNodeOntoNode(selectedNodeObject, userDrawingTree.levels[dropOffLevelKeyIndex][dropOffNodeKeyIndex], insertToTheseKeys);
                     }
                 }
             }                    
@@ -610,9 +622,9 @@ function pullKeyOffTheTree(levels, mouseX, mouseY) {
                             rootNodeSelcted = true;
                         } else if (moveFullNodeMode === false){
                             // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
-                            newBTreeNode =  new BTreeNode(node.t, node.leaf);
-                            newBTreeNode.keys[0] = selectedKeyObject;
-                            userDrawingTree.freeNodes.push(newBTreeNode);                          
+                            selectedNodeObject =  new BTreeNode(node.t, node.leaf);
+                            selectedNodeObject.keys[0] = selectedKeyObject;
+                            userDrawingTree.freeNodes.push(selectedNodeObject);                          
 
                             // this makes all the children of the selected key into free nodes  if nmber of keys is > 1
                             // case dependant                           
@@ -673,12 +685,12 @@ function pullKeyOffTheTree(levels, mouseX, mouseY) {
                             // if the node has more than one key then allow splitting else just move the node
                             if (node.keys.filter((key) => key.value != undefined).length >1){
                                 // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
-                                newBTreeNode =  new BTreeNode(node.t, node.leaf);
-                                newBTreeNode.keys[0] = selectedKeyObject;
-                                userDrawingTree.freeNodes.push(newBTreeNode);
+                                selectedNodeObject =  new BTreeNode(node.t, node.leaf);
+                                selectedNodeObject.keys[0] = selectedKeyObject;
+                                userDrawingTree.freeNodes.push(selectedNodeObject);
                                 // get the new index in the free nodes stucture
                                 draggedKeyIndex = 0;
-                                draggedKeyNodeIndex = userDrawingTree.freeNodes.indexOf(newBTreeNode);   
+                                draggedKeyNodeIndex = userDrawingTree.freeNodes.indexOf(selectedNodeObject);   
                                 
                                 // rmove the key from the older node
                                 node.keys.splice(k,1);
@@ -687,7 +699,7 @@ function pullKeyOffTheTree(levels, mouseX, mouseY) {
                                     userDrawingTree.freeNodes.splice(j,1);                            
                                 } 
                             } else {
-                                newBTreeNode = node;
+                                selectedNodeObject = node;
                             }                     
                         // FOR DEBUG PURPOSES
                         // console.log(userDrawingTree);
@@ -706,7 +718,8 @@ function addChildrenToFreeNode(node , position, k){
     if (position === 0 ){
         userDrawingTree.levels.forEach((level, i) => {
             level.forEach((comparingNode, j) => {
-                if (node.C[k]=== comparingNode){
+                if (node.C[k] === comparingNode){
+                    console.log(comparingNode)
                     console.log('is this happening left')
 
                     if (findParent(node, comparingNode)){
@@ -879,7 +892,7 @@ function findDropOffAreaOfNode(levels, mouseX, mouseY){
                         let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
                         let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
                         
-                        if (newBTreeNode!==node){
+                        if (selectedNodeObject!==node){
                             if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
                             && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {  
                                 dropOffKeyIndex = k;
@@ -1170,10 +1183,12 @@ function drawRedCircleForHitbox(graphics, centerX, centerY, radius) {
 
 function recieveNodesRedCircles(freeNodes,mouseX,mouseY){
     freeNodes.forEach(node => {
-        let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
-        let receiveArrowY = node.keys[0].y -30;
-        let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
-        drawRedCircleForHitbox(graphics,receiveArrowX,receiveArrowY,node.keys[0].arrowHitbox.radius);
+        if (node!==selectedNodeForDrawArrow){
+            let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
+            let receiveArrowY = node.keys[0].y -30;
+            let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
+            drawRedCircleForHitbox(graphics,receiveArrowX,receiveArrowY,node.keys[0].arrowHitbox.radius);
+        }       
         
     });
 }
