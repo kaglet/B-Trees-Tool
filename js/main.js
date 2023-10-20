@@ -74,8 +74,8 @@ function drawCreate() {
     userDrawingTree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
 }
 
 function drawQuestion() {
@@ -86,8 +86,8 @@ function drawQuestion() {
     // draw tree is used when creating the tree, and seeting up for questions
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
 }
@@ -147,11 +147,11 @@ function moveCanvas(direction) {
     graphics.clearRect(0, 0, canvas.width , canvas.height );
 
     // Apply the transformation
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
 
     // TODO: logic to be handled between create and question
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
 }
 
 function zoomCanvas(zoom) {
@@ -163,11 +163,11 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
-    graphics.setTransform(1, 0, 0, 1, 0, 0);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
+    // graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function generateRandomQuestion() {
@@ -216,7 +216,7 @@ function generateRandomQuestion() {
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -458,7 +458,7 @@ canvas.addEventListener('mousedown', (e) => {
         
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor);
     }
 
     if (isMouseHoveringOverHitbox && isDrawArrowMode == false){
@@ -501,14 +501,14 @@ canvas.addEventListener('mousemove', (e) => {
         }
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor);
     } else {
         // draws the red dot
     if(userDrawingTree){
         isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(mouseX,mouseY);
         if (isDrawArrowMode && selectedKeyForDrawArrow) {
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
             if (selectedNodeForDrawArrow.keys.indexOf(selectedKeyForDrawArrow)===0){
                 if (SelectedChildDrawArrowLevel===1){
                     drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);                    
@@ -560,7 +560,7 @@ window.addEventListener('mouseup', (e) => {
         }
          // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor);
         console.log(userDrawingTree)
         if (rootNodeSelcted){
             rootNodeSelcted=false;
@@ -582,7 +582,7 @@ document.addEventListener("keydown", function(event) {
               console.log("Move Full Node mode NOT active");
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
             // You can add your code here to handle the spacebar event
           }
     }
@@ -1166,7 +1166,7 @@ function detectMouseHoverOverArrowHitbox(mouseX, mouseY) {
 
     if (!isHovering) {
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor);
     }
 
     return isHovering;
