@@ -24,18 +24,13 @@ Bugs:
 -NB a key never slighty overlaps another key (only if bugs arrise)
 */
 
-// TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
-
-// They are the coordinates of the center and 30 is the width and height 
-// So check 15 to right and left, and 15 up and down to see if mouse click is within that key.
-// from mouse click check horizontal bounds and vertical bounds with withinBounds booleans
-// In fact its 30 in both directions
-
 import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import { pullKeyOffTheTree, snapFreeNodeOntoNode, findDropOffAreaOfNode, detectMouseHoverOverArrowHitbox, recieveNodesRedCircles, findselectedItemsFromArrowHitBoxClick, makeNodeHaveChild} from "./manipulateTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { validateTree } from "./validateTree.js";
+
+//import { SubtractiveBlending } from "three";
 
 // DECLARE GLOBAL VARIABLES
 let canvas;
@@ -86,8 +81,8 @@ function drawCreate() {
     userDrawingTree.traverse();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor,null, null);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null);
 }
 
 function drawQuestion() {
@@ -98,8 +93,8 @@ function drawQuestion() {
     // draw tree is used when creating the tree, and seeting up for questions
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor,  null, null);
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
 }
@@ -159,11 +154,11 @@ function moveCanvas(direction) {
     graphics.clearRect(0, 0, canvas.width , canvas.height );
 
     // Apply the transformation
-    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
 
     // TODO: logic to be handled between create and question
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null);
 }
 
 function zoomCanvas(zoom) {
@@ -175,10 +170,10 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
-    userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
+    userDrawingTree.assignNodePositions(scaleFactor);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor,  null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -199,7 +194,7 @@ function generateRandomQuestion() {
             tempNode.keys[keyIndex].value = undefined;
         }
         tempNode.keys[0].value = key;
-        tempNode.keys[0].x = 30;
+        tempNode.keys[0].x = 50;
         tempNode.keys[0].y = 50;
         tempNode.keys[0].calculateArrowHitbox();
 
@@ -228,7 +223,7 @@ function generateRandomQuestion() {
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -450,7 +445,6 @@ canvas.addEventListener('mousedown', (e) => {
         draggedKeyLevelIndex = functionResult[4];
         isDragMode = functionResult[5];
         isFreeNodeSelected = functionResult[6];
-        rootNodeSelcted = functionResult[7];
     }
     // after key selected if drag mode turned on now drag here in same method until mouse up event
     
@@ -481,7 +475,8 @@ canvas.addEventListener('mousedown', (e) => {
         
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, selectedKeyObject, false);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false);
+
     }
 
     if (isMouseHoveringOverHitbox && isDrawArrowMode == false){
@@ -526,10 +521,10 @@ canvas.addEventListener('mousemove', (e) => {
         let isInPlace= findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes,selectedKeyObject,selectedNodeObject, mouseX, mouseY, moveFullNodeMode)
         if (isInPlace[0].length>0){
             graphics.clearRect(0, 0, canvas.width  , canvas.height);
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, selectedKeyObject, true);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, true);
         } else {
             graphics.clearRect(0, 0, canvas.width  , canvas.height);
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, selectedKeyObject, false);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false);
         }
 
     } else {
@@ -538,11 +533,12 @@ canvas.addEventListener('mousemove', (e) => {
         isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(userDrawingTree.levels, userDrawingTree.freeNodes, mouseX,mouseY, graphics);
         if (!isMouseHoveringOverHitbox) {
             graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, null, null);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, null,null);
+
         }
         if (isDrawArrowMode && selectedKeyForDrawArrow) {
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null);
             if (selectedNodeForDrawArrow.keys.indexOf(selectedKeyForDrawArrow)===0){
                 if (SelectedChildDrawArrowLevel===1){
                     drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);                    
@@ -572,7 +568,6 @@ window.addEventListener('mouseup', (e) => {
         isDragMode = false;
             if (rootNodeSelcted===false){
                 //  if a node is being dragged get the keys its trying to snap too
-                console.log("SELECTED KEY:",selectedKeyObject)
                 let functionResult = findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes, selectedKeyObject,selectedNodeObject, mouseX, mouseY,moveFullNodeMode);
                 let insertToTheseKeys = functionResult[0];
                 let isNodeAFreeNodeChecker = functionResult[1];
@@ -599,7 +594,7 @@ window.addEventListener('mouseup', (e) => {
         }
          // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor,null,null);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, null,null);
         console.log(userDrawingTree)
         if (rootNodeSelcted){
             rootNodeSelcted=false;
@@ -628,4 +623,25 @@ document.addEventListener("keydown", function(event) {
     
 });
 
+// GENERAL HELPERS ===========================================================
+// ==========================================================================
+// ==========================================================================
 
+function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
+    const inXBounds = mouseX >= centerX - 10 && mouseX <= centerX + 10;
+    const inYBounds = mouseY >= centerY - 10 && mouseY <= centerY + 10;
+    return inXBounds && inYBounds;
+}
+
+// ==========================================================================
+// ==========================================================================
+// ==========================================================================
+// returns two booleans to check if the mouse click is within the hitbox bounds
+
+
+// TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
+
+// They are the coordinates of the center and 30 is the width and height 
+// So check 15 to right and left, and 15 up and down to see if mouse click is within that key.
+// from mouse click check horizontal bounds and vertical bounds with withinBounds booleans
+// In fact its 30 in both directions

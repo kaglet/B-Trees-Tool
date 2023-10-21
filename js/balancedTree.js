@@ -386,7 +386,7 @@ export class BTree {
         const ySpacing = 120*scaleFactor;
         const keySpacing = 60*scaleFactor;
         let canvasWidth = 900*scaleFactor;
-        console.clear();
+        // console.clear();
         // console.log(this);
 
         

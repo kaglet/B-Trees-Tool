@@ -45,7 +45,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
 
                 childXPositions.push(childX);
 
-                drawTree(child, canvas, freeNodes, moveFullNodeMode);
+                drawTree(child, canvas, freeNodes, moveFullNodeMode, selectedKey, isBound);
             }
         });
 
@@ -65,7 +65,6 @@ function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBound){
             const nodeWidth = getNodeWidth(keys);
             const nodeSpacing = 40;
             const arrowSize = 15; // Size of the arrowhead
-
             drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBound);
         });
     }
@@ -77,6 +76,7 @@ function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBound){
 function getNodeWidth(keys) {
     
     return keys.length * 60 * scaleFactor;
+    // return keys.length * 60;
 }
 
 function getNodeKeys(node) {
