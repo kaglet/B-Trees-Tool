@@ -14,19 +14,18 @@ let scaleFactor = 1;
 let customTreePresent = false;
 let randomTreePresent = false;
 let isDragMode = false;
-let draggedKey; // generic, not just levels or floatingNodes (both can be equally snapped) // obviously it's always next to itself so it has to skip itself somehow in the check if its already in levels and is detecting nearest neighbors
 let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
 
 // Try initialize canvas and graphics else display unsupported canvas error
-function init(insertDeleteSection, validateButton, questionsParamtersContainer) {
+function init(insertDeleteSection, validateButton, questionsParametersContainer) {
     try {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
 
         //hide
-        questionsParamtersContainer.classList.toggle('invisible');
+        questionsParametersContainer.classList.toggle('invisible');
         validateButton.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     } catch (e) {
@@ -227,7 +226,9 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
                     let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
                     if (inXBounds && inYBounds) {
                         isDragMode = true;
-                        draggedKey = key;
+                        draggedKeyIndex = k;
+                        draggedKeyNodeIndex = j;
+                        draggedKeyLevelIndex = i;
                         return;
                     }
                 }
@@ -242,7 +243,9 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
             let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
             if (inXBounds && inYBounds) {
                 isDragMode = true;
-                draggedKey = key;
+                draggedKeyIndex = j;
+                draggedKeyNodeIndex = i;
+                draggedKeyLevelIndex = -1; // this -1 signifies that the key does not exist at any level
                 return;
             }
         });
@@ -268,42 +271,46 @@ function getCloseNeighbors(draggedKey, levels) {
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
             node.keys.forEach((key, k) => {
-                if (!(key.value === undefined)) {
-                    // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                    // if they close in x regardless of which is left or right
-                    let closeInX = (Math.max(draggedKeyX, key.x) - Math.min(draggedKeyX, key.x)) <= distanceFromKeyCenters;
-                    // center of one y must lie within range of other
-                    // if you subtract one y from another they must be an absolute distance of 30 from each other
-                    let intersectingInY = Math.abs(draggedKeyY - key.y) <= 30;
-                    if (closeInX && intersectingInY) {
-                        // save left and right neighbor if left or right neighbor
-                        // check by x value if less than else if greater than
-                        // always insert to the left (see as right neighbor) if equal by convention
-                        // can mark this intersected key position on left and right
-                        // ideally there should be maximum two
-                        isDragMode = true;
-                        let neighborKeyIndex = k;
-                        let neighborKeyNodeIndex = j;
-                        let neighborKeyLevelIndex = i;
-                        // save actual right and left neighbor
-                        let neighbor = {
-                            neighborKeyIndex,
-                            neighborKeyNodeIndex,
-                            neighborKeyLevelIndex
-                        };
-                        // draggedKeyX and Y is only relevant if its in the levels array otherwise it won't ever find it within the bounds
-                        // better to just save the dragged key itself as the object it is an not its index and then check that against places its to be inserted
-                        // meta-data about if its in floating nodes array or levels array can be stored if needed if there is no simpler solution
-                        if (draggedKeyX <= key.x) {
-                            console.log("I am right neighbor: ");
-                            console.log(neighbor);
-                            neighboringKeyInfoObject.neighborExists = true;
-                            neighboringKeyInfoObject.rightNeighbor = neighbor;
-                        } else {
-                            console.log("I am left neighbor: ");
-                            console.log(neighbor);
-                            neighboringKeyInfoObject.neighborExists = true;
-                            neighboringKeyInfoObject.leftNeighbor = neighbor;
+                // if key is not both inside levels and key is same as processed key skip over it
+                // this is to skip the same key being checked against itself
+                if (!(draggedKeyNodeIndex !== -1 && k === draggedKeyIndex)) {
+                    if (!(key.value === undefined)) {
+                        // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
+                        // if they close in x regardless of which is left or right
+                        let closeInX = (Math.max(draggedKeyX, key.x) - Math.min(draggedKeyX, key.x)) <= distanceFromKeyCenters;
+                        // center of one y must lie within range of other
+                        // if you subtract one y from another they must be an absolute distance of 30 from each other
+                        let intersectingInY = Math.abs(draggedKeyY - key.y) <= 30;
+                        if (closeInX && intersectingInY) {
+                            // save left and right neighbor if left or right neighbor
+                            // check by x value if less than else if greater than
+                            // always insert to the left (see as right neighbor) if equal by convention
+                            // can mark this intersected key position on left and right
+                            // ideally there should be maximum two
+                            isDragMode = true;
+                            let neighborKeyIndex = k;
+                            let neighborKeyNodeIndex = j;
+                            let neighborKeyLevelIndex = i;
+                            // save actual right and left neighbor
+                            let neighbor = {
+                                neighborKeyIndex,
+                                neighborKeyNodeIndex,
+                                neighborKeyLevelIndex
+                            };
+                            // draggedKeyX and Y is only relevant if its in the levels array otherwise it won't ever find it within the bounds
+                            // better to just save the dragged key itself as the object it is an not its index and then check that against places its to be inserted
+                            // meta-data about if its in floating nodes array or levels array can be stored if needed if there is no simpler solution
+                            if (draggedKeyX <= key.x) {
+                                console.log("I am right neighbor: ");
+                                console.log(key);
+                                neighboringKeyInfoObject.neighborExists = true;
+                                neighboringKeyInfoObject.rightNeighbor = neighbor;
+                            } else {
+                                console.log("I am left neighbor: ");
+                                console.log(key);
+                                neighboringKeyInfoObject.neighborExists = true;
+                                neighboringKeyInfoObject.leftNeighbor = neighbor;
+                            }
                         }
                     }
                 }
