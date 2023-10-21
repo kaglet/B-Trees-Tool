@@ -14,6 +14,7 @@ let scaleFactor = 1;
 let customTreePresent = false;
 let randomTreePresent = false;
 let isDragMode = false;
+let draggedKey; // generic, not just levels or floatingNodes (both can be equally snapped) // obviously it's always next to itself so it has to skip itself somehow in the check if its already in levels and is detecting nearest neighbors
 let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
@@ -226,9 +227,7 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
                     let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
                     if (inXBounds && inYBounds) {
                         isDragMode = true;
-                        draggedKeyIndex = k;
-                        draggedKeyNodeIndex = j;
-                        draggedKeyLevelIndex = i;
+                        draggedKey = key;
                         return;
                     }
                 }
@@ -243,9 +242,7 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
             let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
             if (inXBounds && inYBounds) {
                 isDragMode = true;
-                draggedKeyIndex = j;
-                draggedKeyNodeIndex = i;
-                draggedKeyLevelIndex = -1; // this -1 signifies that the key does not exist at any level
+                draggedKey = key;
                 return;
             }
         });
@@ -271,7 +268,7 @@ function getCloseNeighbors(draggedKey, levels) {
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
             node.keys.forEach((key, k) => {
-                if (!(key.value === undefined) && draggedKeyIndex !== k) {
+                if (!(key.value === undefined)) {
                     // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
                     // if they close in x regardless of which is left or right
                     let closeInX = (Math.max(draggedKeyX, key.x) - Math.min(draggedKeyX, key.x)) <= distanceFromKeyCenters;
@@ -294,7 +291,9 @@ function getCloseNeighbors(draggedKey, levels) {
                             neighborKeyNodeIndex,
                             neighborKeyLevelIndex
                         };
-
+                        // draggedKeyX and Y is only relevant if its in the levels array otherwise it won't ever find it within the bounds
+                        // better to just save the dragged key itself as the object it is an not its index and then check that against places its to be inserted
+                        // meta-data about if its in floating nodes array or levels array can be stored if needed if there is no simpler solution
                         if (draggedKeyX <= key.x) {
                             console.log("I am right neighbor: ");
                             console.log(neighbor);
@@ -341,7 +340,6 @@ let errorMessageLabel = document.getElementById('error-message');
 
 let createTreeParametersContainer = document.getElementById('parameters-container-c');
 let questionsParametersContainer = document.getElementById('parameters-container-q');
-let questionLabel = document.getElementById('question');
 
 canvas = document.getElementById("canvas");
 
@@ -487,18 +485,14 @@ validateButton.addEventListener('click', validateTree);
 
 // on mouse down key is selected if possible then translated else searched for if not, dragMode is turned on.
 // on mouse up dragMode is turned off so mouse coordinates are not used for dragging, only during mouse down.
-// or don't even need to track a drag mode, it just won't be dragged.
-// so that a new node is selected
-// to detect a mouseup for redragging
 canvas.addEventListener('mousedown', (e) => {
     const mouseX = e.clientX - canvas.getBoundingClientRect().left;
     const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
     // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
     if (tree !== undefined && isDragMode == false) {
+        // find selected key to drag either in levels or floatingNodes 
         findSelectedKey(tree.levels, tree.floatingNodes, mouseX, mouseY);
     }
-    // after key selected if drag mode turned on now drag here in same method until mouse up event
 
     if (isDragMode) {
         // alter coordinates and call draw tree based off changed levels
@@ -506,8 +500,6 @@ canvas.addEventListener('mousedown', (e) => {
         // call redraw based on levels
         // render animation in frames maybe though its not an animation with updated frames
         let key = draggedKeyLevelIndex !== -1 ? tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex] : tree.floatingNodes[draggedKeyNodeIndex].keys[draggedKeyIndex];
-        // TODO: Make work with the currently selected tree whether from floatingNodes representation if level = -1 or normal representation
-        // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
 
         key.x = mouseX;
         key.y = mouseY;
@@ -563,7 +555,7 @@ window.addEventListener('mouseup', () => {
                 let neighborNodeIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyNodeIndex;
                 let neighborKeyIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyIndex;
                 let mappedKeys = tree.floatingNodes.flatMap(node => {
-                    return node[0];
+                    return node.keys[0];
                 }); 
 
                 // TODO: set breakpoint here and check if anything is added or if this is ever entered
@@ -586,7 +578,7 @@ window.addEventListener('mouseup', () => {
                 let neighborLevelIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyNodeIndex;
                 let mappedKeys = tree.floatingNodes.flatMap(node => {
-                    return node[0];
+                    return node.keys[0];
                 }); 
                 if (mappedKeys.includes(key)) {
                     tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
@@ -604,26 +596,13 @@ window.addEventListener('mouseup', () => {
                 // TODO: Pop from floating levels representation
             }
             
-            // TODO: Check why it does not show again in levels representation
-            // It is successfully spliced out but not spliced back in
-            // Handle root if dragged nothing can be snapped anywhere. Create root. 
-            // by dragging branches from one to the other you create a node group in the tree, so they can't build subtrees on the fly
-            // it must all connect from the main tree. 
-            // use print statements to test for now, when it snaps in or out and print 
-            // need to draw key to be able to translate it if floating, from floatingNodes structure
-            // always find left neighbor index to insert from the left
-            // else if only right neighbor exists insert from left with splice method still
             drawCreate();
-            // if left
-            // snap in
-            // check if left and right and up and down buffer region overlaps any other key (is key detected in overlap region)
         } else {
-            // if neighbor is found splice in else splice out if dragged key is not free already out
-            // is it that we can't splice what is already spliced or why could it be undefined?
+            // if draggedKey is in levels and is moved out of bounds of any neighbors snap it out
             if (draggedKeyLevelIndex !== -1) {
                 tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys.splice(draggedKeyIndex, 1);
                 let floatingNode = new BTreeNode(tree.t, false);
-                floatingNode.keys.push(key);
+                floatingNode.keys[0] = key;
                 tree.floatingNodes.push(floatingNode);
 
                 drawCreate();
