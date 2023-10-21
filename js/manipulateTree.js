@@ -28,110 +28,23 @@ export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNod
             let index = node.parent.C.indexOf(node)
             node.parent.C.splice(index,1);
             node.parent.C.splice(index,0,undefined);
+            node.parent = null;
         }
     }
 
     // does what is described above (split node and remove children functionality)
-    function addChildrenToFreeNode(levels, freeNodes, node , position, k){ 
-
-
-
-        // used to find all children
-        function findParent(node, comparingNode){
-
-            if (comparingNode.parent === null){
-                return false;
-            } else if (node === comparingNode.parent){
-                return true;
+    function addChildrenToFreeNode(levels, freeNodes, node){ 
+        for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+            for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
+                if (node.C.indexOf(levels[levelIndex][nodeIndex]) !==-1){                       
+                    freeNodes.push(levels[levelIndex][nodeIndex]);
+                    node.C.splice(node.C.indexOf(levels[levelIndex][nodeIndex]),1);
+                    node.C.splice(node.C.indexOf(levels[levelIndex][nodeIndex]),0,undefined);
+                    removeParentFromFreeNode(levels[levelIndex][nodeIndex]);
+                    addChildrenToFreeNode(levels,freeNodes,levels[levelIndex][nodeIndex]);
+                }     
             }
-
-            findParent(node, comparingNode.parent);
         }
-
-        // LEFT
-        if (position === 0 ){
-            levels.forEach((level, i) => {
-                level.forEach((comparingNode, j) => {
-                    if (node.C[k] === comparingNode){
-                        console.log(comparingNode)
-                        console.log('is this happening left')
-
-                        if (findParent(node, comparingNode)){
-                            freeNodes.push(comparingNode);
-                            node.C.splice(k,1);
-                            removeParentFromFreeNode(comparingNode);
-                        }
-                        comparingNode.C.forEach((comparingNodeChild) => {
-                            if (comparingNodeChild!= null || comparingNodeChild!= undefined){
-                                if (findParent(comparingNode, comparingNodeChild, j)){
-                                    freeNodes.push(comparingNodeChild);
-                                    comparingNode.C.splice(j,1);
-                                    removeParentFromFreeNode(comparingNodeChild);
-                                }
-                            }                        
-                        });
-                    }                
-                });       
-            }); 
-        } 
-        
-        // RIGHT
-        if (position === 1 ){
-            levels.forEach((level, i) => {
-                level.forEach((comparingNode, j) => {
-                    if (node.C[k+1]=== comparingNode){
-                        console.log('is this happening right')
-
-                        if (findParent(node, comparingNode)){
-                            freeNodes.push(comparingNode);
-                            node.C.splice(k+1,1);
-                            removeParentFromFreeNode(comparingNode);
-                        }
-                        comparingNode.C.forEach((comparingNodeChild, j) => {
-                            if (comparingNodeChild!= null || comparingNodeChild!= undefined){
-                                if (findParent(comparingNode, comparingNodeChild)){
-                                    freeNodes.push(comparingNodeChild);
-                                    comparingNode.C.splice(j,1);
-                                    removeParentFromFreeNode(comparingNodeChild);
-                                }
-                            }   
-                        });
-                    }                
-                });       
-            }); 
-        } 
-
-        // MIDDLE
-        if (position === 2 ){
-            levels.forEach((level, i) => {
-                level.forEach((comparingNode, j) => {
-                    if (node.C[k] === comparingNode || node.C[k+1] === comparingNode){
-                        if (findParent(node, comparingNode)){
-                            freeNodes.push(comparingNode);
-                            console.log('is this happening middle')
-
-                            if (node.C[k] === comparingNode){
-                                node.C.splice(k,1);  
-                                removeParentFromFreeNode(comparingNode);
-                            } else {
-                                node.C.splice(k+1,1);   
-                                removeParentFromFreeNode(comparingNode);
-                            }
-                        }
-                        comparingNode.C.forEach((comparingNodeChild, j) => {
-                            if (comparingNodeChild!= null || comparingNodeChild!= undefined){
-                                if (findParent(comparingNode, comparingNodeChild)){
-                                    freeNodes.push(comparingNodeChild);
-                                    comparingNode.C.splice(j,1);
-                                    removeParentFromFreeNode(comparingNodeChild);
-                                }
-                            }   
-                        });
-                    }               
-                });       
-            }); 
-        } 
-        
     }
 
     // checks the free node array and removes all nodes still in the levels representation
@@ -168,6 +81,7 @@ export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNod
     let draggedKeyIndex = -1;
     let draggedKeyNodeIndex = -1;
     let draggedKeyLevelIndex = -1;
+    let rootNodeSelcted = false;
 
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
@@ -194,25 +108,9 @@ export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNod
                             // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
                             selectedNode =  new BTreeNode(node.t, false);
                             selectedNode.keys[0] = selectedKey;
-                            freeNodes.push(selectedNode);                          
-
-                            // this makes all the children of the selected key into free nodes  if nmber of keys is > 1
-                            // case dependant                           
-                            if (k===0 && node.keys.filter((key) => key.value != undefined).length > 1){
-                                //left case
-                                // if the key is on the left of the node, remove only the left child and the subtree
-                                addChildrenToFreeNode(levels, freeNodes,node, 0,k);
-                            } else if (k === node.keys.filter((key) => key.value != undefined).length -1 && node.keys.filter((key) => key.value != undefined).length > 1){
-                                //right case
-                                // if the key is on the right of the node, remove only the right child and the subtree
-                                addChildrenToFreeNode(levels, freeNodes,node, 1,k);
-
-                            } else {
-                                // middle case
-                                // if the key is in the middle of the node, remove two of the children
-                                addChildrenToFreeNode(levels, freeNodes,node, 2,k);
-                            }
-                            // checks the free node array and removes all nodes still in the levels representation
+                            freeNodes.push(selectedNode);  
+                            
+                            addChildrenToFreeNode(levels, freeNodes, node);
                             removeFreeNodesFromLevel(levels, freeNodes);
 
                             // this removes the selected key from the node
@@ -272,12 +170,11 @@ export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNod
             }
         });
     });
-    return [selectedKey, selectedNode, draggedKeyIndex, draggedKeyNodeIndex, draggedKeyLevelIndex, isDragMode, isFreeNodeSelected]
+    return [selectedKey, selectedNode, draggedKeyIndex, draggedKeyNodeIndex, draggedKeyLevelIndex, isDragMode, isFreeNodeSelected, rootNodeSelcted]
 }
 
 // FIND THE DROP OFF WHEN DRAGGING NODE
 export function findDropOffAreaOfNode(levels, freeNodes,selectedKey,selectedNode, mouseX, mouseY, moveFullNodeMode){
-
     let dropOffKeyIndex = -1;
     let dropOffNodeKeyIndex = -1;
     let dropOffLevelKeyIndex = -1;
@@ -290,10 +187,11 @@ export function findDropOffAreaOfNode(levels, freeNodes,selectedKey,selectedNode
                     // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
                     if (!(key.value === undefined)) {
                         // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                        let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
-                        let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
-                        if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
-                        && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                        let inXBounds = key.x - 60 <= mouseX && mouseX <= key.x + 60;
+                        let inYBounds = key.y - 45 <= mouseY && mouseY <= key.y + 45;
+                        // if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
+                        // && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                        if (inXBounds && inYBounds){ 
                             dropOffKeyIndex = k;
                             dropOffNodeKeyIndex = j;
                             dropOffLevelKeyIndex = i;
@@ -314,19 +212,20 @@ export function findDropOffAreaOfNode(levels, freeNodes,selectedKey,selectedNode
                     // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
                     if (!(key.value === undefined)) {
                         // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
-                        let inXBounds = key.x - 45 <= mouseX && mouseX <= key.x + 45;
-                        let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
+                        let inXBounds = key.x - 60 <= mouseX && mouseX <= key.x + 60;
+                        let inYBounds = key.y - 45 <= mouseY && mouseY <= key.y + 45;
                         
                         if (selectedNode!==node){
-                            if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
-                            && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {  
+                            // if (inXBounds && inYBounds && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)
+                            // && !isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
+                            if (inXBounds && inYBounds){  
                                 dropOffKeyIndex = k;
                                 dropOffNodeKeyIndex = j;               
         
                                     // if the mode is not in move full node then  do this
                                 if (moveFullNodeMode === false){
-                                    if (key !== selectedkey){
-                                        keysThatNeedToChange.push(userDrawingTree.freeNodes[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
+                                    if (key !== selectedKey){
+                                        keysThatNeedToChange.push(freeNodes[dropOffNodeKeyIndex].keys[dropOffKeyIndex]);
                                         isNodeAFreeNode =true;
                                     }                                                      
                                 }                       
@@ -420,7 +319,6 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
     }
 }
 
-
 export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSelected, selectedLevel, selectedNode, selectedChild){
     freeNodes.forEach(node => {
         let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
@@ -498,8 +396,7 @@ export function detectMouseHoverOverArrowHitbox(levels, freeNodes, mouseX, mouse
                             if (node.C[k+1]===null || node.C[k+1]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }   
-                            
+                            }
                         }
                     } else {
                         // if the hover is on the right end then the right hitbox is shown
