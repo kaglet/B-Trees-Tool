@@ -87,7 +87,7 @@ function drawCreate() {
     graphics.clearRect(0, 0, canvas.width, canvas.height);
     
     userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor,null, null);
 }
 
 function drawQuestion() {
@@ -99,7 +99,7 @@ function drawQuestion() {
     // make tree must be used when generating question. ie. make tree should allow user interactivity while draw tree shoudl not
     // makeTree(tree.root, canvas.width / 2, 30, canvas);
     userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
     // note, when doing questions, pass in the userTree.root instead of the tree.root
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
 }
@@ -159,11 +159,11 @@ function moveCanvas(direction) {
     graphics.clearRect(0, 0, canvas.width , canvas.height );
 
     // Apply the transformation
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
 
     // TODO: logic to be handled between create and question
     userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
 }
 
 function zoomCanvas(zoom) {
@@ -175,10 +175,10 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions();
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -228,7 +228,7 @@ function generateRandomQuestion() {
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
-    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -481,7 +481,7 @@ canvas.addEventListener('mousedown', (e) => {
         
         // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, selectedKeyObject, false);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, selectedKeyObject, false);
     }
 
     if (isMouseHoveringOverHitbox && isDrawArrowMode == false){
@@ -526,10 +526,10 @@ canvas.addEventListener('mousemove', (e) => {
         let isInPlace= findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes,selectedKeyObject,selectedNodeObject, mouseX, mouseY, moveFullNodeMode)
         if (isInPlace[0].length>0){
             graphics.clearRect(0, 0, canvas.width  , canvas.height);
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, selectedKeyObject, true);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, selectedKeyObject, true);
         } else {
             graphics.clearRect(0, 0, canvas.width  , canvas.height);
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, selectedKeyObject, false);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, selectedKeyObject, false);
         }
 
     } else {
@@ -542,7 +542,7 @@ canvas.addEventListener('mousemove', (e) => {
         }
         if (isDrawArrowMode && selectedKeyForDrawArrow) {
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
             if (selectedNodeForDrawArrow.keys.indexOf(selectedKeyForDrawArrow)===0){
                 if (SelectedChildDrawArrowLevel===1){
                     drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);                    
@@ -599,7 +599,7 @@ window.addEventListener('mouseup', (e) => {
         }
          // Call drawTree because tree has not changed
         graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,null,null);
+        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor,null,null);
         console.log(userDrawingTree)
         if (rootNodeSelcted){
             rootNodeSelcted=false;
@@ -621,7 +621,7 @@ document.addEventListener("keydown", function(event) {
               console.log("Move Full Node mode NOT active");
             }
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, null, null);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null);
             // You can add your code here to handle the spacebar event
           }
     }

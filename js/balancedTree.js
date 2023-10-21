@@ -372,7 +372,7 @@ export class BTree {
         this.freeNodes = [];
     }
 
-    assignNodePositions() {
+    assignNodePositions(scaleFactor) {
         // TODO: Within this function do the following:
         // Loop through this.levels for this tree's levels
         // If a new node is encountered then loop through its keys, assigning them such that they are spaced them all together in a group
@@ -383,9 +383,9 @@ export class BTree {
         gives the number of nodes at that depth. Or getting the size of the node.key array gives the number of keys in that node. 
         Given these convenient known sizes, we can divide them on the canvas space however we wish.
         */
-        const ySpacing = 120;
-        const keySpacing = 60;
-        let canvasWidth = 900;
+        const ySpacing = 120*scaleFactor;
+        const keySpacing = 60*scaleFactor;
+        let canvasWidth = 900*scaleFactor;
         console.clear();
         // console.log(this);
 
@@ -413,10 +413,10 @@ export class BTree {
             const availableWidth = canvasWidth - totalKeyWidth; //space left over
             nodeSpacing = availableWidth / (numNodes + 1); //space between nodes
            // const startX = nodeSpacing; // start from the first node position
-            canvasWidth+=20;
+            canvasWidth+=(20*scaleFactor);
             }
         
-            let accumulatedLevelWidth = nodeSpacing + 20;
+            let accumulatedLevelWidth = nodeSpacing + (20*scaleFactor);
             
            // debug
             // console.log("LEVEL: " + (i + 1));
@@ -438,12 +438,12 @@ export class BTree {
                     let nodelength = 0;
                     for (let k = 0; k < numKeys; k++) {
                         // 60 is the spacing between each key (blue section)
-                        const keyX = accumulatedLevelWidth + k * 60;
+                        const keyX = accumulatedLevelWidth + k * 60 * scaleFactor;
                         
-                        nodelength += 60;
+                        nodelength += 60* scaleFactor;
 
                         // 60 moves the entire tree down by 60 units
-                        const keyY = i * ySpacing + 60;
+                        const keyY = i * ySpacing + 60* scaleFactor;
         
                         // Assign x and y values to the BTreeKey if the node exists
                         if (currNode.keys[k].value != undefined){

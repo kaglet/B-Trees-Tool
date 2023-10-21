@@ -1,8 +1,10 @@
 let graphics;
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
+let scaleFactor;
 
 
-export function drawTree(node, canvas, freeNodes, moveFullNodeMode, selectedKey, isBound) {
+export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1,selectedKey, isBound) {
+    scaleFactor = scaleFactor1;
     graphics = canvas.getContext("2d");
     //let canvasWidth = canvas.width;
     if (!node) return;
@@ -74,7 +76,7 @@ function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBound){
 
 function getNodeWidth(keys) {
     
-    return keys.length * 60;
+    return keys.length * 60 * scaleFactor;
 }
 
 function getNodeKeys(node) {
@@ -100,7 +102,7 @@ function isChildLessThanKey(childKeys, keyValues, index) {
 function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode, selectedKey, isBound) {
     key.calculateArrowHitbox(30);
 
-    const keySize = 60; //size of blue square -- hopefull make into draggable
+    const keySize = 60; //problem with scaling??
     if (moveFullNodeMode && keyZero === 0){
         graphics.fillStyle = "lightgreen";
     } else {
