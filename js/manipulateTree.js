@@ -547,3 +547,25 @@ export function recieveNodesRedCircles(freeNodes, selectedNode, graphics){
     });
 }
 
+export function drawBinIcon(graphics){
+    graphics.strokeStyle = "red";
+    graphics.lineWidth = 3;
+    const size = 30; // Size of the "X"
+    const x = canvas.width - size - 10; // Adjust the position as needed
+    const y = canvas.height - size - 10; // Adjust the position as needed
+
+    // Draw the first line of the "X"
+    graphics.beginPath();
+    graphics.moveTo(x, y);
+    graphics.lineTo(x + size, y + size);
+    graphics.stroke();
+
+
+    // Draw the second line of the "X"
+    graphics.beginPath();
+    graphics.moveTo(x + size, y);
+    graphics.lineTo(x, y + size);
+    graphics.stroke();
+
+    return [x,y,x+size,y+size];
+}

@@ -3,14 +3,14 @@ import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 let scaleFactor;
 
 
-export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1,selectedKey, isBound) {
+export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1,selectedKey, isBoundSnap, isBoundBin ) {
     scaleFactor = scaleFactor1;
     graphics = canvas.getContext("2d");
     //let canvasWidth = canvas.width;
     if (!node) return;
 
     if(node.parent === null){
-        drawFreeNodes(freeNodes,moveFullNodeMode, selectedKey, isBound );        
+        drawFreeNodes(freeNodes,moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin );        
     }
 
     fixSnapping(node, moveFullNodeMode);
@@ -20,7 +20,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
     const nodeSpacing = 40;
     const arrowSize = 15; // Size of the arrowhead
 
-    drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBound);
+    drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
     
     
 
@@ -45,7 +45,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
 
                 childXPositions.push(childX);
 
-                drawTree(child, canvas, freeNodes, moveFullNodeMode, selectedKey, isBound);
+                drawTree(child, canvas, freeNodes, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
             }
         });
 
@@ -55,7 +55,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
 
 }
 
-function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBound){
+function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBoundSnap, isBoundBin){
     
     if(freeNodes.length > 0){
         freeNodes.forEach((node, index) => {
@@ -65,7 +65,7 @@ function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBound){
             const nodeWidth = getNodeWidth(keys);
             const nodeSpacing = 40;
             const arrowSize = 15; // Size of the arrowhead
-            drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBound);
+            drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
         });
     }
     
@@ -99,7 +99,7 @@ function isChildLessThanKey(childKeys, keyValues, index) {
         : false;
 }
 
-function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode, selectedKey, isBound) {
+function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin) {
     key.calculateArrowHitbox(30);
 
     const keySize = 60; //problem with scaling??
@@ -107,11 +107,14 @@ function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode, selectedKe
         graphics.fillStyle = "lightgreen";
     } else {
         if (key === selectedKey){
-            if (!isBound){
-                graphics.fillStyle = "#87CEFA";
+            if (isBoundBin) {
+                graphics.fillStyle = "#FFCCCC";
             } else {
-                console.log("isBound");
-                graphics.fillStyle = "lightgreen";
+                if (!isBoundSnap){
+                    graphics.fillStyle = "#87CEFA";
+                } else {
+                    graphics.fillStyle = "lightgreen";
+                }
             }
         } else {
             graphics.fillStyle = "lightblue";
@@ -132,7 +135,7 @@ function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode, selectedKe
     
 }
 
-export function drawNode(keys, graphics, moveFullNodeMode , selectedKey, isBound) {
+export function drawNode(keys, graphics, moveFullNodeMode , selectedKey, isBoundSnap, isBoundBin) {
     const nodeHeight = 60;
     // const validKeys = keys;
     const validKeys = keys.filter((key) => key.x !== undefined);  //tking away undefined from array
@@ -150,7 +153,7 @@ export function drawNode(keys, graphics, moveFullNodeMode , selectedKey, isBound
 
     validKeys.forEach((key, keyZero) => {
 
-        drawKey(key, graphics, keyZero, moveFullNodeMode, selectedKey, isBound);
+        drawKey(key, graphics, keyZero, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
         
     });
 }
