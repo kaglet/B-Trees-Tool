@@ -219,9 +219,8 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
             node.keys.forEach((key, k) => {
-                // If coordinate x and y are in range defined by key both then this is the key whose index must be saved
+                // If coordinate x and y are in range defined by key both then this is the key whose index must be saved for dragging
                 if (!(key.value === undefined)) {
-                    // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
                     let inXBounds = key.x - 30 <= mouseX && mouseX <= key.x + 30;
                     let inYBounds = key.y - 30 <= mouseY && mouseY <= key.y + 30;
                     if (inXBounds && inYBounds) {
@@ -251,22 +250,17 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
         });
     });
 }
-// it is drawn, it finds them, it translates the drawn key in coordinates and calls redraw
-// shouldn't matter where key is taken from in drawing source as long as selected key's coordinates are translated
 
-
-// if they do intersect check immediate left and right neighbor and key that intersects there, except this code already finds immediate left and right neighbours
-// it should find 2 at most unless there is messed up overlapping
-// other option is is far if its already present within a node group then unsnap otherwise I just unsnap from where it is currently saved indices at
-// it means its too far from others now and while being dragged must be unsnapped
+// it should find 2 neighbors at most (left and right) due to precise threshold of 60 between x centers
 function getCloseNeighbors(draggedKey, levels) {
     let draggedKeyX = draggedKey.x;
     let draggedKeyY = draggedKey.y;
     let neighboringKeyInfoObject = {
         neighborExists: false,
     };
-    // check if the key centers are close enough in the x, if at least 60 from each other than they are virtually touching their edges
-    // the centers are useful since they are already defined that way
+
+    // Check if the key centers are close enough in the x, if at least 60 from each other than they are virtually touching their edges
+    // The centers are useful since they are already defined that way
     let distanceFromKeyCenters = 60;
     levels.forEach((level, i) => {
         level.forEach((node, j) => {
@@ -275,18 +269,12 @@ function getCloseNeighbors(draggedKey, levels) {
                 // this is to skip the same key being checked against itself
                 if (!(draggedKeyLevelIndex !== -1 && k === draggedKeyIndex)) {
                     if (!(key.value === undefined)) {
-                        // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
                         // if they close in x regardless of which is left or right
                         let closeInX = (Math.max(draggedKeyX, key.x) - Math.min(draggedKeyX, key.x)) <= distanceFromKeyCenters;
                         // center of one y must lie within range of other
                         // if you subtract one y from another they must be an absolute distance of 30 from each other
                         let intersectingInY = Math.abs(draggedKeyY - key.y) <= 30;
                         if (closeInX && intersectingInY) {
-                            // save left and right neighbor if left or right neighbor
-                            // check by x value if less than else if greater than
-                            // always insert to the left (see as right neighbor) if equal by convention
-                            // can mark this intersected key position on left and right
-                            // ideally there should be maximum two
                             isDragMode = true;
                             let neighborKeyIndex = k;
                             let neighborKeyNodeIndex = j;
@@ -295,21 +283,37 @@ function getCloseNeighbors(draggedKey, levels) {
                             let neighbor = {
                                 neighborKeyIndex,
                                 neighborKeyNodeIndex,
-                                neighborKeyLevelIndex
+                                neighborKeyLevelIndex,
+                                isCloserToDraggedKey : false,
                             };
-                            // draggedKeyX and Y is only relevant if its in the levels array otherwise it won't ever find it within the bounds
-                            // better to just save the dragged key itself as the object it is an not its index and then check that against places its to be inserted
-                            // meta-data about if its in floating nodes array or levels array can be stored if needed if there is no simpler solution
+
+                            // always insert to the left (see as right neighbor) if equal by convention
                             if (draggedKeyX <= key.x) {
                                 console.log("I am right neighbor: ");
                                 console.log(key);
+                                console.log("I am dragged key: ");
+                                console.log(draggedKey);
                                 neighboringKeyInfoObject.neighborExists = true;
                                 neighboringKeyInfoObject.rightNeighbor = neighbor;
+
+                                if (neighboringKeyInfoObject.leftNeighbor !== undefined) {
+                                    let distanceToLeftNeighbor = draggedKeyX - tree.levels[neighboringKeyInfoObject.leftNeighbor.neighborKeyLevelIndex][neighboringKeyInfoObject.leftNeighbor.neighborKeyNodeIndex].keys[neighboringKeyInfoObject.leftNeighbor.neighborKeyIndex].x;
+                                    let distanceToRightNeighbor = tree.levels[neighboringKeyInfoObject.rightNeighbor.neighborKeyLevelIndex][neighboringKeyInfoObject.rightNeighbor.neighborKeyNodeIndex].keys[neighboringKeyInfoObject.rightNeighbor.neighborKeyIndex].x - draggedKeyX;
+                                    let rightNeighborCloserThanLeft = distanceToRightNeighbor < distanceToLeftNeighbor;
+                                    if (rightNeighborCloserThanLeft) {
+                                        neighboringKeyInfoObject.rightNeighbor.isCloserToDraggedKey = true;
+                                        neighboringKeyInfoObject.leftNeighbor.isCloserToDraggedKey = false;
+                                    }
+                                }
+                                // TODO: You can return here after finding right neighbor since left neighbor will be found first (not always if it doesn't exist), but right neighbor will always be found last in scan through
                             } else {
                                 console.log("I am left neighbor: ");
                                 console.log(key);
+                                console.log("I am dragged key: ");
+                                console.log(draggedKey);
                                 neighboringKeyInfoObject.neighborExists = true;
                                 neighboringKeyInfoObject.leftNeighbor = neighbor;
+                                neighboringKeyInfoObject.leftNeighbor.isCloserToDraggedKey = true;
                             }
                         }
                     }
@@ -534,11 +538,8 @@ canvas.addEventListener('mousemove', (e) => {
     }
 });
 
-// Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
-// mouse down can then call draw to redraw such that its only drawing translation of key but not other levels representations updates which is fine
-// as effective and easy to follow
 // TODO: Make sure tree is not always redrawn on mouse up on window otherwise it bugs out when the user clicks cancels and mouses up and redraws the tree
-// TODO: better to set the tree to undefined on cancel
+// TODO: For the above it is better to set the tree to undefined on cancel
 window.addEventListener('mouseup', () => {
     if (tree !== undefined) {
         // I try to find a key where it doesn't exist because draggedKeyLevelIndex
@@ -546,72 +547,79 @@ window.addEventListener('mouseup', () => {
         // it's left where it is and bug is when i try click anywhere while not saving a new drag index
         // if I drag other keys the tree is redrawn with the keys having correctly disappeared
         let key = draggedKeyLevelIndex !== -1 ? tree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex] : tree.floatingNodes[draggedKeyNodeIndex].keys[draggedKeyIndex];
-        // TODO: Make work with the currently selected tree whether from floatingNodes representation if level = -1 or normal representation
-        // TODO: Wherever a node from levels is assumed be careful to account for if dragged node has level -1 and is therefore in floating Nodes, it's fine we'll get there
-    
-        // If neighbors detected snap in or out else do nothing if not close to other keys in nodes
-        // Getting right neighbours of key but it does not exist on next mouse move if removed at previous mouse move
-        // snap in and out on mouse up for now
+
         // TODO: Decide if I only splice from tree or if they can connect to each other as floating nodes
         // if they form a larger node though how do I unsnap another
         let neighboringKeyInfoObject = getCloseNeighbors(key, tree.levels);
         if (neighboringKeyInfoObject.neighborExists) {
             // try find left neighbor and can just replace itself
-            if (neighboringKeyInfoObject.leftNeighbor !== undefined) {
+            // left neighbor is always selected first, let's finesse that
+            if (neighboringKeyInfoObject.leftNeighbor !== undefined && neighboringKeyInfoObject.leftNeighbor.isCloserToDraggedKey) {
                 let neighborLevelIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyNodeIndex;
                 let neighborKeyIndex = neighboringKeyInfoObject.leftNeighbor.neighborKeyIndex;
-                let mappedKeys = tree.floatingNodes.flatMap(node => {
-                    return node.keys[0];
-                }); 
-
-                // TODO: if key is floating enter it otherwise do not
-                // it won't detect a right neighbor if it is itself in the levels array
-                // TODO: Take out mappedKeys
-                if (mappedKeys.includes(key)) {
-                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
-
-                    let nodeToRemoveIndex;
-                    tree.floatingNodes.forEach((node, i) => {
-                        if (node[0] == key) {
-                            nodeToRemoveIndex = i;
-                            return;
-                        }
-                    })
-                    
-                    tree.floatingNodes.splice(nodeToRemoveIndex, 1);
+                if (draggedKeyLevelIndex === -1) {
+                    let mappedKeys = tree.floatingNodes.flatMap(node => {
+                        return node.keys[0];
+                    }); 
+    
+                    if (mappedKeys.includes(key)) {
+                        tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
+    
+                        let nodeToRemoveIndex;
+                        tree.floatingNodes.forEach((node, i) => {
+                            if (node[0] == key) {
+                                nodeToRemoveIndex = i;
+                                return;
+                            }
+                        })
+                        
+                        tree.floatingNodes.splice(nodeToRemoveIndex, 1);
+                    }
+                } else {
+                    // remove where it was before in levels
+                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(draggedKeyIndex, 1);
+                    // we alter tree so be careful with indices
+                    // e.g. neighbor is 1 before and shifts down to 0 from removal then that's where you must add
+                    // add where it should be
+                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex, 0, key);
                 }
-                // TODO: Pop from floating levels representation
             } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
                 // TODO: Make function out of this and index to add at and how to splice
                 let neighborLevelIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyNodeIndex;
                 let neighborKeyIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyIndex;
 
-                let mappedKeys = tree.floatingNodes.flatMap(node => {
-                    return node.keys[0];
-                }); 
-                if (mappedKeys.includes(key)) {
-                    // when identifying a right neighbor add current key to the left of it
-                    // if left index to splice in at is -1 that means only one key is left, so simply splice in at beginning
-                    // splice in index is index it must occupy and everything else is shifted without deletion
-                    if (neighborKeyIndex - 1 === -1) {
-                        tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
-                    } else {
-                        tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex, 0, key);
-                    }
-
-                    let nodeToRemoveIndex;
-                    tree.floatingNodes.forEach((node, i) => {
-                        if (node[0] == key) {
-                            nodeToRemoveIndex = i;
-                            return;
+                if (draggedKeyLevelIndex === -1) {
+                    let mappedKeys = tree.floatingNodes.flatMap(node => {
+                        return node.keys[0];
+                    }); 
+                    if (mappedKeys.includes(key)) {
+                        // when identifying a right neighbor add current key to the left of it
+                        // if left index to splice in at is -1 that means only one key is left, so simply splice in at beginning
+                        // splice in index is index it must occupy and everything else is shifted without deletion
+                        if (neighborKeyIndex - 1 === -1) {
+                            tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+                        } else {
+                            tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex, 0, key);
                         }
-                    })
-                    
-                    tree.floatingNodes.splice(nodeToRemoveIndex, 1);
+    
+                        let nodeToRemoveIndex;
+                        tree.floatingNodes.forEach((node, i) => {
+                            if (node[0] == key) {
+                                nodeToRemoveIndex = i;
+                                return;
+                            }
+                        })
+                        
+                        tree.floatingNodes.splice(nodeToRemoveIndex, 1);
+                    }
+                } else {
+                    // remove where it was before in levels
+                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(draggedKeyIndex, 1);
+                    // add where it should be
+                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex, 0, key);
                 }
-                // TODO: Pop from floating levels representation
             }
             console.log(tree);
             drawCreate();
