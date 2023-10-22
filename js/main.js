@@ -273,7 +273,7 @@ function getCloseNeighbors(draggedKey, levels) {
             node.keys.forEach((key, k) => {
                 // if key is not both inside levels and key is same as processed key skip over it
                 // this is to skip the same key being checked against itself
-                if (!(draggedKeyNodeIndex !== -1 && k === draggedKeyIndex)) {
+                if (!(draggedKeyLevelIndex !== -1 && k === draggedKeyIndex)) {
                     if (!(key.value === undefined)) {
                         // This code assumes key.x and key.y define the top left corner and the region of the key is defined by adding 30
                         // if they close in x regardless of which is left or right
@@ -565,8 +565,9 @@ window.addEventListener('mouseup', () => {
                     return node.keys[0];
                 }); 
 
-                // TODO: set breakpoint here and check if anything is added or if this is ever entered
                 // TODO: if key is floating enter it otherwise do not
+                // it won't detect a right neighbor if it is itself in the levels array
+                // TODO: Take out mappedKeys
                 if (mappedKeys.includes(key)) {
                     tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex + 1, 0, key);
 
@@ -582,13 +583,23 @@ window.addEventListener('mouseup', () => {
                 }
                 // TODO: Pop from floating levels representation
             } else if (neighboringKeyInfoObject.rightNeighbor !== undefined){
+                // TODO: Make function out of this and index to add at and how to splice
                 let neighborLevelIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyLevelIndex;
                 let neighborNodeIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyNodeIndex;
+                let neighborKeyIndex = neighboringKeyInfoObject.rightNeighbor.neighborKeyIndex;
+
                 let mappedKeys = tree.floatingNodes.flatMap(node => {
                     return node.keys[0];
                 }); 
                 if (mappedKeys.includes(key)) {
-                    tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+                    // when identifying a right neighbor add current key to the left of it
+                    // if left index to splice in at is -1 that means only one key is left, so simply splice in at beginning
+                    // splice in index is index it must occupy and everything else is shifted without deletion
+                    if (neighborKeyIndex - 1 === -1) {
+                        tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(0, 0, key);
+                    } else {
+                        tree.levels[neighborLevelIndex][neighborNodeIndex].keys.splice(neighborKeyIndex, 0, key);
+                    }
 
                     let nodeToRemoveIndex;
                     tree.floatingNodes.forEach((node, i) => {
@@ -602,7 +613,7 @@ window.addEventListener('mouseup', () => {
                 }
                 // TODO: Pop from floating levels representation
             }
-            
+            console.log(tree);
             drawCreate();
         } else {
             // if draggedKey is in levels and is moved out of bounds of any neighbors snap it out
@@ -619,7 +630,6 @@ window.addEventListener('mouseup', () => {
         }
     }
     isDragMode = false;
-    console.log(tree);
 });
 
 // TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
