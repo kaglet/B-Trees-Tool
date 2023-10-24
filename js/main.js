@@ -181,6 +181,8 @@ function zoomCanvas(zoom) {
 
 function generateRandomQuestion() {
     validateButton.classList.toggle('invisible');
+    randomQuestionButton.classList.toggle('invisible');
+
     let validationLabel = document.getElementById('validation');
     validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
@@ -448,7 +450,6 @@ randomTreeButton.addEventListener('click', () => {
 randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 validateButton.addEventListener('click', (e) => {
-    validateButton.classList.toggle('invisible');
 
     let validationLabel = document.getElementById('validation');
 
@@ -457,6 +458,9 @@ validateButton.addEventListener('click', (e) => {
         if (treeCorrect){
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid";
+            validateButton.classList.toggle('invisible');
+            randomQuestionButton.classList.toggle('invisible');
+
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
@@ -485,6 +489,7 @@ canvas.addEventListener('mousedown', (e) => {
             draggedKeyLevelIndex = functionResult[4];
             isDragMode = functionResult[5];
             isFreeNodeSelected = functionResult[6];
+            console.log(userDrawingTree)
         }
         // after key selected if drag mode turned on now drag here in same method until mouse up event
         
@@ -606,7 +611,7 @@ canvas.addEventListener('mousemove', (e) => {
                         drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
                     }
                     // call function to make arrows display
-                    recieveNodesRedCircles(userDrawingTree.freeNodes, selectedNodeForDrawArrow, graphics);
+                    recieveNodesRedCircles(userDrawingTree.levels, userDrawingTree.freeNodes, selectedNodeForDrawArrow, graphics);
                 }
             }
         }
@@ -653,8 +658,8 @@ window.addEventListener('mouseup', (e) => {
             } else if (isDrawArrowMode) {
                 isDrawArrowMode = false;
                 if (rootNodeSelcted===false){
-                    // child logic here
-                    makeNodeHaveChild(userDrawingTree.levels, userDrawingTree.freeNodes,mouseX,mouseY,selectedNodeForDrawArrow,SelectedLevelForDrawArrowLevel, selectedNodeForDrawArrow, SelectedChildDrawArrowLevel)
+                    // child logic here levels, freeNodes, mouseX, mouseY, isLevelSelected, selectedLevel, selectedNode, selectedChild)
+                    makeNodeHaveChild(userDrawingTree.levels, userDrawingTree.freeNodes,mouseX,mouseY,isSelectedLevelsForDrawArrowLevel,SelectedLevelForDrawArrowLevel, selectedNodeForDrawArrow, SelectedChildDrawArrowLevel)
                 } 
             }
             // Call drawTree because tree has not changed

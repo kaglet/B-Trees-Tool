@@ -9,10 +9,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
     //let canvasWidth = canvas.width;
     if (!node) return;
 
-    if(node.parent === null){
-        drawFreeNodes(freeNodes,moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin );        
-    }
-
+    drawFreeNodes(freeNodes,moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin );        
     fixSnapping(node, moveFullNodeMode);
     const keys = getNodeKeys(node);
     // const keys = node.keys.filter((key) => key.value !== undefined);
@@ -27,9 +24,7 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
     if (!node.leaf) {
         const numChildren = node.C.length;
 
-        const childXPositions = [];
-
-        
+        const childXPositions = [];        
 
         node.C.forEach((child, index) => {
             if (childExists(child) && hasChildKeys(child)) {
@@ -37,15 +32,15 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
                 let childWidth = calculateChildWidth(child);
                 const childX = getChildX(child);
                 const childY = getChildY(child);
-                const isLessThanKey = isChildLessThanKey(childKeys,keys,index);
+                // const isLessThanKey = isChildLessThanKey(childKeys,keys,index);
 
                 //arrowCoordinates = [startX,startY,endX,endY]
-                const arrowCoordinates = calculateArrowCoordinates(isLessThanKey,keys,nodeWidth,index,node,childX,childWidth,childY);
+                const arrowCoordinates = calculateArrowCoordinates(keys,nodeWidth,index,node,childX,childWidth,childY);
                 drawArrow(graphics,arrowCoordinates,arrowSize,childWidth);
 
                 childXPositions.push(childX);
 
-                drawTree(child, canvas, freeNodes, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
+                drawTree(child, canvas, [], moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
             }
         });
 
@@ -203,7 +198,7 @@ function fixSnapping(node, moveFullNodeMode) {
 }
 
 
-function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
+function calculateArrowStartX(keys, nodeWidth, index, node) {
     return keys[0].x-30 + (index) * 60;
 }
 
@@ -219,8 +214,8 @@ function calculateArrowEndY(childY){
     return childY;
 }
 
-function calculateArrowCoordinates(isLessThanKey, keys, nodeWidth, index, node, childX, childWidth, childY){
-    const arrowStartX = calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node);
+function calculateArrowCoordinates(keys, nodeWidth, index, node, childX, childWidth, childY){
+    const arrowStartX = calculateArrowStartX(keys, nodeWidth, index, node);
     const arrowStartY = calculateArrowStartY(keys);
     const arrowEndX = calculateArrowEndX(childX, childWidth);
     const arrowEndY = calculateArrowEndY(childY);

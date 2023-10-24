@@ -19,43 +19,206 @@ function drawRedCircleForHitbox(graphics, centerX, centerY, radius) {
     graphics.closePath();
 }
 
+// HELPER FUNCTION
+// does what is described above (split node and remove children functionality)
+function addChildrenToFreeNode(levels, freeNodes, node, nodePlacement){ 
+
+    function fixChildNodePlacement(node, nodePlacement){
+        if (nodePlacement === 0){
+            console.log("LEFT:",node.C);
+            const firstElement = node.C.shift();
+            node.C.push(firstElement);
+            console.log("LEFT AFTER FIX:",node.C);
+        } else if (nodePlacement === 1){
+            console.log("RIGHT:",node.C);
+            node.C.splice(node.C.length-1,0,undefined);
+            console.log("RIGHT AFTER FIX:",node.C);
+        } else if (nodePlacement === 2){
+            console.log("MIDDLE:",node.C);
+            let nodeCounter = 0;
+            for (let index = 0; index <node.C.length;index++){
+                if (node.C[index]!==undefined && node.C[index]!==null){
+                    nodeCounter+=1;
+                    if (nodeCounter === 2){
+                        node.C[index-1]=node.C[index];
+                        node.C[index] = undefined;
+                    }
+                }
+            }
+            console.log("MIDDLE AFTER FIX:",node.C);
+        } else{
+            console.log("MIDDLE:",node.C);
+            for (let index = 0; index <node.C.length;index++){
+                if (node.C[index] === undefined || node.C[index]===null){
+                    while (index <node.C.length) {
+                        node.C[index]=node.C[index+1];
+                        index+=1;
+                    }
+                    break;
+            
+                    
+                }
+            }
+            console.log("MIDDLE AFTER FIX:",node.C);
+
+        }
+    }
+
+    if (nodePlacement === 0){
+        // LEFT
+        let children = [];
+        let lastFirstIndex=0;
+        for (let i = 0; i <  node.C.length; i++) {
+            if (node.C[i] !== undefined && node.C[i] !== null) {
+                lastFirstIndex = i; // Update the lastIndex when a non-undefined item is found
+                break;
+            }
+        }
+        for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+            for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
+                let index = node.C.indexOf(levels[levelIndex][nodeIndex]);
+                if (index === lastFirstIndex){      
+                    console.log("BEFORE SPLICE:",node.C);              
+                    if (lastFirstIndex===0){
+                        node.C.splice(index, 1,undefined);
+                        console.log("AFTER SPLICE:",node.C);  
+                        freeNodes.push(levels[levelIndex][nodeIndex]);
+                    } else {
+                        node.C.splice(index-1, 1,undefined);
+                        console.log("AFTER SPLICE:",node.C); 
+                    }                                  
+                    children.push(levels[levelIndex][nodeIndex]);
+                    fixChildNodePlacement(node,nodePlacement);
+
+                    break;
+                    // addChildrenToFreeNode(levels,freeNodes,levels[levelIndex][nodeIndex]);
+                }     
+            }
+        }
+        for (let childIndex = 0; childIndex< children.length; childIndex++) {
+            addChildrenToFreeNode(levels,freeNodes,children[childIndex],3);
+        }
+    } else if (nodePlacement === 1){
+        // RIGHT
+        let children = [];
+        let lastIndex = node.C.length-1;
+        for (let i = node.C.length-1; i >=0 ; i--) {
+            if (node.C[i] === undefined || node.C[i] === null) {
+                lastIndex = i-1; // Update the lastIndex when a non-undefined item is found
+            }
+        }
+        for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+            for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
+                let index = node.C.indexOf(levels[levelIndex][nodeIndex]);
+                if (index === lastIndex && index !== -1){      
+                    console.log("BEFORE SPLICE:",node.C);              
+
+                    if (index === node.keys.filter((key) => key.value != undefined).length) {
+                        freeNodes.push(levels[levelIndex][nodeIndex]);
+
+                        node.C.splice(index, 1,undefined);
+                        console.log("AFTER SPLICE:",node.C);              
+
+                        children.push(levels[levelIndex][nodeIndex]);
+                        fixChildNodePlacement(node,nodePlacement);
+                    }
+                    
+
+                    break;
+                    // addChildrenToFreeNode(levels,freeNodes,levels[levelIndex][nodeIndex]);
+                }   
+            }
+        }
+        for (let childIndex = 0; childIndex< children.length; childIndex++) {
+            addChildrenToFreeNode(levels,freeNodes,children[childIndex],3);
+        }
+
+    } else if (nodePlacement === 2 ) {
+        // MIDDLE
+        let children = [];
+        let lastIndex = node.C.length-1;
+        for (let i = node.C.length-1; i >=0 ; i--) {
+            if (node.C[i] === undefined && node.C[i] === null) {
+                lastIndex = i-1; // Update the lastIndex when a non-undefined item is found
+            }
+        }
+        for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+            for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
+                let index = node.C.indexOf(levels[levelIndex][nodeIndex]);
+                if (index !==0 && index !== lastIndex && index !== -1){    
+                    console.log("BEFORE SPLICE:",node.C);              
+
+                    if (node.keys.filter((key) => key.value != undefined).length % 2 === 0){
+                        console.log("HEYO")
+                        freeNodes.push(levels[levelIndex][nodeIndex]);
+                        node.C.splice(index, 1,undefined);
+                        children.push(levels[levelIndex][nodeIndex]);
+                        console.log("AFTER SPLICE:",node.C);     
+                        fixChildNodePlacement(node,nodePlacement +1);
+                    } else {
+                        freeNodes.push(levels[levelIndex][nodeIndex]);
+                        node.C.splice(index, 1,undefined);
+                        children.push(levels[levelIndex][nodeIndex]);
+                        freeNodes.push(levels[levelIndex][nodeIndex+1]);
+                        node.C.splice(index+1, 1,undefined);
+                        children.push(levels[levelIndex][nodeIndex+1]);
+                        console.log("AFTER SPLICE:",node.C);     
+                        fixChildNodePlacement(node,nodePlacement);
+                    }                   
+                    break;
+                }     
+            }
+        }
+        for (let childIndex = 0; childIndex< children.length; childIndex++) {
+            addChildrenToFreeNode(levels,freeNodes,children[childIndex],3);
+        }
+
+    } else {
+        let children = [];
+        for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+            for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
+                let index = node.C.indexOf(levels[levelIndex][nodeIndex]);
+                if (index !==-1){      
+                    console.log(levels[levelIndex][nodeIndex]);    
+                    console.log("BEFORE SPLICE:",node.C);              
+
+                    freeNodes.push(levels[levelIndex][nodeIndex]);
+                    node.C.splice(index, 1,undefined);
+                    console.log("AFTER SPLICE:",node.C);              
+
+                    children.push(levels[levelIndex][nodeIndex]);
+                    // addChildrenToFreeNode(levels,freeNodes,levels[levelIndex][nodeIndex]);
+                }     
+            }
+        }
+        for (let childIndex = 0; childIndex< children.length; childIndex++) {
+            addChildrenToFreeNode(levels,freeNodes,children[childIndex],3);
+        }
+    }
+    
+}
+
 // PULLS A KEY OFF A NODE
 export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNodeMode) {
 
     // removes the node from its parent child node
     function removeParentFromFreeNode(node){
         if (node.parent!==null){
-            let index = node.parent.C.indexOf(node)
-            node.parent.C.splice(index,1);
-            node.parent.C.splice(index,0,undefined);
+            // let index = node.parent.C.indexOf(node)
+            // node.parent.C.splice(index,1);
+            // node.parent.C.splice(index,0,undefined);
             node.parent = null;
-        }
-    }
-
-    // does what is described above (split node and remove children functionality)
-    function addChildrenToFreeNode(levels, freeNodes, node){ 
-        for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
-            for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
-                if (node.C.indexOf(levels[levelIndex][nodeIndex]) !==-1){                       
-                    freeNodes.push(levels[levelIndex][nodeIndex]);
-                    node.C.splice(node.C.indexOf(levels[levelIndex][nodeIndex]),1);
-                    node.C.splice(node.C.indexOf(levels[levelIndex][nodeIndex]),0,undefined);
-                    removeParentFromFreeNode(levels[levelIndex][nodeIndex]);
-                    addChildrenToFreeNode(levels,freeNodes,levels[levelIndex][nodeIndex]);
-                }     
-            }
         }
     }
 
     // checks the free node array and removes all nodes still in the levels representation
     function removeFreeNodesFromLevel(levels, freeNodes) {
         for (let i = levels.length - 1; i >= 0; i--) {
-            const level = levels[i];
-        
+            const level = levels[i];        
             for (let j = level.length - 1; j >= 0; j--) {
-                const comparingNode = level[j];
-        
+                const comparingNode = level[j];        
                 if (freeNodes.includes(comparingNode)) {
+                    removeParentFromFreeNode(comparingNode);
                     levels[i].splice(j, 1);
                 }
             }
@@ -103,14 +266,33 @@ export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNod
          
                         // if the move full node option is not selected then do the following (allow user to break a key of a node)
                         if (node.parent === null && node.keys.filter((key) => key.value != undefined).length === 1 ){
+                            console.log("ROOT");
                             rootNodeSelcted = true;
                         } else if (moveFullNodeMode === false){
                             // on selecting a new key, this adds the node to the free nodes structure and adds the key to the new node
                             selectedNode =  new BTreeNode(node.t, false);
                             selectedNode.keys[0] = selectedKey;
-                            freeNodes.push(selectedNode);  
+                            freeNodes.push(selectedNode); 
+                            if (k===0){
+                                if ( node.keys.filter((key) => key.value != undefined).length === 1){    
+                                    //left with no keys
+                                    console.log("LEFT NO KEYS");
+                                    addChildrenToFreeNode(levels, freeNodes, node,3);
+                                } else {
+                                    //left with other keys
+                                    console.log("LEFT");
+                                    addChildrenToFreeNode(levels, freeNodes, node,0);
+                                }                                
+                            } else if (k === node.keys.filter((key) => key.value != undefined).length-1){
+                                //right
+                                console.log("RIGHT");
+                                addChildrenToFreeNode(levels, freeNodes, node,1);
+                            } else {
+                                //middle
+                                console.log("MIDLE");
+                                addChildrenToFreeNode(levels, freeNodes, node,2);
+                            }
                             
-                            addChildrenToFreeNode(levels, freeNodes, node);
                             removeFreeNodesFromLevel(levels, freeNodes);
 
                             // this removes the selected key from the node
@@ -256,11 +438,18 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
             freeNodes.splice(freeNodes.indexOf(nodeToSnap),1);
             nodeToReceive.keys.unshift(nodeToSnap.keys[0]);
             nodeToReceive.keys[0].y = nodeToReceive.keys[1].y;
+            if (nodeToReceive.C[0] !== undefined && nodeToReceive.C[0] !== null){
+                if (nodeToReceive.C[nodeToReceive.C.length-1] === undefined || nodeToReceive.C[nodeToReceive.C.length-1] === null){
+                    nodeToReceive.C.splice(nodeToReceive.C.length-1,1);
+                }
+                nodeToReceive.C.splice(0,0,undefined);
+            }
+            console.log("LEFT AFTER ADD BACK",nodeToReceive.C)
+
 
         } else {
             // right end
             console.log('ADD RIGHT',nodeToSnap,' to end',nodeToReceive);
-
             // check for undefines in the node to recieve
             let areThereUndefines = false;
             let undefinedIndex = 0;
@@ -280,12 +469,20 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
                 // if there are undefines add the key to the index of the first undefined
                 nodeToReceive.keys[undefinedIndex] = nodeToSnap.keys[0];
                 nodeToReceive.keys[undefinedIndex].y = nodeToReceive.keys[0].y;
-                return nodeToReceive;
+                if (nodeToReceive.C[undefinedIndex+1] !== undefined || nodeToReceive.C[undefinedIndex+1] !== null){
+                    nodeToReceive.C.splice(undefinedIndex+1,0,undefined);
+                }
+                console.log("RIGHT AFTER ADD BACK UNDEFINES",nodeToReceive.C)
 
             } else {
                 // if there arent undefines, then push the key to the end of the array of keys
                 nodeToReceive.keys.push(nodeToSnap.keys[0]);
                 nodeToReceive.keys[nodeToReceive.keys.length-1].y = nodeToReceive.keys[1].y;
+                if (nodeToReceive.C[nodeToReceive.C.length-1] !== undefined || nodeToReceive.C[nodeToReceive.C.length-1]!== null){
+                    nodeToReceive.C.splice(nodeToReceive.keys.length,0,undefined);
+                }
+                console.log("RIGHT AFTER ADD BACK",nodeToReceive.C)
+
 
             }
 
@@ -311,6 +508,7 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
             freeNodes.splice(freeNodes.indexOf(nodeToSnap),1);
             nodeToReceive.keys.splice(insertKeyInThisIndex,0,nodeToSnap.keys[0]);
             nodeToReceive.keys[insertKeyInThisIndex].y = nodeToReceive.keys[0].y;
+            nodeToReceive.C.splice(insertKeyInThisIndex+1,0,undefined);
 
         } else {
             console.log("odd middle error look into it")
@@ -365,12 +563,73 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                     selectedNode.C[selectedChild] = node;
                     //  set the new nodes parent node to the parent and make it a leaf
                     node.parent = selectedNode;
+                    selectedNode.leaf=false;
+                    node.leaf = true;
+
+
                 }  
             }
 
-        } else {
-
         }
+    });
+
+    levels.forEach(level => {
+        level.forEach(node => {
+            let treeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
+            let receiveArrowY = node.keys[0].y -30;
+            let receiveArrowX = (node.keys[treeNodeKeyLength-1].x + node.keys[0].x)/2;
+            if (isMouseWithinHitboxBounds(mouseX,mouseY,receiveArrowX,receiveArrowY)){
+                    if (selectedNode.C.indexOf(node) !==-1){
+                    // if the levele is selcted and an idnetical arrow is not trying to be created then do the folowing
+                        if (isLevelSelected && node !== selectedNode.C[selectedChild]) {
+                            console.log("PARENT Level : ",selectedLevel)
+                            console.log("INDEX to insters into parent child : ",selectedChild)
+        
+                            
+                            // console.log("NUM CHILDREN",numChildrenInLevel)
+                            console.log("SELECTED CHILD INT",selectedChild)    
+                            console.log("NODE",node);
+                            console.log("CHILD SELECTED NODE",selectedNode.C[selectedChild]);
+                            console.log("PARENT SELECTE NODE",selectedNode)
+
+                            // adds the old node child to the freenodes
+                            if (selectedNode.C[selectedChild] !== undefined && selectedNode.C[selectedChild] !== null) {
+                                freeNodes.push(selectedNode.C[selectedChild]);
+                                level.splice(level.indexOf(selectedNode.C[selectedChild]),1);
+                                addChildrenToFreeNode(levels,freeNodes,selectedNode.C[selectedChild],3)
+                            }
+
+                            // removing previous selcted items children and childrens children
+                            for (let index = 0; index < selectedNode.C.length; index++) {
+                                if (selectedNode.C[index] === node && index !== selectedChild){
+                                    console.log("FOR LOOP HUH",selectedNode.C[index]);
+                                    selectedNode.C[index] = undefined;
+                                    level.splice(level.indexOf(selectedNode.C[index]),1);
+                                }                            
+                            }
+
+                            let parentNodeIndex = levels[selectedLevel].indexOf(selectedNode);
+                            let numChildrenInLevel = 0;
+                            for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
+                                let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
+                                numChildrenInLevel += numChildrenInNode;
+                            }
+                            numChildrenInLevel += selectedChild;
+
+                            
+                            // adds the node to the designated spot in levels
+                            levels[selectedLevel +1].splice(numChildrenInLevel,0,node);
+                            
+                            // set the parent node to have the new child node and make it not a leaf
+                            //  set the new nodes parent node to the parent and make it a leaf
+                            selectedNode.C[selectedChild] = node;
+                            node.parent = selectedNode;
+                            selectedNode.leaf=false;
+                            node.leaf = true;
+                    }      
+                }
+            }
+        });
     });
 }
 
@@ -386,25 +645,25 @@ export function detectMouseHoverOverArrowHitbox(levels, freeNodes, mouseX, mouse
                     if (k===0) {
                         // if the hover is on the left end then the left hitbox is shown
                         if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
-                            if (node.C[k]===null || node.C[k]===undefined){
+                            // if (node.C[k]===null || node.C[k]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.leftX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }                            
+                            // }                            
                         } 
                         // if the hover is on the right end then the right hitbox is shown
                         else if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                            // if (node.C[k+1]===null || node.C[k+1]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }
+                            // }
                         }
                     } else {
                         // if the hover is on the right end then the right hitbox is shown
                         if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                            // if (node.C[k+1]===null || node.C[k+1]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }
+                            // }
                         }
                     }                    
                 }
@@ -421,26 +680,26 @@ export function detectMouseHoverOverArrowHitbox(levels, freeNodes, mouseX, mouse
                     if (k===0) {
                         // if the hover is on the left end then the left hitbox is shown
                         if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.leftX, key.arrowHitbox.centerY)) {
-                            if (node.C[k]===null || node.C[k]===undefined){
+                            // if (node.C[k]===null || node.C[k]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.leftX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }                            
+                            // }                            
                         } 
                         // if the hover is on the right end then the right hitbox is shown
                         else if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                            // if (node.C[k+1]===null || node.C[k+1]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }   
+                            // }   
                             
                         }
                     } else {
                         // if the hover is on the right end then the right hitbox is shown
                         if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.rightX, key.arrowHitbox.centerY)) {
-                            if (node.C[k+1]===null || node.C[k+1]===undefined){
+                            // if (node.C[k+1]===null || node.C[k+1]===undefined){
                                 isHovering = true;
                                 drawRedCircleForHitbox(graphics, key.arrowHitbox.rightX, key.arrowHitbox.centerY, key.arrowHitbox.radius);
-                            }
+                            // }
                         }
                     }                    
                 }
@@ -535,15 +794,28 @@ export function findselectedItemsFromArrowHitBoxClick(levels,freeNodes,mouseX,mo
     return [selectedKey, selectedNode, selectedLevel,childIndex,levelIndex];
 }
 
-export function recieveNodesRedCircles(freeNodes, selectedNode, graphics){
+export function recieveNodesRedCircles(levels, freeNodes, selectedNode, graphics){
     freeNodes.forEach(node => {
         if (node!==selectedNode){
             let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
             let receiveArrowY = node.keys[0].y -30;
             let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
             drawRedCircleForHitbox(graphics,receiveArrowX,receiveArrowY,node.keys[0].arrowHitbox.radius);
-        }       
-        
+        }      
+    });
+    let nodeFound = false;
+    levels.forEach(level => {
+        level.forEach(node => {
+            if (node === selectedNode){
+                nodeFound = true;
+            }
+            if (node!==selectedNode && nodeFound && selectedNode.C.indexOf(node) !==-1){
+                let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
+                let receiveArrowY = node.keys[0].y -30;
+                let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
+                drawRedCircleForHitbox(graphics,receiveArrowX,receiveArrowY,node.keys[0].arrowHitbox.radius);
+            }      
+        });
     });
 }
 
