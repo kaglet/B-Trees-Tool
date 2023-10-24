@@ -51,8 +51,11 @@ export function validateTree(logicTree, userDrawingTree){
         var treeEqual = areBTreesEqual(logicTree, userDrawingTree);
         if (treeEqual){
             console.log("Your tree is correct");
+            return treeEqual;
         } else {
             console.log("Your tree is in-correct");
+            return treeEqual;
+
         }
     }
 

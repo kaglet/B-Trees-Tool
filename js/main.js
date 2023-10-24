@@ -180,6 +180,9 @@ function zoomCanvas(zoom) {
 }
 
 function generateRandomQuestion() {
+    validateButton.classList.toggle('invisible');
+    let validationLabel = document.getElementById('validation');
+    validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(Math.random() * 2);
 
@@ -187,6 +190,11 @@ function generateRandomQuestion() {
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
         //insert
+
+        while (logicTree.root.search(key) != null) {
+            key = +Math.floor(Math.random() * 100);
+        }
+        
         logicTree.insert(key);
         logicTree.traverse();
 
@@ -283,18 +291,24 @@ darkModeButton.addEventListener('click', () => {
     body.classList.toggle("dark-mode");
 });
 
+
 saveButton.addEventListener('click', () => {
-    //hide
-    saveButton.classList.toggle('invisible');
-    createTreeParamtersContainer.classList.toggle('invisible');
-    insertDeleteSection.classList.toggle('invisible');
 
-    //show
-    questionsParamtersContainer.classList.toggle('invisible');
-    questionsParamtersContainer.classList.toggle('visible');
-    validateButton.classList.toggle('invisible');
+    if (logicTree && userDrawingTree){
+        let treeDegreeLabel = document.getElementById('treeDegree');
+        //hide
+        saveButton.classList.toggle('invisible');
+        createTreeParamtersContainer.classList.toggle('invisible');
+        insertDeleteSection.classList.toggle('invisible');
 
-    validateTree(logicTree, userDrawingTree);
+        //show
+        questionsParamtersContainer.classList.toggle('invisible');
+        questionsParamtersContainer.classList.toggle('visible');
+
+        treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
+    } else {
+        errorMessageLabel.textContent = "Please create a tree before saving"
+    }    
 });
 
 insertButton.addEventListener('click', () => {
@@ -338,22 +352,29 @@ customTreeButton.addEventListener('click', () => {
         if (!customTreePresent){
             // there is no custom tree created then run this
             if (maxDegreeInput.value) {
-                logicTree = new BTree(+maxDegreeInput.value);
-                userDrawingTree = new BTree(+maxDegreeInput.value);
-                graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-                // if (insertDeleteSection.classList.contains('invisible')) {
+                if (+maxDegreeInput.value > 4 || +maxDegreeInput.value <= 1) {
+                    errorMessageLabel.textContent = "Please enter a degree between 2 and 4";
+                    customTreePresent = false;
+                    return;
+                } else {
+                    logicTree = new BTree(+maxDegreeInput.value);
+                    userDrawingTree = new BTree(+maxDegreeInput.value);
+                    graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
                     insertDeleteSection.classList.toggle('invisible');
-                // }
-                errorMessageLabel.textContent = "";
-                customTreePresent = true;
-                customTreeButton.textContent = "Cancel";
-                insertInput.focus();
-                return;
+                    errorMessageLabel.textContent = "";
+                    customTreePresent = true;
+                    customTreeButton.textContent = "Cancel";
+                    insertInput.focus();
+                    return;
+                }                
             }
         } else {
             // there is already a custom tree created then run this
             insertDeleteSection.classList.toggle('invisible');
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            clear();
+            userDrawingTree = null;
+            logicTree = null;
             customTreePresent = false;
             customTreeButton.textContent = "Custom Tree";
             errorMessageLabel.textContent = "";
@@ -379,24 +400,37 @@ randomTreeButton.addEventListener('click', () => {
                 errorMessageLabel.textContent = "Please enter a num keys value before randomizing a tree";
                 return;
             }
-        
-            // if (!insertDeleteSection.classList.contains('invisible')) {
+
+            if (+maxDegreeInput.value > 4 || +maxDegreeInput.value <= 1) {
+                errorMessageLabel.textContent = "Please enter a degree between 2 and 4";
+                randomTreePresent = false;
+                return;
+            } else  if (+numKeysInput.value > 20) {
+                errorMessageLabel.textContent = "The max number of keys is 20";
+                randomTreePresent = false;
+                return;
+            } else  if (+numKeysInput.value < 1) {
+                errorMessageLabel.textContent = "The minimum number of keys is 1"; 
+                randomTreePresent = false;
+                return;
+            } else {
                 insertDeleteSection.classList.toggle('invisible');
-            // }  
-         
-            logicTree = new BTree(+maxDegreeInput.value);
-            userDrawingTree = new BTree(+maxDegreeInput.value);
-            generateRandomTree(+numKeysInput.value);
-            errorMessageLabel.textContent = "";
-            randomTreePresent = true;
-            randomTreeButton.textContent = "Cancel";
-            insertInput.focus();
-            return;
+                logicTree = new BTree(+maxDegreeInput.value);
+                userDrawingTree = new BTree(+maxDegreeInput.value);
+                generateRandomTree(+numKeysInput.value);
+                errorMessageLabel.textContent = "";
+                randomTreePresent = true;
+                randomTreeButton.textContent = "Cancel";
+                insertInput.focus();
+                return;
+            }
         } else {
             // there is already a random tree created then run this
             insertDeleteSection.classList.toggle('invisible');
             graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
             clear();
+            userDrawingTree = null;
+            logicTree = null;
             randomTreePresent = false;
             randomTreeButton.textContent = "Random Tree";
             errorMessageLabel.textContent = "";
@@ -414,8 +448,19 @@ randomTreeButton.addEventListener('click', () => {
 randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 validateButton.addEventListener('click', (e) => {
+    validateButton.classList.toggle('invisible');
+
+    let validationLabel = document.getElementById('validation');
+
     if (userDrawingTree && logicTree){
-        validateTree(logicTree,userDrawingTree);
+        let treeCorrect = validateTree(logicTree,userDrawingTree);
+        if (treeCorrect){
+            validationLabel.style.color = "green";
+            validationLabel.textContent = "Your operation was valid";
+        } else {
+            validationLabel.style.color = "red";
+            validationLabel.textContent = "Your operation was in-valid";
+        }
     }
 });
 
@@ -425,29 +470,40 @@ validateButton.addEventListener('click', (e) => {
 // so that a new node is selected
 // to detect a mouseup for redragging
 canvas.addEventListener('mousedown', (e) => {
-    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
-    // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
-    if (userDrawingTree !== undefined && isDragMode == false) {
-        let functionResult = pullKeyOffTheTree(userDrawingTree.levels, userDrawingTree.freeNodes,mouseX, mouseY, moveFullNodeMode); 
-        selectedKeyObject = functionResult[0];
-        selectedNodeObject = functionResult[1];
-        draggedKeyIndex = functionResult[2];
-        draggedKeyNodeIndex = functionResult[3];
-        draggedKeyLevelIndex = functionResult[4];
-        isDragMode = functionResult[5];
-        isFreeNodeSelected = functionResult[6];
-    }
-    // after key selected if drag mode turned on now drag here in same method until mouse up event
-    
-    if (isDragMode) {
-        // alter coordinates and call draw tree based off changed levels
-        // drag selected key in levels to match mouse coordinates, mouse already matches center of bounds the way I've done it
-        // call redraw based on levels
-        // render animation in frames maybe though its not an animation with updated frames
-        if (moveFullNodeMode){
-            if (draggedKeyIndex==0){
+    if (userDrawingTree && logicTree) {
+
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+        // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
+        // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
+        if (userDrawingTree !== undefined && isDragMode == false) {
+            let functionResult = pullKeyOffTheTree(userDrawingTree.levels, userDrawingTree.freeNodes,mouseX, mouseY, moveFullNodeMode); 
+            selectedKeyObject = functionResult[0];
+            selectedNodeObject = functionResult[1];
+            draggedKeyIndex = functionResult[2];
+            draggedKeyNodeIndex = functionResult[3];
+            draggedKeyLevelIndex = functionResult[4];
+            isDragMode = functionResult[5];
+            isFreeNodeSelected = functionResult[6];
+        }
+        // after key selected if drag mode turned on now drag here in same method until mouse up event
+        
+        if (isDragMode) {
+            // alter coordinates and call draw tree based off changed levels
+            // drag selected key in levels to match mouse coordinates, mouse already matches center of bounds the way I've done it
+            // call redraw based on levels
+            // render animation in frames maybe though its not an animation with updated frames
+            if (moveFullNodeMode){
+                if (draggedKeyIndex==0){
+                    if (isFreeNodeSelected){
+                        userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
+                        userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+                    } else {
+                        userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
+                        userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+                    }
+                }            
+            } else {
                 if (isFreeNodeSelected){
                     userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
                     userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
@@ -455,44 +511,51 @@ canvas.addEventListener('mousedown', (e) => {
                     userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
                     userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
                 }
-            }            
-        } else {
-            if (isFreeNodeSelected){
-                userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
-                userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
-            } else {
-                userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
-                userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
             }
+            
+            // Call drawTree because tree has not changed
+            graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false, false);
+
         }
-        
-        // Call drawTree because tree has not changed
-        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false, false);
 
+        if (isMouseHoveringOverHitbox && isDrawArrowMode == false){
+            isDrawArrowMode = true;
+            let functionResult = findselectedItemsFromArrowHitBoxClick(userDrawingTree.levels,userDrawingTree.freeNodes,mouseX,mouseY);
+            selectedKeyForDrawArrow = functionResult[0];
+            selectedNodeForDrawArrow = functionResult[1];
+            isSelectedLevelsForDrawArrowLevel = functionResult[2];
+            SelectedChildDrawArrowLevel = functionResult[3];
+            SelectedLevelForDrawArrowLevel = functionResult[4]
+
+
+            console.log("isDrawarrowMode: ", isDrawArrowMode);
+            console.log(selectedKeyForDrawArrow);
+        }
     }
 
-    if (isMouseHoveringOverHitbox && isDrawArrowMode == false){
-        isDrawArrowMode = true;
-        let functionResult = findselectedItemsFromArrowHitBoxClick(userDrawingTree.levels,userDrawingTree.freeNodes,mouseX,mouseY);
-        selectedKeyForDrawArrow = functionResult[0];
-        selectedNodeForDrawArrow = functionResult[1];
-        isSelectedLevelsForDrawArrowLevel = functionResult[2];
-        SelectedChildDrawArrowLevel = functionResult[3];
-        SelectedLevelForDrawArrowLevel = functionResult[4]
-
-
-        console.log("isDrawarrowMode: ", isDrawArrowMode);
-        console.log(selectedKeyForDrawArrow);
-    }
 });
 
 canvas.addEventListener('mousemove', (e) => {
-    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    if (isDragMode) {
-        if (moveFullNodeMode){
-            if (draggedKeyIndex==0){
+    if (userDrawingTree && logicTree) {
+
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+        if (isDragMode) {
+            if (moveFullNodeMode){
+                if (draggedKeyIndex==0){
+                    if (isFreeNodeSelected){
+                        userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
+                        userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+                    } else {
+                        userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
+                        userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
+                    }
+                    graphics.clearRect(0, 0, canvas.width  , canvas.height);
+                    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false, false);
+    
+                }            
+            } else {
                 if (isFreeNodeSelected){
                     userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
                     userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
@@ -500,69 +563,53 @@ canvas.addEventListener('mousemove', (e) => {
                     userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
                     userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
                 }
-                graphics.clearRect(0, 0, canvas.width  , canvas.height);
-                drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false, false);
-   
-            }            
+                // Call drawTree because tree has not changed
+                let isInPlace= findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes,selectedKeyObject,selectedNodeObject, mouseX, mouseY, moveFullNodeMode)
+                let binPositions = drawBinIcon(graphics);
+                const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
+                if (isInsideBoundsBin) {
+                    graphics.clearRect(0, 0, canvas.width  , canvas.height);
+                    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,scaleFactor, selectedKeyObject, true, true);
+                    drawBinIcon(graphics);
+                } else {
+                    if (isInPlace[0].length>0){
+                        graphics.clearRect(0, 0, canvas.width  , canvas.height);
+                        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,scaleFactor, selectedKeyObject, true, false);
+                        drawBinIcon(graphics);
+                    } else {
+                        graphics.clearRect(0, 0, canvas.width  , canvas.height);
+                        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false, false);
+                        drawBinIcon(graphics);
+                    }
+                }
+            }
         } else {
-            if (isFreeNodeSelected){
-                userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
-                userDrawingTree.freeNodes[draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
-            } else {
-                userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].x = mouseX;
-                userDrawingTree.levels[draggedKeyLevelIndex][draggedKeyNodeIndex].keys[draggedKeyIndex].y = mouseY;
-            }
-            // Call drawTree because tree has not changed
-            let isInPlace= findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes,selectedKeyObject,selectedNodeObject, mouseX, mouseY, moveFullNodeMode)
-            let binPositions = drawBinIcon(graphics);
-            const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
-            if (isInsideBoundsBin) {
-                graphics.clearRect(0, 0, canvas.width  , canvas.height);
-                drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,scaleFactor, selectedKeyObject, true, true);
-                drawBinIcon(graphics);
-            } else {
-                if (isInPlace[0].length>0){
-                    graphics.clearRect(0, 0, canvas.width  , canvas.height);
-                    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,scaleFactor, selectedKeyObject, true, false);
-                    drawBinIcon(graphics);
-                } else {
-                    graphics.clearRect(0, 0, canvas.width  , canvas.height);
-                    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode,  scaleFactor, selectedKeyObject, false, false);
-                    drawBinIcon(graphics);
+            // draws the red dot
+            if(userDrawingTree){
+                isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(userDrawingTree.levels, userDrawingTree.freeNodes, mouseX,mouseY, graphics);
+                if (!isMouseHoveringOverHitbox) {
+                    graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+                    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, null,null,null);
+
+                }
+                if (isDrawArrowMode && selectedKeyForDrawArrow) {
+                    graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+                    drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null,null);
+                    if (selectedNodeForDrawArrow.keys.indexOf(selectedKeyForDrawArrow)===0){
+                        if (SelectedChildDrawArrowLevel===1){
+                            drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);                    
+                        } else {
+                            drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.leftX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
+                        }
+
+                    }else{
+                        drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
+                    }
+                    // call function to make arrows display
+                    recieveNodesRedCircles(userDrawingTree.freeNodes, selectedNodeForDrawArrow, graphics);
                 }
             }
         }
-        
-        
-        
-
-
-    } else {
-        // draws the red dot
-    if(userDrawingTree){
-        isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(userDrawingTree.levels, userDrawingTree.freeNodes, mouseX,mouseY, graphics);
-        if (!isMouseHoveringOverHitbox) {
-            graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, null,null,null);
-
-        }
-        if (isDrawArrowMode && selectedKeyForDrawArrow) {
-            graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null,null);
-            if (selectedNodeForDrawArrow.keys.indexOf(selectedKeyForDrawArrow)===0){
-                if (SelectedChildDrawArrowLevel===1){
-                    drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);                    
-                } else {
-                    drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.leftX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
-                }
-
-            }else{
-                drawArrow(graphics,[selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY],10,5);
-            }
-            // call function to make arrows display
-            recieveNodesRedCircles(userDrawingTree.freeNodes, selectedNodeForDrawArrow, graphics);
-        }
-    }
     }
     
     
@@ -570,54 +617,56 @@ canvas.addEventListener('mousemove', (e) => {
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
 window.addEventListener('mouseup', (e) => {
-    const mouseX = e.clientX - canvas.getBoundingClientRect().left;
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-       
-    if (userDrawingTree !== undefined) {
-        if (isDragMode) {
-        isDragMode = false;
-            if (rootNodeSelcted===false){
-                let binPositions = drawBinIcon(graphics);
-                const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
-                if (isInsideBoundsBin && userDrawingTree.freeNodes.indexOf(selectedNodeObject)!==-1) {
-                    userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(selectedNodeObject),1);
-                } else {
-                    //  if a node is being dragged get the keys its trying to snap too
-                    let functionResult = findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes, selectedKeyObject,selectedNodeObject, mouseX, mouseY,moveFullNodeMode);
-                    let insertToTheseKeys = functionResult[0];
-                    let isNodeAFreeNodeChecker = functionResult[1];
-                    dropOffKeyIndex = functionResult[2];
-                    dropOffNodeKeyIndex = functionResult[3];
-                    dropOffLevelKeyIndex = functionResult[4];
-                    
-                    if (insertToTheseKeys.length > 0 && selectedKeyObject!==null){
-                        // snape the node to the new node
-                        if (isNodeAFreeNodeChecker){
-                            snapFreeNodeOntoNode(userDrawingTree.freeNodes, selectedNodeObject, userDrawingTree.freeNodes[dropOffNodeKeyIndex] , insertToTheseKeys, selectedKeyObject);
-                        } else {
-                            snapFreeNodeOntoNode(userDrawingTree.freeNodes, selectedNodeObject, userDrawingTree.levels[dropOffLevelKeyIndex][dropOffNodeKeyIndex], insertToTheseKeys, selectedKeyObject);
+    if (userDrawingTree && logicTree) {
+
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+        
+        if (userDrawingTree !== undefined) {
+            if (isDragMode) {
+            isDragMode = false;
+                if (rootNodeSelcted===false){
+                    let binPositions = drawBinIcon(graphics);
+                    const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
+                    if (isInsideBoundsBin && userDrawingTree.freeNodes.indexOf(selectedNodeObject)!==-1) {
+                        userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(selectedNodeObject),1);
+                    } else {
+                        //  if a node is being dragged get the keys its trying to snap too
+                        let functionResult = findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes, selectedKeyObject,selectedNodeObject, mouseX, mouseY,moveFullNodeMode);
+                        let insertToTheseKeys = functionResult[0];
+                        let isNodeAFreeNodeChecker = functionResult[1];
+                        dropOffKeyIndex = functionResult[2];
+                        dropOffNodeKeyIndex = functionResult[3];
+                        dropOffLevelKeyIndex = functionResult[4];
+                        
+                        if (insertToTheseKeys.length > 0 && selectedKeyObject!==null){
+                            // snape the node to the new node
+                            if (isNodeAFreeNodeChecker){
+                                snapFreeNodeOntoNode(userDrawingTree.freeNodes, selectedNodeObject, userDrawingTree.freeNodes[dropOffNodeKeyIndex] , insertToTheseKeys, selectedKeyObject);
+                            } else {
+                                snapFreeNodeOntoNode(userDrawingTree.freeNodes, selectedNodeObject, userDrawingTree.levels[dropOffLevelKeyIndex][dropOffNodeKeyIndex], insertToTheseKeys, selectedKeyObject);
+                            }
                         }
                     }
-                }
-               
-            }                    
-        } else if (isDrawArrowMode) {
-            isDrawArrowMode = false;
-            if (rootNodeSelcted===false){
-                // child logic here
-                makeNodeHaveChild(userDrawingTree.levels, userDrawingTree.freeNodes,mouseX,mouseY,selectedNodeForDrawArrow,SelectedLevelForDrawArrowLevel, selectedNodeForDrawArrow, SelectedChildDrawArrowLevel)
-            } 
+                
+                }                    
+            } else if (isDrawArrowMode) {
+                isDrawArrowMode = false;
+                if (rootNodeSelcted===false){
+                    // child logic here
+                    makeNodeHaveChild(userDrawingTree.levels, userDrawingTree.freeNodes,mouseX,mouseY,selectedNodeForDrawArrow,SelectedLevelForDrawArrowLevel, selectedNodeForDrawArrow, SelectedChildDrawArrowLevel)
+                } 
+            }
+            // Call drawTree because tree has not changed
+            graphics.clearRect(0, 0, canvas.width  , canvas.height  );
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, null,null,null);
+            console.log(userDrawingTree)
+            if (rootNodeSelcted){
+                rootNodeSelcted=false;
+            }
         }
-         // Call drawTree because tree has not changed
-        graphics.clearRect(0, 0, canvas.width  , canvas.height  );
-        drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes,moveFullNodeMode, scaleFactor, null,null,null);
-        console.log(userDrawingTree)
-        if (rootNodeSelcted){
-            rootNodeSelcted=false;
-        }
-    }
 
-   
+    }
 });
 
 // spacebar used to activate move node
@@ -639,20 +688,8 @@ document.addEventListener("keydown", function(event) {
     
 });
 
-// GENERAL HELPERS ===========================================================
-// ==========================================================================
-// ==========================================================================
 
-function isMouseWithinHitboxBounds(mouseX, mouseY, centerX, centerY) {
-    const inXBounds = mouseX >= centerX - 10 && mouseX <= centerX + 10;
-    const inYBounds = mouseY >= centerY - 10 && mouseY <= centerY + 10;
-    return inXBounds && inYBounds;
-}
 
-// ==========================================================================
-// ==========================================================================
-// ==========================================================================
-// returns two booleans to check if the mouse click is within the hitbox bounds
 
 
 // TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw

@@ -284,12 +284,15 @@ export class BTreeNode {
         while (idx < this.n && k > this.keys[idx].value) {
             idx++;
         }
-
-        if (this.keys[idx].value !=undefined){
-            if (this.keys[idx].value === k) {
-                return this;
+        if (this.keys[idx] !=undefined){
+            if (this.keys[idx].value !=undefined){
+                if (this.keys[idx].value === k) {
+                    return this;
+                }
             }
         }
+
+       
         
 
         if (this.leaf) {
