@@ -10,16 +10,14 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
     if (!node) return;
 
     drawFreeNodes(freeNodes,moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin );        
-    fixSnapping(node, moveFullNodeMode);
     const keys = getNodeKeys(node);
     // const keys = node.keys.filter((key) => key.value !== undefined);
     const nodeWidth = getNodeWidth(keys);
     const nodeSpacing = 40;
     const arrowSize = 15; // Size of the arrowhead
 
-    drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
-    
-    
+    drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);    
+    fixSnapping(node, moveFullNodeMode);
 
     if (!node.leaf) {
         const numChildren = node.C.length;

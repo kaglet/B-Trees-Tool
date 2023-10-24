@@ -23,24 +23,29 @@ export function validateTree(logicTree, userDrawingTree){
         }
         tree1.levels.forEach((logicLevel,levelIndex) => {
             logicLevel.forEach((logicNode,nodeIndex) => {
-                let logicKeyValues = [];
-                let userKeyValues = [];
-                let tempLogicKeys = logicNode.keys.filter((key) => key.value != undefined);
-                let tempUserKeys = tree2.levels[levelIndex][nodeIndex].keys.filter((key) => key.value != undefined);
-                tempLogicKeys.forEach(key => {
-                    logicKeyValues.push(key.value);
-                });
-                tempUserKeys.forEach(key => {
-                    userKeyValues.push(key.value);
-                });
-                 for (let keyIndex = 0; keyIndex < logicKeyValues.length; keyIndex++){
-    
-                 }
-                if (!deepArrayCompare(logicKeyValues,userKeyValues)){
+                try {
+                    let logicKeyValues = [];
+                    let userKeyValues = [];
+                    let tempLogicKeys = logicNode.keys.filter((key) => key.value !== undefined);
+                    let tempUserKeys = tree2.levels[levelIndex][nodeIndex].keys.filter((key) => key.value !== undefined);
+                    tempLogicKeys.forEach(key => {
+                        logicKeyValues.push(key.value);
+                    });
+                    tempUserKeys.forEach(key => {
+                        userKeyValues.push(key.value);
+                    });
+                     for (let keyIndex = 0; keyIndex < logicKeyValues.length; keyIndex++){
+        
+                     }
+                    if (!deepArrayCompare(logicKeyValues,userKeyValues)){
+                        isCorrect = false;
+                        console.log("USER  : ",userKeyValues);
+                        console.log("LOGIC : ",logicKeyValues);
+                    }
+                } catch {
                     isCorrect = false;
-                    console.log("USER  : ",userKeyValues);
-                    console.log("LOGIC : ",logicKeyValues);
                 }
+               
             });
         });
         return isCorrect;

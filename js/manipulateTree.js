@@ -198,33 +198,36 @@ function addChildrenToFreeNode(levels, freeNodes, node, nodePlacement){
     
 }
 
-// PULLS A KEY OFF A NODE
-export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNodeMode) {
-
-    // removes the node from its parent child node
-    function removeParentFromFreeNode(node){
-        if (node.parent!==null){
-            // let index = node.parent.C.indexOf(node)
-            // node.parent.C.splice(index,1);
-            // node.parent.C.splice(index,0,undefined);
-            node.parent = null;
+// HELPER FUNCTION
+// checks the free node array and removes all nodes still in the levels representation
+function removeFreeNodesFromLevel(levels, freeNodes) {
+    for (let i = levels.length - 1; i >= 0; i--) {
+        const level = levels[i];        
+        for (let j = level.length - 1; j >= 0; j--) {
+            const comparingNode = level[j];        
+            if (freeNodes.includes(comparingNode)) {
+                removeParentFromFreeNode(comparingNode);
+                levels[i].splice(j, 1);
+            }
         }
-    }
+        }
+}
 
-    // checks the free node array and removes all nodes still in the levels representation
-    function removeFreeNodesFromLevel(levels, freeNodes) {
-        for (let i = levels.length - 1; i >= 0; i--) {
-            const level = levels[i];        
-            for (let j = level.length - 1; j >= 0; j--) {
-                const comparingNode = level[j];        
-                if (freeNodes.includes(comparingNode)) {
-                    removeParentFromFreeNode(comparingNode);
-                    levels[i].splice(j, 1);
-                }
-            }
-            }
+// HELPER FUNCTION
+// removes the node from its parent child node
+function removeParentFromFreeNode(node){
+    if (node.parent!==null){
+        // let index = node.parent.C.indexOf(node)
+        // node.parent.C.splice(index,1);
+        // node.parent.C.splice(index,0,undefined);
+        node.parent = null;
     }
+}
 
+
+// PULLS A KEY OFF A NODE
+export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNodeMode) { 
+    
     // checks if a node is empty and removes it from the levels
     function isEmptyNode(node){
         let emptyNode = true;
@@ -301,7 +304,11 @@ export function pullKeyOffTheTree(levels, freeNodes, mouseX, mouseY, moveFullNod
                             // if the node is empty it removes the node from the tree
                             if (isEmptyNode(node)){
                                 console.log('parent slice HAPPNES NOW')
-                                removeParentFromFreeNode(node);                                
+                                if (node.parent!==null){
+                                    let index = node.parent.C.indexOf(node)
+                                    node.parent.C.splice(index,1,undefined);  
+                                }       
+                                removeParentFromFreeNode(node); 
                                 levels[i].splice(j,1);                            
                             } 
                         }                        
@@ -438,12 +445,12 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
             freeNodes.splice(freeNodes.indexOf(nodeToSnap),1);
             nodeToReceive.keys.unshift(nodeToSnap.keys[0]);
             nodeToReceive.keys[0].y = nodeToReceive.keys[1].y;
-            if (nodeToReceive.C[0] !== undefined && nodeToReceive.C[0] !== null){
-                if (nodeToReceive.C[nodeToReceive.C.length-1] === undefined || nodeToReceive.C[nodeToReceive.C.length-1] === null){
-                    nodeToReceive.C.splice(nodeToReceive.C.length-1,1);
-                }
-                nodeToReceive.C.splice(0,0,undefined);
-            }
+            // if (nodeToReceive.C[0] !== undefined && nodeToReceive.C[0] !== null){
+            //     if (nodeToReceive.C[nodeToReceive.C.length-1] === undefined || nodeToReceive.C[nodeToReceive.C.length-1] === null){
+            //         nodeToReceive.C.splice(nodeToReceive.C.length-1,1);
+            //     }
+            //     nodeToReceive.C.splice(0,0,undefined);
+            // }
             console.log("LEFT AFTER ADD BACK",nodeToReceive.C)
 
 
@@ -469,19 +476,19 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
                 // if there are undefines add the key to the index of the first undefined
                 nodeToReceive.keys[undefinedIndex] = nodeToSnap.keys[0];
                 nodeToReceive.keys[undefinedIndex].y = nodeToReceive.keys[0].y;
-                if (nodeToReceive.C[undefinedIndex+1] !== undefined || nodeToReceive.C[undefinedIndex+1] !== null){
-                    nodeToReceive.C.splice(undefinedIndex+1,0,undefined);
-                }
-                console.log("RIGHT AFTER ADD BACK UNDEFINES",nodeToReceive.C)
+                // if (nodeToReceive.C[undefinedIndex+1] !== undefined || nodeToReceive.C[undefinedIndex+1] !== null){
+                //     nodeToReceive.C.splice(undefinedIndex+1,0,undefined);
+                // }
+                // console.log("RIGHT AFTER ADD BACK UNDEFINES",nodeToReceive.C)
 
             } else {
                 // if there arent undefines, then push the key to the end of the array of keys
                 nodeToReceive.keys.push(nodeToSnap.keys[0]);
                 nodeToReceive.keys[nodeToReceive.keys.length-1].y = nodeToReceive.keys[1].y;
-                if (nodeToReceive.C[nodeToReceive.C.length-1] !== undefined || nodeToReceive.C[nodeToReceive.C.length-1]!== null){
-                    nodeToReceive.C.splice(nodeToReceive.keys.length,0,undefined);
-                }
-                console.log("RIGHT AFTER ADD BACK",nodeToReceive.C)
+                // if (nodeToReceive.C[nodeToReceive.C.length-1] !== undefined || nodeToReceive.C[nodeToReceive.C.length-1]!== null){
+                //     nodeToReceive.C.splice(nodeToReceive.keys.length,0,undefined);
+                // }
+                // console.log("RIGHT AFTER ADD BACK",nodeToReceive.C)
 
 
             }
@@ -508,7 +515,7 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
             freeNodes.splice(freeNodes.indexOf(nodeToSnap),1);
             nodeToReceive.keys.splice(insertKeyInThisIndex,0,nodeToSnap.keys[0]);
             nodeToReceive.keys[insertKeyInThisIndex].y = nodeToReceive.keys[0].y;
-            nodeToReceive.C.splice(insertKeyInThisIndex+1,0,undefined);
+            // nodeToReceive.C.splice(insertKeyInThisIndex+1,0,undefined);
 
         } else {
             console.log("odd middle error look into it")
@@ -518,6 +525,8 @@ export function snapFreeNodeOntoNode(freeNodes, nodeToSnap, nodeToReceive, keysB
 }
 
 export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSelected, selectedLevel, selectedNode, selectedChild){
+    // FIX ERROR HERE - PROBLEM WITH FREE NODES
+    let complete = false;
     freeNodes.forEach(node => {
         let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
         let receiveArrowY = node.keys[0].y -30;
@@ -538,24 +547,39 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                     //  set the new nodes parent node to the parent and make it a leaf
                     node.parent = selectedNode;
                     node.leaf = true;
-                }              
+                    complete = true;
+                }    
             } else {
                 // if its not a new level
                 if (isLevelSelected) {
-                    console.log("PARENT Level : ",selectedLevel)
-                    console.log("INDEX to insters into parent child : ",selectedChild)
+
+                    // console.log("NUM CHILDREN",numChildrenInLevel)
+                    console.log("F SELECTED CHILD INT",selectedChild)    
+                    console.log("F NODE",node);
+                    console.log("F CHILD SELECTED NODE",selectedNode.C[selectedChild]);
+                    console.log("F PARENT SELECTE NODE",selectedNode)
 
                     let parentNodeIndex = levels[selectedLevel].indexOf(selectedNode);
                     let numChildrenInLevel = 0;
                     for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
                         let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
+                        if (nodeIndex!==0 && numChildrenInNode>0){
+                            numChildrenInLevel+=1;
+                        }
                         numChildrenInLevel += numChildrenInNode;
                     }
                     numChildrenInLevel += selectedChild;
-                    console.log(numChildrenInLevel)
-
+                    
+                    if (node!==selectedNode.C[selectedChild] && selectedNode.C[selectedChild]!==undefined && selectedNode.C[selectedChild]!== null){
+                        levels[selectedLevel+1].splice(levels[selectedLevel+1].indexOf(selectedNode.C[selectedChild]),1)
+                        freeNodes.push(selectedNode.C[selectedChild]);
+                        selectedNode.C[selectedChild].parent = null;
+                    }
 
                     // adds the node to the designated spot in levels
+                    console.log("LEVEL INDEX",numChildrenInLevel)
+                    console.log("LEVEL SELECTED",selectedLevel)
+
                     levels[selectedLevel +1].splice(numChildrenInLevel,0,node);
                     // removes newly add node from free nodes
                     freeNodes.splice(freeNodes.indexOf(node),1);
@@ -563,74 +587,89 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                     selectedNode.C[selectedChild] = node;
                     //  set the new nodes parent node to the parent and make it a leaf
                     node.parent = selectedNode;
-                    selectedNode.leaf=false;
+                    selectedNode.leaf = false;
                     node.leaf = true;
-
+                    complete = true;
+                    console.log(freeNodes);
 
                 }  
             }
-
         }
     });
 
-    levels.forEach(level => {
-        level.forEach(node => {
-            let treeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
-            let receiveArrowY = node.keys[0].y -30;
-            let receiveArrowX = (node.keys[treeNodeKeyLength-1].x + node.keys[0].x)/2;
-            if (isMouseWithinHitboxBounds(mouseX,mouseY,receiveArrowX,receiveArrowY)){
-                    if (selectedNode.C.indexOf(node) !==-1){
-                    // if the levele is selcted and an idnetical arrow is not trying to be created then do the folowing
-                        if (isLevelSelected && node !== selectedNode.C[selectedChild]) {
-                            console.log("PARENT Level : ",selectedLevel)
-                            console.log("INDEX to insters into parent child : ",selectedChild)
-        
-                            
-                            // console.log("NUM CHILDREN",numChildrenInLevel)
-                            console.log("SELECTED CHILD INT",selectedChild)    
-                            console.log("NODE",node);
-                            console.log("CHILD SELECTED NODE",selectedNode.C[selectedChild]);
-                            console.log("PARENT SELECTE NODE",selectedNode)
+    // checks the free node array and removes all nodes still in the levels representation
+    if (!complete) {
+        levels.forEach(level => {
+            level.forEach(node => {
+                let treeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
+                let receiveArrowY = node.keys[0].y -30;
+                let receiveArrowX = (node.keys[treeNodeKeyLength-1].x + node.keys[0].x)/2;
+                if (isMouseWithinHitboxBounds(mouseX,mouseY,receiveArrowX,receiveArrowY)){
+                        if (selectedNode.C.indexOf(node) !==-1){
+                        // if the levele is selcted and an idnetical arrow is not trying to be created then do the folowing
+                            if (isLevelSelected && node !== selectedNode.C[selectedChild]) {
 
-                            // adds the old node child to the freenodes
-                            if (selectedNode.C[selectedChild] !== undefined && selectedNode.C[selectedChild] !== null) {
-                                freeNodes.push(selectedNode.C[selectedChild]);
-                                level.splice(level.indexOf(selectedNode.C[selectedChild]),1);
-                                addChildrenToFreeNode(levels,freeNodes,selectedNode.C[selectedChild],3)
-                            }
+                                console.log("L PARENT Level : ",selectedLevel);
+                                console.log("L INDEX to insters into parent child : ",selectedChild);                               
+                                console.log("L SELECTED CHILD INT",selectedChild);  
+                                console.log("L NODE",node);
+                                console.log("L CHILD SELECTED NODE",selectedNode.C[selectedChild]);
+                                console.log("L PARENT SELECTE NODE",selectedNode);
+    
+                                // adds the old node child to the freenodes
+                                if (selectedNode.C[selectedChild] !== undefined && selectedNode.C[selectedChild] !== null) {
+                                    freeNodes.push(selectedNode.C[selectedChild]);
+                                    level.splice(level.indexOf(selectedNode.C[selectedChild]),1);
+                                    addChildrenToFreeNode(levels,freeNodes,selectedNode.C[selectedChild],3);
+                                    selectedNode.C[selectedChild].parent = null;
+                                    selectedNode.C.splice(selectedChild,1,undefined);
+                                }
+    
+                                // removing previous selcted items children and childrens children
+                                for (let index = 0; index < selectedNode.C.length; index++) {
+                                    if (selectedNode.C[index] === node && index !== selectedChild){
+                                        console.log("FOR LOOP HUH",selectedNode.C[index]);
+                                        console.log("FOR LOOP HUH INDEX",index);
+                                        addChildrenToFreeNode(levels,freeNodes,selectedNode.C[index],3);                            
+                                        level.splice(level.indexOf(selectedNode.C[index]),1);
+                                        selectedNode.C.splice(index,1,undefined);                                       
+                                        break;
+                                    }                            
+                                }
+    
+                                let parentNodeIndex = levels[selectedLevel].indexOf(selectedNode);
+                                let numChildrenInLevel = 0;
+                                for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
+                                    let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
+                                    if (nodeIndex!==0 && numChildrenInNode>0){
+                                        numChildrenInLevel+=1;
+                                        console.log("YAAAAAS",node);
 
-                            // removing previous selcted items children and childrens children
-                            for (let index = 0; index < selectedNode.C.length; index++) {
-                                if (selectedNode.C[index] === node && index !== selectedChild){
-                                    console.log("FOR LOOP HUH",selectedNode.C[index]);
-                                    selectedNode.C[index] = undefined;
-                                    level.splice(level.indexOf(selectedNode.C[index]),1);
-                                }                            
-                            }
-
-                            let parentNodeIndex = levels[selectedLevel].indexOf(selectedNode);
-                            let numChildrenInLevel = 0;
-                            for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
-                                let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
-                                numChildrenInLevel += numChildrenInNode;
-                            }
-                            numChildrenInLevel += selectedChild;
-
-                            
-                            // adds the node to the designated spot in levels
-                            levels[selectedLevel +1].splice(numChildrenInLevel,0,node);
-                            
-                            // set the parent node to have the new child node and make it not a leaf
-                            //  set the new nodes parent node to the parent and make it a leaf
-                            selectedNode.C[selectedChild] = node;
-                            node.parent = selectedNode;
-                            selectedNode.leaf=false;
-                            node.leaf = true;
-                    }      
+                                    }
+                                    numChildrenInLevel += numChildrenInNode;
+                                }
+                                
+                                numChildrenInLevel += selectedChild;
+    
+                                
+                                // adds the node to the designated spot in levels
+                                levels[selectedLevel +1].splice(numChildrenInLevel,0,node);
+                                
+                                // set the parent node to have the new child node and make it not a leaf
+                                //  set the new nodes parent node to the parent and make it a leaf
+                                selectedNode.C[selectedChild] = node;
+                                node.parent = selectedNode;
+                                selectedNode.leaf=false;
+                                node.leaf = true;
+                            }      
+                    }                    
                 }
-            }
+            });
         });
-    });
+        removeFreeNodesFromLevel(levels, freeNodes);
+
+    }
+   
 }
 
 export function detectMouseHoverOverArrowHitbox(levels, freeNodes, mouseX, mouseY, graphics) {

@@ -454,6 +454,10 @@ validateButton.addEventListener('click', (e) => {
     let validationLabel = document.getElementById('validation');
 
     if (userDrawingTree && logicTree){
+        // console.log("BEFORE TRAVERSE: ", userDrawingTree);
+        // userDrawingTree.traverse();
+        // console.log("AFTER TRAVERSE: ", userDrawingTree);
+
         let treeCorrect = validateTree(logicTree,userDrawingTree);
         if (treeCorrect){
             validationLabel.style.color = "green";
