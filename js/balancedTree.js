@@ -4,11 +4,29 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class BTreeKey {
+export class BTreeKey {
     constructor() {
-        this.value; 
+        this.value;
         this.x;
         this.y;
+        this.arrowHitbox = {
+            centerX: null,
+            leftX: null,
+            centerY: null,
+            rightX: null,
+            radius: null,
+        };
+    }
+
+    calculateArrowHitbox(keySize) {
+        // Calculate the center of the key
+        this.arrowHitbox.centerX = this.x;
+        this.arrowHitbox.leftX = this.x  - keySize;
+        this.arrowHitbox.rightX = this.x + keySize;
+        this.arrowHitbox.centerY = this.y + keySize;
+
+        // Calculate the radius of the arrow hitbox (1/4 of the key width)
+        this.arrowHitbox.radius = keySize / 10;
     }
 }
 
@@ -266,12 +284,15 @@ export class BTreeNode {
         while (idx < this.n && k > this.keys[idx].value) {
             idx++;
         }
-
-        if (this.keys[idx].value !=undefined){
-            if (this.keys[idx].value === k) {
-                return this;
+        if (this.keys[idx] !=undefined){
+            if (this.keys[idx].value !=undefined){
+                if (this.keys[idx].value === k) {
+                    return this;
+                }
             }
         }
+
+       
         
 
         if (this.leaf) {
@@ -351,13 +372,26 @@ export class BTree {
         this.root = null; // The BTreenode that is the root node
         this.t = t; // Minimum degree (number of keys=2*t-1)
         this.levels = [[]];
-        this.floatingNodes = [];
+        this.freeNodes = [];
     }
 
-    assignNodePositions() {
-        const ySpacing = 120;
-        const keySpacing = 60;
-        let canvasWidth = 900;
+    assignNodePositions(scaleFactor) {
+        // TODO: Within this function do the following:
+        // Loop through this.levels for this tree's levels
+        // If a new node is encountered then loop through its keys, assigning them such that they are spaced them all together in a group
+        // Go to next node. Make sure it's key group is spaced apart from the key group in the previous node. 
+        // Knowing when we encounter a new node, we can easily space nodes apart per level, preventing overlap
+        /* 
+        Since the size of different arrays is known; like getting the size of the levels array at a depth 
+        gives the number of nodes at that depth. Or getting the size of the node.key array gives the number of keys in that node. 
+        Given these convenient known sizes, we can divide them on the canvas space however we wish.
+        */
+        const ySpacing = 120*scaleFactor;
+        const keySpacing = 60*scaleFactor;
+        let canvasWidth = 900*scaleFactor;
+        // console.clear();
+        // console.log(this);
+
         
         // for each level
         for (let i = this.levels.length - 1; i >=0 ; i--) {
@@ -382,10 +416,10 @@ export class BTree {
             const availableWidth = canvasWidth - totalKeyWidth; //space left over
             nodeSpacing = availableWidth / (numNodes + 1); //space between nodes
            // const startX = nodeSpacing; // start from the first node position
-            canvasWidth+=20;
+            canvasWidth+=(20*scaleFactor);
             }
         
-            let accumulatedLevelWidth = nodeSpacing + 20;
+            let accumulatedLevelWidth = nodeSpacing + (20*scaleFactor);
             
            // debug
             // console.log("LEVEL: " + (i + 1));
@@ -407,17 +441,20 @@ export class BTree {
                     let nodelength = 0;
                     for (let k = 0; k < numKeys; k++) {
                         // 60 is the spacing between each key (blue section)
-                        const keyX = accumulatedLevelWidth + k * 60;
+                        const keyX = accumulatedLevelWidth + k * 60 * scaleFactor;
                         
-                        nodelength += 60;
+                        nodelength += 60* scaleFactor;
 
                         // 60 moves the entire tree down by 60 units
-                        const keyY = i * ySpacing + 60;
+                        const keyY = i * ySpacing + 60* scaleFactor;
         
                         // Assign x and y values to the BTreeKey if the node exists
                         if (currNode.keys[k].value != undefined){
                             currNode.keys[k].x = keyX;
                             currNode.keys[k].y = keyY;
+                            currNode.keys[k].calculateArrowHitbox(30);
+                            
+
                         } else {
                             break;
                         }
@@ -493,6 +530,9 @@ export class BTree {
     }
 }
 
+//export default BTreeKey;
+
+//comment for pull - kago
 
 
 

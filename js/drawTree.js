@@ -1,22 +1,28 @@
 let graphics;
+import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
+let scaleFactor;
 
-export function drawTree(node, canvas) {
+
+export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1,selectedKey, isBoundSnap, isBoundBin ) {
+    scaleFactor = scaleFactor1;
     graphics = canvas.getContext("2d");
-    let canvasWidth = canvas.width;
+    //let canvasWidth = canvas.width;
     if (!node) return;
 
-    const keys = node.keys;
+    drawFreeNodes(freeNodes,moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin );        
+    const keys = getNodeKeys(node);
     // const keys = node.keys.filter((key) => key.value !== undefined);
-    const nodeWidth = keys.length * 60;
+    const nodeWidth = getNodeWidth(keys);
     const nodeSpacing = 40;
     const arrowSize = 15; // Size of the arrowhead
 
-    drawNode(keys, graphics);
+    drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);    
+    fixSnapping(node, moveFullNodeMode);
 
     if (!node.leaf) {
         const numChildren = node.C.length;
 
-        const childXPositions = [];
+        const childXPositions = [];        
 
         node.C.forEach((child, index) => {
             if (childExists(child) && hasChildKeys(child)) {
@@ -24,22 +30,51 @@ export function drawTree(node, canvas) {
                 let childWidth = calculateChildWidth(child);
                 const childX = getChildX(child);
                 const childY = getChildY(child);
-                const isLessThanKey = isChildLessThanKey(childKeys,keys,index);
+                // const isLessThanKey = isChildLessThanKey(childKeys,keys,index);
 
                 //arrowCoordinates = [startX,startY,endX,endY]
-                const arrowCoordinates = calculateArrowCoordinates(isLessThanKey,keys,nodeWidth,index,node,childX,childWidth,childY);
+                const arrowCoordinates = calculateArrowCoordinates(keys,nodeWidth,index,node,childX,childWidth,childY);
                 drawArrow(graphics,arrowCoordinates,arrowSize,childWidth);
 
                 childXPositions.push(childX);
 
-                drawTree(child, canvas);
+                drawTree(child, canvas, [], moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
             }
         });
 
     }
 
+    
+
 }
 
+function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBoundSnap, isBoundBin){
+    
+    if(freeNodes.length > 0){
+        freeNodes.forEach((node, index) => {
+            fixSnapping(node, moveFullNodeMode);
+            const keys = getNodeKeys(node);
+            // const keys = node.keys.filter((key) => key.value !== undefined);
+            const nodeWidth = getNodeWidth(keys);
+            const nodeSpacing = 40;
+            const arrowSize = 15; // Size of the arrowhead
+            drawNode(keys, graphics, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
+        });
+    }
+    
+    
+}
+
+
+function getNodeWidth(keys) {
+    
+    return keys.length * 60 * scaleFactor;
+    // return keys.length * 60;
+}
+
+function getNodeKeys(node) {
+    return node.keys.filter((key) => key.value != undefined);
+}
 
 function getChildY(child) {
     return child.keys[0].y - 30;
@@ -57,27 +92,47 @@ function isChildLessThanKey(childKeys, keyValues, index) {
         : false;
 }
 
-function drawKey(x, y, key, graphics = graphics) {
-    const keySize = 60; //size of blue square -- hopefull make into draggable
-    graphics.fillStyle = "lightblue";
+function drawKey(key, graphics = graphics, keyZero, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin) {
+    key.calculateArrowHitbox(30);
+
+    const keySize = 60; //problem with scaling??
+    if (moveFullNodeMode && keyZero === 0){
+        graphics.fillStyle = "lightgreen";
+    } else {
+        if (key === selectedKey){
+            if (isBoundBin) {
+                graphics.fillStyle = "#FFCCCC";
+            } else {
+                if (!isBoundSnap){
+                    graphics.fillStyle = "#87CEFA";
+                } else {
+                    graphics.fillStyle = "lightgreen";
+                }
+            }
+        } else {
+            graphics.fillStyle = "lightblue";
+        }
+    }
 
     graphics.strokeStyle = "black";
     graphics.lineWidth = 2;
-    graphics.strokeRect(x, y, keySize, keySize);
+    graphics.strokeRect(key.x-30, key.y-30, keySize, keySize);
 
-    graphics.fillRect(x, y, keySize, keySize);  //fills blue small rect
+    graphics.fillRect(key.x-30, key.y-30, keySize, keySize);  //fills blue small rect
 
     graphics.fillStyle = "black";
     graphics.font = "14px Arial";
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
-    graphics.fillText(key, x + 30, y + 30);  //drawing key text, numbers
+    graphics.fillText(key.value, key.x, key.y);  //drawing key text, numbers
+    
 }
 
-export function drawNode(keys, graphics) {
+export function drawNode(keys, graphics, moveFullNodeMode , selectedKey, isBoundSnap, isBoundBin) {
     const nodeHeight = 60;
     // const validKeys = keys;
     const validKeys = keys.filter((key) => key.x !== undefined);  //tking away undefined from array
+  
     // const nodeWidth = validKeys.length * 60;    //the whole node width (black outlined rects)
     const nodeWidth = 60;
     // draw the node rectangle
@@ -89,17 +144,60 @@ export function drawNode(keys, graphics) {
     graphics.textAlign = "center";
     graphics.textBaseline = "middle";
 
-    validKeys.forEach((key, index) => {
-        drawKey(key.x - 30, key.y - 30, key.value, graphics);
+    validKeys.forEach((key, keyZero) => {
+
+        drawKey(key, graphics, keyZero, moveFullNodeMode, selectedKey, isBoundSnap, isBoundBin);
+        
     });
 }
 
-function calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node) {
-    if (isLessThanKey) {
-        return keys[0].x - nodeWidth / 2 + (index + 1) * 60 + (node.t - 2) * 60;
-    } else {
-        return keys[0].x + nodeWidth / 2 - (keys.length - index - 1) * 60 + (node.t - 2) * 60;
-    }
+function fixSnapping(node, moveFullNodeMode) {
+    let prevX;
+    let prevY;
+    node.keys.filter((key) => key.value != undefined).forEach((key, k) => {
+        if (key.value !== undefined) {
+            if (k != 0) {
+                prevX = node.keys[k - 1].x + 60;
+                key.x = prevX;
+
+                prevY = node.keys[k - 1].y;
+                key.y = prevY;
+            } 
+        }
+    }); 
+    // if (moveFullNodeMode === false ){
+    //     let prevX;
+    //     node.keys.forEach((key, k) => {
+    //         if (key.value !== undefined) {
+    //             if (k != 0) {
+    //                 prevX = node.keys[k - 1].x + 60;
+    //                 key.x = prevX;
+    //             }
+    //         }
+    //     });
+    // } else {
+    //     let prevX;
+    //     let prevY;
+    //     node.keys.filter((key) => key.value != undefined).forEach((key, k) => {
+    //         if (key.value !== undefined) {
+    //             if (k != 0) {
+    //                 console.log(node)
+
+    //                 prevX = node.keys[k - 1].x + 60;
+    //                 key.x = prevX;
+
+    //                 prevY = node.keys[k - 1].y;
+    //                 key.y = prevY;
+    //             } 
+    //         }
+    //     });      
+        
+    // } 
+}
+
+
+function calculateArrowStartX(keys, nodeWidth, index, node) {
+    return keys[0].x-30 + (index) * 60;
 }
 
 function calculateArrowStartY(keys){
@@ -114,8 +212,8 @@ function calculateArrowEndY(childY){
     return childY;
 }
 
-function calculateArrowCoordinates(isLessThanKey, keys, nodeWidth, index, node, childX, childWidth, childY){
-    const arrowStartX = calculateArrowStartX(isLessThanKey, keys, nodeWidth, index, node);
+function calculateArrowCoordinates(keys, nodeWidth, index, node, childX, childWidth, childY){
+    const arrowStartX = calculateArrowStartX(keys, nodeWidth, index, node);
     const arrowStartY = calculateArrowStartY(keys);
     const arrowEndX = calculateArrowEndX(childX, childWidth);
     const arrowEndY = calculateArrowEndY(childY);
@@ -135,7 +233,7 @@ function drawArrowLine(graphics,arrowCoordinates){
     graphics.restore();
 }
 
-function calculateArrowHeadAngle(arrowCoordinates,childWidth){
+export function calculateArrowHeadAngle(arrowCoordinates,childWidth){
     return Math.atan2(arrowCoordinates[3] - arrowCoordinates[1], arrowCoordinates[2] - arrowCoordinates[0]);
 }
 
@@ -148,7 +246,7 @@ function calculateArrowHeadCoordinates(arrowCoordinates,arrowSize,angle){
     return [arrowheadStartX, arrowheadStartY, arrowheadEndX, arrowheadEndY];
 }
 
-function drawArrowhead(graphics, arrowCoordinates, arrowSize, childWidth){
+export function drawArrowhead(graphics, arrowCoordinates, arrowSize, childWidth){
     graphics.beginPath();
     graphics.moveTo(arrowCoordinates[2], arrowCoordinates[3]);
 
@@ -190,7 +288,7 @@ function calculateChildWidth(child) {
     return childWidth;
 }
 
-function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
+export function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
     drawArrowLine(graphics,arrowCoordinates);
     drawArrowhead(graphics,arrowCoordinates,arrowSize,childWidth);
 }
