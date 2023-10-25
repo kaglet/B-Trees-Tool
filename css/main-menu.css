@@ -1,0 +1,32 @@
+.main-menu-page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1e8e9;
+}
+
+.main-menu button {
+    display: block;
+    margin: auto;
+    background-color: #f1e8e9;
+    width: 100%;
+}
+
+.main-menu button:first-child {
+    margin-bottom: 0.5rem;
+}
+
+.main-menu {
+    padding: 1.2rem 1.4rem;
+    background-color: whitesmoke;
+}
+
+.main-menu a {
+    text-decoration: none;
+}
+
+.main-menu a:visited {
+    color: black;
+}
