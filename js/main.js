@@ -251,7 +251,7 @@ function findSelectedKey(levels, floatingNodes, mouseX, mouseY) {
     });
 }
 
-// it should find 2 neighbors at most (left and right) due to precise threshold of 60 between x centers
+// Note this function will find 2 neighbors at most by design (left and right) due to precise threshold of 60 between x centers
 function getCloseNeighbors(draggedKey, levels) {
     let draggedKeyX = draggedKey.x;
     let draggedKeyY = draggedKey.y;
