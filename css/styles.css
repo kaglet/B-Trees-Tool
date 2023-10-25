@@ -144,6 +144,10 @@ label {
     background-color: var(--side-panel-input-color);
 }
 
+.side-panel button {
+    width: 100%;
+}
+
 .main-container {
     background-color: var(--main-container-bg-color);
 }
