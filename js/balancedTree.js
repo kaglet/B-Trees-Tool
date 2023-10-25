@@ -519,6 +519,10 @@ export class BTree {
     // Calling traverse on the method of the tree calls traverse on the methods of the nodes 
     traverse() {
         if (this.root) {
+            // Levels is updated with each traverse of tree and is a property of the tree
+            // It is an alternate representation of the tree, a visual representation as opposed to a logical one
+            // It has the same nodes as the logical representation of the tree so we can easily pop this node when we delete it from the tree
+            // Or just call traverse to refresh levels and update it with traverse
             let depth = 0;
             this.levels = [[]];
             let nodeCountPerLevel = [];
@@ -533,7 +537,6 @@ export class BTree {
 //export default BTreeKey;
 
 //comment for pull - kago
-
 
 
 

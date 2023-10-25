@@ -65,13 +65,13 @@ let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
 
 
 // Try initialize canvas and graphics else display unsupported canvas error
-function init(insertDeleteSection, validateButton, questionsParametersContainer) {
+function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
     try {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
 
         //hide
-        questionsParametersContainer.classList.toggle('invisible');
+        questionsParamtersContainer.classList.toggle('invisible');
         validateButton.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     } catch (e) {
@@ -115,7 +115,7 @@ function generateRandomTree(numKeys) {
     drawCreate();
 }
 
-function clear() {
+function clear(){
     // Find the rightmost and bottommost nodes
     let maxX = 0;
     let maxY = 0;
@@ -153,7 +153,7 @@ function moveCanvas(direction) {
     }
 
     clear();
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    graphics.clearRect(0, 0, canvas.width , canvas.height );
 
     // Apply the transformation
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
@@ -168,10 +168,10 @@ function zoomCanvas(zoom) {
         scaleFactor *= 0.9;
     } else if (zoom == 'zoom-in') {
         scaleFactor /= 0.9;
-    }
+    } 
 
     clear();
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
+    graphics.clearRect(0, 0, canvas.width  , canvas.height  );
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
@@ -222,13 +222,14 @@ function generateRandomQuestion() {
         questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
         //search
-        key = Math.floor(Math.random() * 100);
+        key = Math.floor(Math.random() * 100); 
         console.log("Search: ", key)
-        document.getElementById("question").innerHTML = "Search: " + key;
+        document.getElementById("question").innerHTML  = "Search: "+ key;
     }
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null,null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
+
 
 
 // Initialize all GUI components
@@ -259,12 +260,13 @@ const body = document.body;
 
 let errorMessageLabel = document.getElementById('error-message');
 
-let createTreeParametersContainer = document.getElementById('parameters-container-c');
-let questionsParametersContainer = document.getElementById('parameters-container-q');
+let createTreeParamtersContainer = document.getElementById('parameters-container-c');
+let questionsParamtersContainer = document.getElementById('parameters-container-q');
+let questionLabel = document.getElementById('question');
 
 canvas = document.getElementById("canvas");
 
-window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParametersContainer));
+window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -347,9 +349,9 @@ deleteButton.addEventListener('click', () => {
 });
 
 customTreeButton.addEventListener('click', () => {
-    if (!randomTreePresent) {
+    if (!randomTreePresent){
         // there is no random tree created then run this
-        if (!customTreePresent) {
+        if (!customTreePresent){
             // there is no custom tree created then run this
             if (maxDegreeInput.value) {
                 if (+maxDegreeInput.value > 4 || +maxDegreeInput.value <= 1) {
@@ -379,7 +381,7 @@ customTreeButton.addEventListener('click', () => {
             customTreeButton.textContent = "Custom Tree";
             errorMessageLabel.textContent = "";
             return;
-        }
+        }  
     } else {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Random Tree Creation before creating a new Custom Tree";
@@ -389,9 +391,9 @@ customTreeButton.addEventListener('click', () => {
 });
 
 randomTreeButton.addEventListener('click', () => {
-    if (!customTreePresent) {
+    if (!customTreePresent){
         // there is no custom tree created then run this
-        if (!randomTreePresent) {
+        if (!randomTreePresent){
             // there is no random tree created then run this
             if (!maxDegreeInput.value) {
                 errorMessageLabel.textContent = "Please enter a max degree value before randomizing a tree";
@@ -435,12 +437,14 @@ randomTreeButton.addEventListener('click', () => {
             randomTreeButton.textContent = "Random Tree";
             errorMessageLabel.textContent = "";
             return;
-        }
+        }  
     } else {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Custom Tree Creation before creating a new Random Tree";
         return;
+
     }
+    
 });
 
 randomQuestionButton.addEventListener('click', generateRandomQuestion);
@@ -470,6 +474,9 @@ validateButton.addEventListener('click', (e) => {
 
 // on mouse down key is selected if possible then translated else searched for if not, dragMode is turned on.
 // on mouse up dragMode is turned off so mouse coordinates are not used for dragging, only during mouse down.
+// or don't even need to track a drag mode, it just won't be dragged.
+// so that a new node is selected
+// to detect a mouseup for redragging
 canvas.addEventListener('mousedown', (e) => {
     if (userDrawingTree && logicTree) {
 
