@@ -60,6 +60,8 @@ let rootNodeSelcted = false;
 let selectedKeyObject;
 let selectedNodeObject;
 
+let seed;
+
 let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
 
 
@@ -101,9 +103,10 @@ function drawQuestion() {
     // the tree is used to validate the userTree, when questions are generated the correct implentation of insert is run on tree
 }
 
-function generateRandomTree(numKeys) {
+function generateRandomTree(numKeys, seed) {
+    const rng = new Math.seedrandom(seed);
     for (let i = 0; i < numKeys; i++) {
-        const key = +Math.floor(Math.random() * 100);
+        const key = +Math.floor(rng() * 100);
         logicTree.insert(key);
         logicTree.traverse();
 
@@ -179,22 +182,23 @@ function zoomCanvas(zoom) {
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
-function generateRandomQuestion() {
+function generateRandomQuestion(seed) {
+    const rng = new Math.seedrandom(seed);
     validateButton.classList.toggle('invisible');
     randomQuestionButton.classList.toggle('invisible');
 
     let validationLabel = document.getElementById('validation');
     validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
-    const question = Math.floor(Math.random() * 2);
+    const question = Math.floor(rng() * 2);
 
-    let key = +Math.floor(Math.random() * 100);
+    let key = +Math.floor(rng() * 100);
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
         //insert
 
         while (logicTree.root.search(key) != null) {
-            key = +Math.floor(Math.random() * 100);
+            key = +Math.floor(rng() * 100);
         }
         
         logicTree.insert(key);
@@ -214,7 +218,7 @@ function generateRandomQuestion() {
     } else if (question == 1) {
         //delete
         while (logicTree.root.search(key) == null) {
-            key = +Math.floor(Math.random() * 100);
+            key = +Math.floor(rng() * 100);
         }
         logicTree.remove(key);
         logicTree.traverse();
@@ -222,7 +226,7 @@ function generateRandomQuestion() {
         questionDisplay.textContent = "Delete: " + key;
     } else if (question == 2) {
         //search
-        key = Math.floor(Math.random() * 100); 
+        key = Math.floor(rng() * 100); 
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
@@ -348,6 +352,15 @@ deleteButton.addEventListener('click', () => {
     errorMessageLabel.textContent = "Please enter a key to delete";
 });
 
+document.getElementById('seedButton').addEventListener('click', function() {
+    seed = document.getElementById('seedInput').value;
+    console.log(seed);
+
+    if (!isNaN(seed) && seed == '') {
+        alert('Please enter a valid seed (a number)');
+    } 
+});
+
 customTreeButton.addEventListener('click', () => {
     if (!randomTreePresent){
         // there is no random tree created then run this
@@ -419,7 +432,7 @@ randomTreeButton.addEventListener('click', () => {
                 insertDeleteSection.classList.toggle('invisible');
                 logicTree = new BTree(+maxDegreeInput.value);
                 userDrawingTree = new BTree(+maxDegreeInput.value);
-                generateRandomTree(+numKeysInput.value);
+                generateRandomTree(+numKeysInput.value, seed);
                 errorMessageLabel.textContent = "";
                 randomTreePresent = true;
                 randomTreeButton.textContent = "Cancel";
@@ -447,7 +460,12 @@ randomTreeButton.addEventListener('click', () => {
     
 });
 
-randomQuestionButton.addEventListener('click', generateRandomQuestion);
+// randomQuestionButton.addEventListener('click', generateRandomQuestion);
+
+randomQuestionButton.addEventListener('click', function() {
+    generateRandomQuestion(seed);
+});
+
 
 validateButton.addEventListener('click', (e) => {
 
