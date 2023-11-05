@@ -93,7 +93,7 @@ h2 {
 }
 
 .canvas-container {
-    justify-content: center;
+    justify-content: flex-start;
     height: 100%;
 }
 
@@ -169,10 +169,6 @@ label {
     margin: auto;
 }
 
-.controls {
-    margin-bottom: 3.5rem;
-}
-
 .controls section:first-child {
     margin-bottom: 0.5rem;
 }
@@ -213,6 +209,11 @@ div.canvas-scroll {
 
 #parameters-container-q.visible {
     display: flex;
+}
+
+#parameters-container-q label {
+    width: 100%;
+    text-align: center;
 }
 
 /* getting started guide pop-up */
@@ -261,7 +262,7 @@ div.canvas-scroll {
     margin: 0rem 0rem 2rem 2rem;
     font-size: 1.4rem;
     position: absolute;
-    top: calc(var(--panel-padding-tb) - 0.7rem);
+    top: calc(var(--panel-padding-tb) - 1.3rem);
     left: calc(var(--panel-padding-tb) - 0.7rem);
     color: #444;
 }

@@ -225,8 +225,6 @@ let zoomButtons = document.querySelectorAll('.zoom-controls button');
 const darkModeIcon = document.querySelector('.dark-mode-toggle');
 const body = document.body;
 
-let errorMessageLabel = document.getElementById('error-message');
-
 canvas = document.getElementById("canvas");
 
 window.addEventListener('load', init);
