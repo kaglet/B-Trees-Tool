@@ -174,14 +174,14 @@ function zoomCanvas(zoom) {
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
+    userDrawingTree.freeNodes = [];
+
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor,  null, null,null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
-    validateButton.classList.toggle('invisible');
-    randomQuestionButton.classList.toggle('invisible');
 
     let validationLabel = document.getElementById('validation');
     validationLabel.textContent = "";
@@ -226,6 +226,7 @@ function generateRandomQuestion(seed) {
         console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
+    graphics.clearRect(0, 0, canvas.width, canvas.height);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode,  scaleFactor, null, null,null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
@@ -264,6 +265,8 @@ let questionLabel = document.getElementById('question');
 
 let seedInput = document.querySelector('#seed');
 
+let generateQuestionsSingleTreeButton = document.querySelector('#generate-questions-single-tree');
+
 canvas = document.getElementById("canvas");
 
 window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
@@ -295,17 +298,7 @@ darkModeIcon.addEventListener('click', () => {
 
 saveButton.addEventListener('click', () => {
     if (logicTree && userDrawingTree){
-        let treeDegreeLabel = document.getElementById('treeDegree');
-        //hide
-        saveButton.classList.toggle('invisible');
-        createTreeParamtersContainer.classList.toggle('invisible');
-        insertDeleteSection.classList.toggle('invisible');
-
-        //show
-        questionsParamtersContainer.classList.toggle('invisible');
-        questionsParamtersContainer.classList.toggle('visible');
-
-        treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
+        // actually save, insert save to txt file code here
     } else {
         errorMessageLabel.textContent = "Please create a tree before saving";
     }    
@@ -690,6 +683,25 @@ document.addEventListener("keydown", function(event) {
     }
 });
 
+generateQuestionsSingleTreeButton.addEventListener('click', () => {
+    if (logicTree && userDrawingTree){
+        let treeDegreeLabel = document.getElementById('treeDegree');
+        //hide
+        saveButton.classList.toggle('invisible');
+        createTreeParamtersContainer.classList.toggle('invisible');
+        insertDeleteSection.classList.toggle('invisible');
+
+        //show
+        questionsParamtersContainer.classList.toggle('invisible');
+        questionsParamtersContainer.classList.toggle('visible');
+
+        treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
+
+        generateRandomQuestion(seed);
+    } else {
+        errorMessageLabel.textContent = "Please create a tree before saving";
+    }   
+})
 
 
 
