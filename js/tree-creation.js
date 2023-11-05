@@ -32,8 +32,6 @@ import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { validateTree } from "./validateTree.js";
 
-//import { SubtractiveBlending } from "three";
-
 // DECLARE GLOBAL VARIABLES
 let canvas;
 let graphics;
@@ -63,8 +61,6 @@ let selectedNodeObject;
 let seed;
 
 let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
-
-
 
 // Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
@@ -234,8 +230,6 @@ function generateRandomQuestion(seed) {
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
-
-
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
@@ -299,7 +293,6 @@ darkModeButton.addEventListener('click', () => {
 
 
 saveButton.addEventListener('click', () => {
-
     if (logicTree && userDrawingTree){
         let treeDegreeLabel = document.getElementById('treeDegree');
         //hide
@@ -455,27 +448,17 @@ randomTreeButton.addEventListener('click', () => {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Custom Tree Creation before creating a new Random Tree";
         return;
-
     }
-    
 });
-
-// randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 randomQuestionButton.addEventListener('click', function() {
     generateRandomQuestion(seed);
 });
 
-
 validateButton.addEventListener('click', (e) => {
-
     let validationLabel = document.getElementById('validation');
 
     if (userDrawingTree && logicTree){
-        // console.log("BEFORE TRAVERSE: ", userDrawingTree);
-        // userDrawingTree.traverse();
-        // console.log("AFTER TRAVERSE: ", userDrawingTree);
-
         let treeCorrect = validateTree(logicTree,userDrawingTree);
         if (treeCorrect){
             validationLabel.style.color = "green";
@@ -490,14 +473,8 @@ validateButton.addEventListener('click', (e) => {
     }
 });
 
-// on mouse down key is selected if possible then translated else searched for if not, dragMode is turned on.
-// on mouse up dragMode is turned off so mouse coordinates are not used for dragging, only during mouse down.
-// or don't even need to track a drag mode, it just won't be dragged.
-// so that a new node is selected
-// to detect a mouseup for redragging
 canvas.addEventListener('mousedown', (e) => {
     if (userDrawingTree && logicTree) {
-
         const mouseX = e.clientX - canvas.getBoundingClientRect().left;
         const mouseY = e.clientY - canvas.getBoundingClientRect().top;
         // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
@@ -560,7 +537,6 @@ canvas.addEventListener('mousedown', (e) => {
             console.log(selectedKeyForDrawArrow);
         }
     }
-
 });
 
 canvas.addEventListener('mousemove', (e) => {
@@ -638,8 +614,6 @@ canvas.addEventListener('mousemove', (e) => {
             }
         }
     }
-    
-    
 });
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
@@ -712,7 +686,6 @@ document.addEventListener("keydown", function(event) {
             // You can add your code here to handle the spacebar event
           }
     }
-    
 });
 
 
