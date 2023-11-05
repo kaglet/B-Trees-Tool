@@ -222,7 +222,7 @@ let randomTreeButton = document.querySelector('button.random-tree');
 
 let directionalButtons = document.querySelectorAll('.panning-controls button');
 let zoomButtons = document.querySelectorAll('.zoom-controls button');
-const darkModeButton = document.getElementById('dark-mode-toggle');
+const darkModeIcon = document.querySelector('.dark-mode-toggle');
 const body = document.body;
 
 let errorMessageLabel = document.getElementById('error-message');
@@ -252,7 +252,7 @@ closeHelpGuide.addEventListener("click", () => {
     helpGuide.style.display = "none";
 });
 
-darkModeButton.addEventListener('click', () => {
+darkModeIcon.addEventListener('click', () => {
     body.classList.toggle("dark-mode");
 });
 

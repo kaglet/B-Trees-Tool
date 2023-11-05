@@ -23,9 +23,6 @@
 }
 
 /* SET LAYOUT, SIZING AND FONT PROPERTIES*/
-canvas:first-child {
-    margin-top: var(--insert-delete-reserve-space);
-}
 
 body {
     display: flex;
@@ -76,7 +73,7 @@ ul {
 }
 
 .main-container, .side-panel {
-    padding: var(--panel-padding-tb) var(--panel-padding-lr) var(--page-btm-padding) var(--panel-padding-lr);
+    padding: calc(var(--panel-padding-tb) - 0.7rem) var(--panel-padding-lr) var(--page-btm-padding) var(--panel-padding-lr);
 }
 
 .side-panel {
@@ -211,6 +208,23 @@ div.canvas-scroll{
 }
 /* END---getting started guide pop-up */
 
+.dark-mode-toggle {
+    align-self: flex-start;
+    margin: 0rem 0rem 2rem 2rem;
+    font-size: 1.4rem;
+    position: absolute;
+    top: calc(var(--panel-padding-tb) - 0.7rem);
+    left: 0;
+    color: #444;
+}
+
+body.dark-mode .dark-mode-toggle {
+    color: white;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.2, 1.2);
+}
 
 /* dark mode toggle style */
 body.dark-mode {

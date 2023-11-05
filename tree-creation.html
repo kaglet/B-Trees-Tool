@@ -19,6 +19,7 @@
 <body>
     <section class="main-container">
         <section class="canvas-container">
+            <i class="fas fa-lightbulb dark-mode-toggle"></i>
             <section class="insert-delete-container" id="insert-delete-section">
                 <ul>
                     <li>
@@ -34,12 +35,6 @@
 
             <canvas id="canvas" width="900px" height="670px">
             </canvas>
-
-            <section class = "dark-mode">
-                <button id="dark-mode-toggle" class="dark-mode-button">
-                    <i class="fas fa-lightbulb"></i> 
-                  </button>
-            </section>
 
             <section class="zoom-controls">
                 <button type="button" class="zoom-in">
@@ -59,17 +54,6 @@
                         </button>
             </section>
 
-            <!-- <section>
-                <button class="save">
-                    Save
-                </button>
-                <button class="validate">
-                    Validate
-                </button>
-            </section> -->
-
-            <!-- <button id="help-button">Need Help?</button> -->
-
             <div id="help-guide" class="guide">
                 <div class="guide-content">
                     <span class="close" id="close-help-guide">&times;</span>
@@ -82,11 +66,9 @@
                         <li><strong>Custom Tree:</strong> Click this button to create your own B-tree, this will enable the insert and delete buttons.</li>
                         <li><strong>Insert:</strong> Enter a number and click this button to insert a node into the tree.</li>
                         <li><strong>Delete:</strong> Enter a number and click this button to delete a node from the tree.</li>
-                        <!-- <li><strong>Dark Mode:</strong> Click this button to switch to dark mode.</li> -->
                     </ul>
                 </div>
             </div>
-            
         </section>
     </section>
 
@@ -156,10 +138,7 @@
                 <li>
                     <button id="help-button">Need Help?</button>
                 </li>
-
             </ul>
-
-                
         </section>        
     </section>
 </body>
