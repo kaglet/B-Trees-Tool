@@ -299,7 +299,7 @@ input[type="checkbox"] {
     /* Adjusts the position of the checkboxes on the text baseline */
     vertical-align: -2px;
     /* Set here so that Windows' High-Contrast Mode can override */
-    color: rgb(231, 50, 113);
+    color: rgb(28, 28, 28);
 }
 
 input[type="checkbox"]::before {

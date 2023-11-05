@@ -307,7 +307,7 @@ saveButton.addEventListener('click', () => {
 
         treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
     } else {
-        errorMessageLabel.textContent = "Please create a tree before saving"
+        errorMessageLabel.textContent = "Please create a tree before saving";
     }    
 });
 
@@ -398,9 +398,6 @@ randomTreeButton.addEventListener('click', () => {
                 console.log(seed);
             } else seed = undefined;
         
-            if (!isNaN(seed) && seed == '') {
-                alert('Please enter a valid seed (any number)');
-            } 
             // there is no random tree created then run this
             if (!maxDegreeInput.value) {
                 errorMessageLabel.textContent = "Please enter a max degree value before randomizing a tree";
@@ -420,6 +417,10 @@ randomTreeButton.addEventListener('click', () => {
                 return;
             } else  if (+numKeysInput.value < 1) {
                 errorMessageLabel.textContent = "The minimum number of keys is 1"; 
+                randomTreePresent = false;
+                return;
+            } else  if ((isNaN(seed) || seed == '') && useSeed) {
+                errorMessageLabel.textContent = "Please enter a seed number value to use seeds"; 
                 randomTreePresent = false;
                 return;
             } else {
