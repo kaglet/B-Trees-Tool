@@ -64,12 +64,12 @@ h2 {
     margin-bottom: 0.9rem;
 }
 
-ul:first-child li {
+.side-panel ul:first-child li {
     display: flex;
     justify-content: space-between;
 }
 
-li {
+.side-panel li {
     margin-top: 0.5rem;
 }
 
@@ -104,10 +104,6 @@ li {
 
 .main-container {
     flex: 2 1 auto;
-}
-
-.insert-delete-container ul {
-    align-self: stretch;
 }
 
 input {
