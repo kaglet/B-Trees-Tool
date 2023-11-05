@@ -76,14 +76,7 @@
         <!-- Create Tree View -->
         <section class="parameters-container" id="parameters-container-c">
             <ul>
-                <li>
-                    <label for="max-degree">Max Degree</label>
-                    <input type="number" name="max-degree" id="max-degree" autofocus>
-                </li>
-                <li>
-                    <label for="num-keys">Num Keys</label>
-                    <input type="number" name="num-keys" id="num-keys">
-                </li>
+                <h2>Generation Constraints</h2>
                 <li>
                     <button type="button" class="random-tree">
                         Random Tree
@@ -98,10 +91,37 @@
                     <label style="color: red;" id="error-message" value=""></label>
                 </li>
                 <li>
+                    <label for="max-degree">Max Degree</label>
+                    <input type="number" name="max-degree" id="max-degree" autofocus>
+                </li>
+                <li>
+                    <label for="num-keys">Num Keys</label>
+                    <input type="number" name="num-keys" id="num-keys">
+                </li>
+                <li>
+                    <label for="seed">Seed</label>
+                    <input type="number" name="seed" id="seed">
+                </li>
+                <li>
+                    <label for="use-seed">Use Seed</label>
+                    <input type="checkbox" name="use-seed" id="use-seed">
+                </li>
+            </ul>
+            <ul>
+                <h2>Save/Load</h2>
+                <li>
                     <button class="save">
                         Save
                     </button>
                 </li>
+                <li>
+                    <button class="load">
+                        Load
+                    </button>
+                </li>
+            </ul>
+            <ul>
+                <h2>More Info</h2>
                 <li>
                     <button class="Seed" id="seedButton">Save seed</button>
                     <input type="number" name="seed" id="seedInput">
