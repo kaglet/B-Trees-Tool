@@ -216,6 +216,11 @@ div.canvas-scroll {
     text-align: center;
 }
 
+#treeDegree {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
 /* getting started guide pop-up */
 .guide {
     display: none;
