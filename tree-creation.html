@@ -17,9 +17,9 @@
 </head>
 
 <body>
+    <i class="fas fa-lightbulb dark-mode-toggle"></i>
     <section class="main-container">
         <section class="canvas-container">
-            <i class="fas fa-lightbulb dark-mode-toggle"></i>
             <section class="insert-delete-container" id="insert-delete-section">
                 <ul>
                     <li>
@@ -36,22 +36,24 @@
             <canvas id="canvas" width="900px" height="670px">
             </canvas>
 
-            <section class="zoom-controls">
-                <button type="button" class="zoom-in">
-                + </button>
-                <button type="button" class="zoom-out">
-                - </button>
-            </section>
-
-            <section class="panning-controls">
-                <button type="button" class="l">
-                    < </button>
-                        <button type="button" class="m">
-                            Reset
-                        </button>
-                        <button type="button" class="r">
-                            >
-                        </button>
+            <section class="controls">
+                <section class="zoom-controls">
+                    <button type="button" class="zoom-in">
+                    + </button>
+                    <button type="button" class="zoom-out">
+                    - </button>
+                </section>
+    
+                <section class="panning-controls">
+                    <button type="button" class="l">
+                        < </button>
+                            <button type="button" class="m">
+                                Reset
+                            </button>
+                            <button type="button" class="r">
+                                >
+                            </button>
+                </section>
             </section>
 
             <div id="help-guide" class="guide">

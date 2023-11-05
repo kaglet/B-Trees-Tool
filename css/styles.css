@@ -27,7 +27,7 @@
 body {
     display: flex;
     font-family: var(--main-font-family);
-    height: 100%;
+    min-height: 100vh;
 }
 
 button {
@@ -93,7 +93,7 @@ h2 {
 }
 
 .canvas-container {
-    justify-content: space-between;
+    justify-content: center;
     height: 100%;
 }
 
@@ -103,7 +103,8 @@ h2 {
 
 .main-container,
 .side-panel {
-    padding: calc(var(--panel-padding-tb) - 0.7rem) var(--panel-padding-lr) var(--page-btm-padding) var(--panel-padding-lr);
+    padding: calc(var(--panel-padding-tb) - 1.3rem) var(--panel-padding-lr) calc(var(--page-btm-padding) + 4px) var(--panel-padding-lr);
+    min-height: 100%;
 }
 
 .side-panel {
@@ -161,6 +162,19 @@ label {
     color: red;
     width: 16rem;
     text-align: center;
+}
+
+.controls section {
+    width: fit-content;
+    margin: auto;
+}
+
+.controls {
+    margin-bottom: 3.5rem;
+}
+
+.controls section:first-child {
+    margin-bottom: 0.5rem;
 }
 
 /* Set color themes onto page */
@@ -241,13 +255,14 @@ div.canvas-scroll {
 
 /* END---getting started guide pop-up */
 
+/* dark mode toggle icon styles*/
 .dark-mode-toggle {
     align-self: flex-start;
     margin: 0rem 0rem 2rem 2rem;
     font-size: 1.4rem;
     position: absolute;
     top: calc(var(--panel-padding-tb) - 0.7rem);
-    left: 0;
+    left: calc(var(--panel-padding-tb) - 0.7rem);
     color: #444;
 }
 
@@ -259,7 +274,7 @@ body.dark-mode .dark-mode-toggle {
     transform: scale(1.2, 1.2);
 }
 
-/* dark mode toggle style */
+/* dark mode toggle color style */
 body.dark-mode {
     --side-panel-bg-color: #333;
     --main-container-bg-color: #444;
@@ -286,9 +301,7 @@ body.dark-mode input {
     color: white;
 }
 
-/* END---dark mode toggle style */
-
-/* STYLE THE CHECKBOX IN A CUSTOM WAY*/
+/* Style the checkbox in a custom way*/
 
 input[type="checkbox"] {
     appearance: none;
