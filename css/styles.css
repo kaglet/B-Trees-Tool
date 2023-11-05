@@ -62,6 +62,7 @@ h2 {
     text-align: center;
     font-size: 1.5rem;
     margin-bottom: 0.9rem;
+    font-weight: 1000;
 }
 
 .side-panel ul:first-child li {
@@ -77,6 +78,10 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.insert-delete-container {
+    align-self: flex-start;
 }
 
 .parameters-container {
@@ -146,6 +151,12 @@ label {
 
 .insert-delete-container li:first-child ~ li {
     margin-left: 20px;
+}
+
+#error-message {
+    color: red;
+    width: 16rem;
+    text-align: center;
 }
 
 /* Set color themes onto page */

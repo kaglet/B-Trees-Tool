@@ -262,6 +262,8 @@ let createTreeParamtersContainer = document.getElementById('parameters-container
 let questionsParamtersContainer = document.getElementById('parameters-container-q');
 let questionLabel = document.getElementById('question');
 
+let seedInput = document.querySelector('#seed');
+
 canvas = document.getElementById("canvas");
 
 window.addEventListener('load', () => init(insertDeleteSection, validateButton,questionsParamtersContainer));
@@ -290,7 +292,6 @@ closeHelpGuide.addEventListener("click", () => {
 darkModeIcon.addEventListener('click', () => {
     body.classList.toggle("dark-mode");
 });
-
 
 saveButton.addEventListener('click', () => {
     if (logicTree && userDrawingTree){
@@ -345,15 +346,6 @@ deleteButton.addEventListener('click', () => {
     errorMessageLabel.textContent = "Please enter a key to delete";
 });
 
-document.getElementById('seedButton').addEventListener('click', function() {
-    seed = document.getElementById('seedInput').value;
-    console.log(seed);
-
-    if (!isNaN(seed) && seed == '') {
-        alert('Please enter a valid seed (a number)');
-    } 
-});
-
 customTreeButton.addEventListener('click', () => {
     if (!randomTreePresent){
         // there is no random tree created then run this
@@ -400,6 +392,15 @@ randomTreeButton.addEventListener('click', () => {
     if (!customTreePresent){
         // there is no custom tree created then run this
         if (!randomTreePresent){
+            let useSeed = document.querySelector('#use-seed').checked; 
+            if (useSeed) { 
+                seed = document.querySelector('#seed').value;
+                console.log(seed);
+            } else seed = undefined;
+        
+            if (!isNaN(seed) && seed == '') {
+                alert('Please enter a valid seed (any number)');
+            } 
             // there is no random tree created then run this
             if (!maxDegreeInput.value) {
                 errorMessageLabel.textContent = "Please enter a max degree value before randomizing a tree";
