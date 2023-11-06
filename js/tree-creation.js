@@ -182,7 +182,6 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
 
-    let validationLabel = document.getElementById('validation');
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(rng() * 2);
 
