@@ -457,6 +457,7 @@ validateButton.addEventListener('click', (e) => {
         if (1){
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid";
+            // this function below wipes out the old message showing valid
             generateRandomQuestion(seed);
         } else {
             validationLabel.style.color = "red";
