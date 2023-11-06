@@ -34,6 +34,8 @@ import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { validateTree } from "./validateTree.js";
 
+//import { SubtractiveBlending } from "three";
+
 // DECLARE GLOBAL VARIABLES
 let canvas;
 let graphics;
@@ -64,6 +66,8 @@ let seed;
 
 let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
 
+
+
 // Try initialize canvas and graphics else display unsupported canvas error
 function init(insertDeleteSection, validateButton, questionsParamtersContainer) {
     try {
@@ -72,6 +76,7 @@ function init(insertDeleteSection, validateButton, questionsParamtersContainer) 
 
         //hide
         questionsParamtersContainer.classList.toggle('invisible');
+        validateButton.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     } catch (e) {
         document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
@@ -110,7 +115,7 @@ function generateRandomTree(numKeys, seed) {
         userDrawingTree.insert(key);
         userDrawingTree.traverse();
     }
-    console.log(logicTree);
+    // console.log(logicTree);
     console.log(userDrawingTree);
     drawCreate();
 }
@@ -175,15 +180,17 @@ function zoomCanvas(zoom) {
     graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
-    userDrawingTree.freeNodes = [];
-
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
+    validateButton.classList.toggle('invisible');
+    randomQuestionButton.classList.toggle('invisible');
 
+    let validationLabel = document.getElementById('validation');
+    validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(rng() * 2);
 
@@ -225,10 +232,11 @@ function generateRandomQuestion(seed) {
         console.log("Search: ", key)
         document.getElementById("question").innerHTML = "Search: " + key;
     }
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
+
+
 
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
@@ -237,7 +245,6 @@ let insertButton = document.querySelector('button.insert');
 let deleteButton = document.querySelector('button.delete');
 
 let saveButton = document.querySelector('button.save');
-let loadButton = document.querySelector('input.load');
 let validateButton = document.querySelector('button.validate');
 
 let insertInput = document.getElementById('insert');
@@ -254,7 +261,7 @@ let directionalButtons = document.querySelectorAll('.panning-controls button');
 
 let zoomButtons = document.querySelectorAll('.zoom-controls button');
 
-const darkModeIcon = document.querySelector('.dark-mode-toggle');
+const darkModeButton = document.getElementById('dark-mode-toggle');
 const body = document.body;
 
 let errorMessageLabel = document.getElementById('error-message');
@@ -262,10 +269,6 @@ let errorMessageLabel = document.getElementById('error-message');
 let createTreeParamtersContainer = document.getElementById('parameters-container-c');
 let questionsParamtersContainer = document.getElementById('parameters-container-q');
 let questionLabel = document.getElementById('question');
-
-let seedInput = document.querySelector('#seed');
-
-let generateQuestionsSingleTreeButton = document.querySelector('#generate-questions-single-tree');
 
 canvas = document.getElementById("canvas");
 
@@ -292,23 +295,33 @@ closeHelpGuide.addEventListener("click", () => {
     helpGuide.style.display = "none";
 });
 
-darkModeIcon.addEventListener('click', () => {
+darkModeButton.addEventListener('click', () => {
     body.classList.toggle("dark-mode");
 });
 
+
 saveButton.addEventListener('click', () => {
+
     if (logicTree && userDrawingTree) {
-        // actually save, insert save to txt file code here
+        let treeDegreeLabel = document.getElementById('treeDegree');
+        //hide
+        saveButton.classList.toggle('invisible');
+        createTreeParamtersContainer.classList.toggle('invisible');
+        insertDeleteSection.classList.toggle('invisible');
+
+        //show
+        questionsParamtersContainer.classList.toggle('invisible');
+        questionsParamtersContainer.classList.toggle('visible');
+
+        treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
+
+        //save
         saveBTreeToFile(userDrawingTree.root, userDrawingTree.levels);
+
     } else {
-        errorMessageLabel.textContent = "Please create a tree before saving";
+        errorMessageLabel.textContent = "Please create a tree before saving"
     }
 });
-
-loadButton.addEventListener('click', () => {
-    uploadtxt();
-});
-
 
 insertButton.addEventListener('click', () => {
     if (insertInput.value) {
@@ -343,6 +356,15 @@ deleteButton.addEventListener('click', () => {
     }
 
     errorMessageLabel.textContent = "Please enter a key to delete";
+});
+
+document.getElementById('seedButton').addEventListener('click', function () {
+    seed = document.getElementById('seedInput').value;
+    console.log(seed);
+
+    if (!isNaN(seed) && seed == '') {
+        alert('Please enter a valid seed (a number)');
+    }
 });
 
 customTreeButton.addEventListener('click', () => {
@@ -391,12 +413,6 @@ randomTreeButton.addEventListener('click', () => {
     if (!customTreePresent) {
         // there is no custom tree created then run this
         if (!randomTreePresent) {
-            let useSeed = document.querySelector('#use-seed').checked;
-            if (useSeed) {
-                seed = document.querySelector('#seed').value;
-                console.log(seed);
-            } else seed = undefined;
-
             // there is no random tree created then run this
             if (!maxDegreeInput.value) {
                 errorMessageLabel.textContent = "Please enter a max degree value before randomizing a tree";
@@ -416,10 +432,6 @@ randomTreeButton.addEventListener('click', () => {
                 return;
             } else if (+numKeysInput.value < 1) {
                 errorMessageLabel.textContent = "The minimum number of keys is 1";
-                randomTreePresent = false;
-                return;
-            } else if ((isNaN(seed) || seed == '') && useSeed) {
-                errorMessageLabel.textContent = "Please enter a seed number value to use seeds";
                 randomTreePresent = false;
                 return;
             } else {
@@ -449,38 +461,49 @@ randomTreeButton.addEventListener('click', () => {
         // there is already a random tree created then run this
         errorMessageLabel.textContent = "Cancel the Custom Tree Creation before creating a new Random Tree";
         return;
+
     }
+
 });
+
+// randomQuestionButton.addEventListener('click', generateRandomQuestion);
 
 randomQuestionButton.addEventListener('click', function () {
     generateRandomQuestion(seed);
 });
 
+
 validateButton.addEventListener('click', (e) => {
+
     let validationLabel = document.getElementById('validation');
 
-    if (userDrawingTree && logicTree){
-        let treeCorrect = validateTree(logicTree,userDrawingTree);
-        if (1){
+    if (userDrawingTree && logicTree) {
+        // console.log("BEFORE TRAVERSE: ", userDrawingTree);
+        // userDrawingTree.traverse();
+        // console.log("AFTER TRAVERSE: ", userDrawingTree);
+
+        let treeCorrect = validateTree(logicTree, userDrawingTree);
+        if (treeCorrect) {
             validationLabel.style.color = "green";
-            validationLabel.textContent = "Your operation was valid!";
-            validateButton.disabled = true;
-            setTimeout(() => {
-                validationLabel.textContent = "";
-                generateRandomQuestion(seed);
-                validateButton.disabled = false;
-            }, 2000);
-            // this function below wipes out the old message showing valid
+            validationLabel.textContent = "Your operation was valid";
+            validateButton.classList.toggle('invisible');
+            randomQuestionButton.classList.toggle('invisible');
+
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
-            setTimeout(() => validationLabel.textContent = "", 2000);
         }
     }
 });
 
+// on mouse down key is selected if possible then translated else searched for if not, dragMode is turned on.
+// on mouse up dragMode is turned off so mouse coordinates are not used for dragging, only during mouse down.
+// or don't even need to track a drag mode, it just won't be dragged.
+// so that a new node is selected
+// to detect a mouseup for redragging
 canvas.addEventListener('mousedown', (e) => {
     if (userDrawingTree && logicTree) {
+
         const mouseX = e.clientX - canvas.getBoundingClientRect().left;
         const mouseY = e.clientY - canvas.getBoundingClientRect().top;
         // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
@@ -543,6 +566,7 @@ canvas.addEventListener('mousedown', (e) => {
             console.log(selectedKeyForDrawArrow);
         }
     }
+
 });
 
 canvas.addEventListener('mousemove', (e) => {
@@ -620,6 +644,8 @@ canvas.addEventListener('mousemove', (e) => {
             }
         }
     }
+
+
 });
 
 // Important: note that event listener is added to window in case user performs mouse up outside canvas meaning event is not detected in canvas
@@ -692,27 +718,9 @@ document.addEventListener("keydown", function (event) {
             // You can add your code here to handle the spacebar event
         }
     }
+
 });
 
-generateQuestionsSingleTreeButton.addEventListener('click', () => {
-    if (logicTree && userDrawingTree) {
-        let treeDegreeLabel = document.getElementById('treeDegree');
-        //hide
-        saveButton.classList.toggle('invisible');
-        createTreeParamtersContainer.classList.toggle('invisible');
-        insertDeleteSection.classList.toggle('invisible');
-
-        //show
-        questionsParamtersContainer.classList.toggle('invisible');
-        questionsParamtersContainer.classList.toggle('visible');
-
-        treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
-
-        generateRandomQuestion(seed);
-    } else {
-        errorMessageLabel.textContent = "Please create a tree before saving";
-    }
-})
 
 
 
@@ -723,6 +731,7 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
 // So check 15 to right and left, and 15 up and down to see if mouse click is within that key.
 // from mouse click check horizontal bounds and vertical bounds with withinBounds booleans
 // In fact its 30 in both directions
+
 
 
 //Save to file
@@ -813,20 +822,24 @@ function saveBTreeToFile(rootNode, levels) {
     document.body.removeChild(a);
 
 
+    console.log("upload check");
+    console.log(reconstructBTreeFromText(treeInfo));
+
 
 }
+
 
 
 function reconstructBTreeFromText(text) {
     // Split the text into lines
     const lines = text.split('\n');
+    console.log(lines);
 
     // Extract the B-tree parameters from the first line
     const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
 
     // Create a new B-tree with the specified degree
-     userDrawingTree = new BTree(degree);
-     logicTree = new BTree(degree);
+    const userDrawingTree = new BTree(degree);
 
 
     // Initialize level coordinates
@@ -881,13 +894,11 @@ function reconstructBTreeFromText(text) {
                 }
             } else {
                 userDrawingTree.root = newNode;
-                logicTree.root = newNode;
             }
 
 
             for (let i = 0; i < keys.length; i++) {
                 newNode.keys[i].value = keys[i];
-                newNode.n +=1;
             }
 
 
@@ -905,34 +916,7 @@ function reconstructBTreeFromText(text) {
 
     // Set the levels array in the BTree
     userDrawingTree.levels = levels;
-    logicTree.levels = levels;
 
-}
-function uploadtxt() {
-    // Get references to the HTML elements
-    const fileInput = document.getElementById("fileInput");
-
-    // Add an event listener to the file input element to handle file selection
-    fileInput.addEventListener("change", function (event) {
-        const selectedFile = event.target.files[0];
-        if (selectedFile) {
-            // Handle the selected file, e.g., read its contents
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                // File content is available in e.target.result
-                const fileContent = e.target.result;
-                reconstructBTreeFromText(fileContent);
-                // Move your tree drawing and manipulation functions here
-                logicTree.traverse();
-                userDrawingTree.traverse();
-                drawCreate();
-        
-                fileInput.blur(); // Blur the input element
-           
-            };
-
-            reader.readAsText(selectedFile);
-        }
-    });
+    // Now, userDrawingTree contains the reconstructed B-tree structure and levels array.
+    return userDrawingTree;
 }

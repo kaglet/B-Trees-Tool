@@ -74,7 +74,15 @@ function drawQuestion() {
 
 function generateRandomTree(numKeys, seed) {
     const rng = new Math.seedrandom(seed);
-    for (let i = 0; i < numKeys; i++) {
+    for (let i = 0; i < 2; i++) {
+        const key = Math.floor(rng() * 100);
+        logicTree.insert(key); // Insert the key into the tree
+        userDrawingTree.insert(key);
+        logicTree.traverse();
+        userDrawingTree.traverse();
+    }
+
+    for (let i = 2; i < numKeys; i++) {
         const key = +Math.floor(rng() * 100);
         logicTree.insert(key);
         logicTree.traverse();
@@ -83,6 +91,7 @@ function generateRandomTree(numKeys, seed) {
         userDrawingTree.traverse();
     }
     console.log(logicTree);
+    console.log(logicTree.t);
     console.log(userDrawingTree);
     drawCreate();
 }
