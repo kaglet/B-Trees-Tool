@@ -265,7 +265,7 @@ label#question {
 /* END---getting started guide pop-up */
 
 /* dark mode toggle icon styles*/
-.dark-mode-toggle {
+i.dark-mode-toggle {
     display: block;
     align-self: flex-start;
     font-size: 1.4rem;
@@ -273,7 +273,7 @@ label#question {
     color: #444;
 }
 
-.reset-icon {
+i.reset-icon {
     display: block;
     color: #444;
     font-size: 1.4rem;
