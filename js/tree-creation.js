@@ -172,11 +172,9 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
-    // TODO: logic to be handeld between create and question
+    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0); 
     userDrawingTree.assignNodePositions(scaleFactor);
-    userDrawingTree.freeNodes = [];
-
+    //freenodes arent moved to new positions in drawtree
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
