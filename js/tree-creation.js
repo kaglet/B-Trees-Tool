@@ -183,7 +183,6 @@ function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
 
     let validationLabel = document.getElementById('validation');
-    validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(rng() * 2);
 
@@ -456,12 +455,18 @@ validateButton.addEventListener('click', (e) => {
         let treeCorrect = validateTree(logicTree,userDrawingTree);
         if (1){
             validationLabel.style.color = "green";
-            validationLabel.textContent = "Your operation was valid";
+            validationLabel.textContent = "Your operation was valid!";
+            validateButton.disabled = true;
+            setTimeout(() => {
+                validationLabel.textContent = "";
+                generateRandomQuestion(seed);
+                validateButton.disabled = false;
+            }, 2000);
             // this function below wipes out the old message showing valid
-            generateRandomQuestion(seed);
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
+            setTimeout(() => validationLabel.textContent = "", 2000);
         }
     }
 });
