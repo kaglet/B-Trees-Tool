@@ -23,14 +23,11 @@
 }
 
 /* SET LAYOUT, SIZING AND FONT PROPERTIES*/
-canvas:first-child {
-    margin-top: var(--insert-delete-reserve-space);
-}
 
 body {
     display: flex;
     font-family: var(--main-font-family);
-    height: 100vh;
+    min-height: 100vh;
 }
 
 button {
@@ -50,7 +47,7 @@ button:hover {
 
 .insert-delete-container li {
     display: inline;
-} 
+}
 
 .visible {
     visibility: visible;
@@ -58,16 +55,45 @@ button:hover {
 
 ul {
     list-style: none;
+    width: 100%;
 }
 
-.side-panel, .main-container, .canvas-container {
+h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.9rem;
+    font-weight: 1000;
+}
+
+.side-panel ul:first-child li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.side-panel li {
+    margin-top: 0.5rem;
+}
+
+.side-panel,
+.main-container,
+.canvas-container,
+.parameters-container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.canvas-container {
+.insert-delete-container {
+    align-self: flex-start;
+}
+
+.parameters-container {
     justify-content: space-between;
+    flex: auto;
+}
+
+.canvas-container {
+    justify-content: flex-start;
     height: 100%;
 }
 
@@ -75,8 +101,10 @@ ul {
     gap: var(--canvas-container-gap);
 }
 
-.main-container, .side-panel {
-    padding: var(--panel-padding-tb) var(--panel-padding-lr) var(--page-btm-padding) var(--panel-padding-lr);
+.main-container,
+.side-panel {
+    padding: calc(var(--panel-padding-tb) - 1.3rem) var(--panel-padding-lr) calc(var(--page-btm-padding) + 4px) var(--panel-padding-lr);
+    min-height: 100%;
 }
 
 .side-panel {
@@ -86,10 +114,6 @@ ul {
 
 .main-container {
     flex: 2 1 auto;
-}
-
-.insert-delete-container {
-    align-self: flex-start;
 }
 
 input {
@@ -122,7 +146,7 @@ input#num-nodes {
     margin-left: auto;
 }
 
-.parameters-container li:first-child ~ li {
+ul li:first-child~li {
     margin-top: 10px;
 }
 
@@ -130,8 +154,23 @@ label {
     margin: 0px 6px 0px 0px;
 }
 
-.insert-delete-container li:first-child ~ li {
+.insert-delete-container li:first-child~li {
     margin-left: 20px;
+}
+
+#error-message {
+    color: red;
+    width: 16rem;
+    text-align: center;
+}
+
+.controls section {
+    width: fit-content;
+    margin: auto;
+}
+
+.controls section:first-child {
+    margin-bottom: 0.5rem;
 }
 
 /* Set color themes onto page */
@@ -140,7 +179,8 @@ label {
     background-color: var(--side-panel-bg-color);
 }
 
-.side-panel button, .side-panel input {
+.side-panel button,
+.side-panel input {
     background-color: var(--side-panel-input-color);
 }
 
@@ -152,16 +192,15 @@ label {
     background-color: var(--main-container-bg-color);
 }
 
-.main-container input, .main-container button {
+.main-container input,
+.main-container button {
     background-color: var(--main-container-input-color);
 }
 
-div.canvas-scroll{
+div.canvas-scroll {
     width: 100%;
     height: 100%;
     overflow: auto;
-
-
 }
 
 .invisible {
@@ -170,6 +209,19 @@ div.canvas-scroll{
 
 #parameters-container-q.visible {
     display: flex;
+}
+
+#parameters-container-q label {
+    margin: auto;
+}
+
+label#question {
+    margin: auto;
+}
+
+#treeDegree {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 /* getting started guide pop-up */
@@ -209,21 +261,42 @@ div.canvas-scroll{
 #guide-heading {
     text-decoration: underline;
 }
+
 /* END---getting started guide pop-up */
 
+/* dark mode toggle icon styles*/
+.dark-mode-toggle {
+    align-self: flex-start;
+    margin: 0rem 0rem 2rem 2rem;
+    font-size: 1.4rem;
+    position: absolute;
+    top: calc(var(--panel-padding-tb) - 1.3rem);
+    left: calc(var(--panel-padding-tb) - 0.7rem);
+    color: #444;
+}
 
-/* dark mode toggle style */
+body.dark-mode .dark-mode-toggle {
+    color: white;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.2, 1.2);
+}
+
+/* dark mode toggle color style */
 body.dark-mode {
-    --side-panel-bg-color: #333; 
-    --main-container-bg-color: #444; 
-    --side-panel-input-color: #222; 
-    --main-container-input-color: #111; 
-    --canvas-color: #222; 
+    --side-panel-bg-color: #333;
+    --main-container-bg-color: #444;
+    --side-panel-input-color: #222;
+    --main-container-input-color: #111;
+    --canvas-color: #222;
     color: white !important;
-    .guide-content{
+
+    .guide-content {
         background-color: #111;
     }
-    .close:hover{
+
+    .close:hover {
         color: white;
     }
 }
@@ -234,6 +307,34 @@ body.dark-mode .dark-mode button {
 }
 
 body.dark-mode input {
-    color: white; 
+    color: white;
 }
-/* END---dark mode toggle style */
+
+/* Style the checkbox in a custom way*/
+
+input[type="checkbox"] {
+    appearance: none;
+    position: relative;
+    width: 1.5em;
+    height: 1.5em;
+    border: none;
+    background-color: var(--side-panel-input-color);
+    /* Adjusts the position of the checkboxes on the text baseline */
+    vertical-align: -2px;
+    /* Set here so that Windows' High-Contrast Mode can override */
+    color: rgb(28, 28, 28);
+}
+
+input[type="checkbox"]::before {
+    content: "✔";
+    position: absolute;
+    font-size: 1.7em;
+    right: -1px;
+    top: -0.13em;
+    visibility: hidden;
+}
+
+input[type="checkbox"]:checked::before {
+    /* Use `visibility` instead of `display` to avoid recalculating layout */
+    visibility: visible;
+}

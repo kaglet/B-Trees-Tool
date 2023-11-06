@@ -6,18 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tree Creation</title>
     <link href="css/styles.css" rel="stylesheet">
-    <script src="js/main.js" type="module" defer></script>
+    <script src="js/tree-creation.js" type="module" defer></script>
 
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
-
 </head>
 
 <body>
     <section class="main-container">
+        <i class="fas fa-lightbulb dark-mode-toggle"></i>
         <section class="canvas-container">
             <section class="insert-delete-container" id="insert-delete-section">
                 <ul>
@@ -35,40 +35,25 @@
             <canvas id="canvas" width="900px" height="670px">
             </canvas>
 
-            <section class = "dark-mode">
-                <button id="dark-mode-toggle" class="dark-mode-button">
-                    <i class="fas fa-lightbulb"></i> 
-                  </button>
+            <section class="controls">
+                <section class="zoom-controls">
+                    <button type="button" class="zoom-in">
+                    + </button>
+                    <button type="button" class="zoom-out">
+                    - </button>
+                </section>
+    
+                <section class="panning-controls">
+                    <button type="button" class="l">
+                        < </button>
+                            <button type="button" class="m">
+                                Reset
+                            </button>
+                            <button type="button" class="r">
+                                >
+                            </button>
+                </section>
             </section>
-
-            <section class="zoom-controls">
-                <button type="button" class="zoom-in">
-                + </button>
-                <button type="button" class="zoom-out">
-                - </button>
-            </section>
-
-            <section class="panning-controls">
-                <button type="button" class="l">
-                    < </button>
-                        <button type="button" class="m">
-                            Reset
-                        </button>
-                        <button type="button" class="r">
-                            >
-                        </button>
-            </section>
-
-            <!-- <section>
-                <button class="save">
-                    Save
-                </button>
-                <button class="validate">
-                    Validate
-                </button>
-            </section> -->
-
-            <!-- <button id="help-button">Need Help?</button> -->
 
             <div id="help-guide" class="guide">
                 <div class="guide-content">
@@ -82,11 +67,9 @@
                         <li><strong>Custom Tree:</strong> Click this button to create your own B-tree, this will enable the insert and delete buttons.</li>
                         <li><strong>Insert:</strong> Enter a number and click this button to insert a node into the tree.</li>
                         <li><strong>Delete:</strong> Enter a number and click this button to delete a node from the tree.</li>
-                        <!-- <li><strong>Dark Mode:</strong> Click this button to switch to dark mode.</li> -->
                     </ul>
                 </div>
             </div>
-            
         </section>
     </section>
 
@@ -94,14 +77,7 @@
         <!-- Create Tree View -->
         <section class="parameters-container" id="parameters-container-c">
             <ul>
-                <li>
-                    <label for="max-degree">Max Degree</label>
-                    <input type="number" name="max-degree" id="max-degree" autofocus>
-                </li>
-                <li>
-                    <label for="num-keys">Num Keys</label>
-                    <input type="number" name="num-keys" id="num-keys">
-                </li>
+                <h2>Generation Constraints</h2>
                 <li>
                     <button type="button" class="random-tree">
                         Random Tree
@@ -113,18 +89,41 @@
                     </button>
                 </li>
                 <li>
-                    <label style="color: red;" id="error-message" value=""></label>
+                    <label id="error-message" value=""></label>
                 </li>
+                <li>
+                    <label for="max-degree">Max Degree</label>
+                    <input type="number" name="max-degree" id="max-degree" autofocus>
+                </li>
+                <li>
+                    <label for="num-keys">Num Keys</label>
+                    <input type="number" name="num-keys" id="num-keys">
+                </li>
+                <li>
+                    <label for="seed">Seed</label>
+                    <input type="number" name="seed" id="seed">
+                </li>
+                <li>
+                    <label for="use-seed">Use Seed</label>
+                    <input type="checkbox" name="use-seed" id="use-seed">
+                </li>
+            </ul>
+            <ul>
+                <h2>Save/Load</h2>
                 <li>
                     <button class="save">
                         Save
                     </button>
                 </li>
                 <li>
-                    <button class="Seed" id="seedButton">Save seed</button>
-                    <input type="number" name="seed" id="seedInput">
+                    <button class="load">
+                        Load
+                    </button>
                 </li>
-
+            </ul>
+            <ul>
+                <h2>More</h2>
+                <button id="generate-questions-single-tree">Generate Questions on Tree</button>
                 <li>
                     <button id="help-button">Need Help?</button>
                 </li>
@@ -133,20 +132,20 @@
 
         <!-- Question View -->
         <section class="parameters-container" id="parameters-container-q">
-            <ul>
+            <ul>  
                 <li>
                     <label id="treeDegree" value=""></label>
                 </li>
+            </ul>
+            <ul>
+                <h2>Question</h2>
                 <li>
-                    <button  class="random-question">
-                        Generate Random Question
+                    <button class="random-question">
+                        Generate Next Question
                     </button>
                 </li>
                 <li>
                     <label id="question" value=""></label>
-                </li>
-                <li>
-                    <label id="validation" value=""></label>
                 </li>
                 <li>
                     <button class="validate">
@@ -154,17 +153,32 @@
                     </button>
                 </li>
                 <li>
+                    <label id="validation" value=""></label>
+                </li>
+            </ul>
+            <ul>
+                <h2>Save/Load</h2>
+                <li>
+                    <button class="save">
+                        Save
+                    </button>
+                </li>
+                <li>
+                    <button class="load">
+                        Load
+                    </button>
+                </li>
+            </ul>
+            <ul>
+                <h2>More</h2>
+                <li>
+                    <button id="generate-questions-single-tree">Back to Custom Creation</button>
+                </li>
+                <li>
                     <button id="help-button">Need Help?</button>
                 </li>
-
             </ul>
-
-                
-        </section>
-
-        
-
-        
+        </section>        
     </section>
 </body>
 
