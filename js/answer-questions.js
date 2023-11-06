@@ -293,6 +293,8 @@ darkModeIcon.addEventListener('click', () => {
 
 randomQuestionButton.addEventListener('click', function () {
     showRandomTreeAndQuestion();
+    document.getElementById('solution-button').style.display = 'none';
+    document.getElementById('solution-button').disabled = true;
 });
 
 validateButton.addEventListener('click', (e) => {
@@ -305,10 +307,17 @@ validateButton.addEventListener('click', (e) => {
             validationLabel.textContent = "Your operation was valid";
             validateButton.classList.toggle('invisible');
             randomQuestionButton.classList.toggle('invisible');
+            document.getElementById('solution-button').style.display = 'none';
+            document.getElementById('solution-button').disabled = true;
+          
 
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
+            document.getElementById('solution-button').disabled = false;
+            document.getElementById('solution-button').style.display = 'block'; 
+
+
         }
     }
 });

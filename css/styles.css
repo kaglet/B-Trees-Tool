@@ -348,7 +348,9 @@ input[type="checkbox"]:checked::before {
     height: 100%;
     z-index: 1;
   }
-
+.solbutton{
+    display: none;
+}
 .solution {
     background-color: #f4f4f4;
     margin: 10% auto;
