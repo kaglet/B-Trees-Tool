@@ -457,9 +457,7 @@ validateButton.addEventListener('click', (e) => {
         if (1){
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid";
-            validateButton.classList.toggle('invisible');
-            randomQuestionButton.classList.toggle('invisible');
-
+            generateRandomQuestion(seed);
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
