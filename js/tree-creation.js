@@ -240,7 +240,7 @@ let insertButton = document.querySelector('button.insert');
 let deleteButton = document.querySelector('button.delete');
 
 let saveButton = document.querySelector('button.save');
-let loadButton = document.querySelector('button.load');
+let loadButton = document.querySelector('input.load');
 let validateButton = document.querySelector('button.validate');
 
 let insertInput = document.getElementById('insert');
@@ -310,8 +310,6 @@ saveButton.addEventListener('click', () => {
 
 loadButton.addEventListener('click', () => {
     uploadtxt();
-    console.log(userDrawingTree);
-  //  drawCreate();
 });
 
 
@@ -817,7 +815,6 @@ function saveBTreeToFile(rootNode, levels) {
 }
 
 
-
 function reconstructBTreeFromText(text) {
     // Split the text into lines
     const lines = text.split('\n');
@@ -882,6 +879,7 @@ function reconstructBTreeFromText(text) {
                 }
             } else {
                 userDrawingTree.root = newNode;
+                logicTree.root = newNode;
             }
 
 
@@ -908,17 +906,9 @@ function reconstructBTreeFromText(text) {
     logicTree.levels = levels;
 
 }
-
 function uploadtxt() {
     // Get references to the HTML elements
     const fileInput = document.getElementById("fileInput");
-    const loadButton = document.querySelector(".load");
-
-    // Add a click event listener to the load button
-    loadButton.addEventListener("click", function () {
-        // Trigger the file input element to open the file picker dialog
-        fileInput.click();
-    });
 
     // Add an event listener to the file input element to handle file selection
     fileInput.addEventListener("change", function (event) {
@@ -931,8 +921,13 @@ function uploadtxt() {
                 // File content is available in e.target.result
                 const fileContent = e.target.result;
                 reconstructBTreeFromText(fileContent);
-    
-
+                // Move your tree drawing and manipulation functions here
+                logicTree.traverse();
+                userDrawingTree.traverse();
+                drawCreate();
+        
+                fileInput.blur(); // Blur the input element
+           
             };
 
             reader.readAsText(selectedFile);
