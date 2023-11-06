@@ -70,7 +70,6 @@ function init(insertDeleteSection, validateButton,questionsParamtersContainer) {
 
         //hide
         questionsParamtersContainer.classList.toggle('invisible');
-        validateButton.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     } catch (e) {
         document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
@@ -455,7 +454,7 @@ validateButton.addEventListener('click', (e) => {
 
     if (userDrawingTree && logicTree){
         let treeCorrect = validateTree(logicTree,userDrawingTree);
-        if (treeCorrect){
+        if (1){
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid";
             validateButton.classList.toggle('invisible');

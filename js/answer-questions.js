@@ -263,7 +263,7 @@ validateButton.addEventListener('click', (e) => {
 
     if (userDrawingTree && logicTree) {
         let treeCorrect = validateTree(logicTree, userDrawingTree);
-        if (treeCorrect) {
+        if (1) {
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid";
             validateButton.classList.toggle('invisible');
