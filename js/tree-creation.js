@@ -887,6 +887,7 @@ function reconstructBTreeFromText(text) {
 
             for (let i = 0; i < keys.length; i++) {
                 newNode.keys[i].value = keys[i];
+                newNode.n +=1;
             }
 
 
