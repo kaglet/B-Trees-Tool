@@ -211,7 +211,7 @@ function generateRandomQuestion(seed) {
 
 function showRandomTreeAndQuestion() {
     let min = 2;
-    let max = 4;
+    let max = 3;
     const randomDegree = Math.floor(Math.random() * (max - min + 1)) + min;
     min = 1;
     max = Number.MAX_VALUE;
