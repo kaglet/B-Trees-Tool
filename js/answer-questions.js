@@ -163,8 +163,6 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
 
-    let validationLabel = document.getElementById('validation');
-    validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(rng() * 2);
 
@@ -210,7 +208,7 @@ function generateRandomQuestion(seed) {
 }
 
 function showRandomTreeAndQuestion() {
-    let min = 2;
+    let min = 3;
     let max = 4;
     const randomDegree = Math.floor(Math.random() * (max - min + 1)) + min;
     min = 1;
@@ -272,15 +270,19 @@ validateButton.addEventListener('click', (e) => {
 
     if (userDrawingTree && logicTree) {
         let treeCorrect = validateTree(logicTree, userDrawingTree);
-        if (treeCorrect) {
+        if (1) {
             validationLabel.style.color = "green";
-            validationLabel.textContent = "Your operation was valid";
-            validateButton.classList.toggle('invisible');
-            randomQuestionButton.classList.toggle('invisible');
-
+            validationLabel.textContent = "Your operation was valid!";
+            validateButton.disabled = true;
+            setTimeout(() => {
+                validationLabel.textContent = "";
+                generateRandomQuestion(seed);
+                validateButton.disabled = false;
+            }, 2000);
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
+            setTimeout(() => validationLabel.textContent = "", 2000);
         }
     }
 });

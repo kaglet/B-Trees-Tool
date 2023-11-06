@@ -266,20 +266,31 @@ label#question {
 
 /* dark mode toggle icon styles*/
 .dark-mode-toggle {
+    display: block;
     align-self: flex-start;
-    margin: 0rem 0rem 2rem 2rem;
     font-size: 1.4rem;
-    position: absolute;
+    margin-bottom: 1.2rem;
+    color: #444;
+}
+
+.reset-icon {
+    display: block;
+    color: #444;
+    font-size: 1.4rem;
+}
+
+.icon-container {
+    margin: 0rem 0rem 2rem 2rem;
+    position: fixed;
     top: calc(var(--panel-padding-tb) - 1.3rem);
     left: calc(var(--panel-padding-tb) - 0.7rem);
-    color: #444;
 }
 
 body.dark-mode .dark-mode-toggle {
     color: white;
 }
 
-.dark-mode-toggle:hover {
+i:hover {
     transform: scale(1.2, 1.2);
 }
 
