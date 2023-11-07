@@ -1,4 +1,4 @@
-import { drawTree, drawArrowhead, drawArrow} from "./drawTree.js";
+import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import {
     pullKeyOffTheTree, snapFreeNodeOntoNode, findDropOffAreaOfNode,
     detectMouseHoverOverArrowHitbox, recieveNodesRedCircles, findselectedItemsFromArrowHitBoxClick,
@@ -33,8 +33,6 @@ let moveFullNodeMode = false;
 let rootNodeSelcted = false;
 let selectedKeyObject;
 let selectedNodeObject;
-let solutionCanvas;
-let solutionGraphics;
 
 let seed;
 
@@ -60,15 +58,6 @@ function drawCreate() {
     userDrawingTree.assignNodePositions(scaleFactor);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
 }
-function drawCreateSolution() {
-    solutionGraphics.clearRect(0, 0, solutionCanvas.width, solutionCanvas.height);
-    solutionGraphics.scale(0.8, 0.8);
-    logicTree.assignNodePositions(1);
-    drawTree(logicTree.root, solutionCanvas, logicTree.freeNodes, false, 1, null, null, null);
-    solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
-   
-}
-
 
 function drawQuestion() {
     userDrawingTree.traverse();
@@ -156,21 +145,6 @@ function moveCanvas(direction) {
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
 }
 
-//Solution
-const solutionButton = document.getElementById("solution-button");
-const closeSolution = document.getElementById("close-solution");
-const solutionPanel = document.getElementById("solution-popup");
-
-
-solutionButton.addEventListener("click", () =>{
-    solutionPanel.style.display = "block";
-    drawCreateSolution();
-});
-
-closeSolution.addEventListener("click", () => {
-    solutionPanel.style.display = "none";
-});
-
 function zoomCanvas(zoom) {
     if (zoom == 'zoom-out') {
         scaleFactor *= 0.9;
@@ -190,8 +164,6 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
 
-    let validationLabel = document.getElementById('validation');
-    validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(rng() * 2);
 
@@ -237,8 +209,8 @@ function generateRandomQuestion(seed) {
 }
 
 function showRandomTreeAndQuestion() {
-    let min = 2;
-    let max = 3;
+    let min = 3;
+    let max = 4;
     const randomDegree = Math.floor(Math.random() * (max - min + 1)) + min;
     min = 1;
     max = Number.MAX_VALUE;
@@ -519,7 +491,7 @@ window.addEventListener('mouseup', (e) => {
             // Call drawTree because tree has not changed
             graphics.clearRect(0, 0, canvas.width, canvas.height);
             drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
-            //console.log(userDrawingTree)
+            console.log(userDrawingTree)
             if (rootNodeSelcted) {
                 rootNodeSelcted = false;
             }

@@ -73,7 +73,6 @@ function init(insertDeleteSection, validateButton, questionsParamtersContainer) 
 
         //hide
         questionsParamtersContainer.classList.toggle('invisible');
-        validateButton.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     } catch (e) {
         document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
@@ -174,11 +173,9 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(0, 0, canvas.width, canvas.height);
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
-    // TODO: logic to be handeld between create and question
+    // graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0); 
     userDrawingTree.assignNodePositions(scaleFactor);
-    userDrawingTree.freeNodes = [];
-
+    //freenodes arent moved to new positions in drawtree
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
@@ -186,8 +183,6 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion(seed) {
     const rng = new Math.seedrandom(seed);
 
-    let validationLabel = document.getElementById('validation');
-    validationLabel.textContent = "";
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(rng() * 2);
 
@@ -684,10 +679,14 @@ validateButton.addEventListener('click', (e) => {
         let treeCorrect = validateTree(logicTree,userDrawingTree);
         if (treeCorrect){
             validationLabel.style.color = "green";
-            validationLabel.textContent = "Your operation was valid";
-            validateButton.classList.toggle('invisible');
-            randomQuestionButton.classList.toggle('invisible');
-
+            validationLabel.textContent = "Your operation was valid!";
+            validateButton.disabled = true;
+            setTimeout(() => {
+                validationLabel.textContent = "";
+                generateRandomQuestion(seed);
+                validateButton.disabled = false;
+            }, 2000);
+            // this function below wipes out the old message showing valid
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";

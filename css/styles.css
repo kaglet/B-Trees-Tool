@@ -281,18 +281,16 @@ i.reset-icon {
 
 .icon-container {
     margin: 0rem 0rem 2rem 2rem;
-    font-size: 1.4rem;
-    position: absolute;
+    position: fixed;
     top: calc(var(--panel-padding-tb) - 1.3rem);
     left: calc(var(--panel-padding-tb) - 0.7rem);
-    color: #444;
 }
 
 body.dark-mode .dark-mode-toggle {
     color: white;
 }
 
-.dark-mode-toggle:hover {
+i:hover {
     transform: scale(1.2, 1.2);
 }
 
@@ -351,47 +349,3 @@ input[type="checkbox"]:checked::before {
     /* Use `visibility` instead of `display` to avoid recalculating layout */
     visibility: visible;
 }
-
-.popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-.solbutton{
-    display: none;
-}
-.solution {
-    background-color: #f4f4f4;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 5px;
-    width: 70%;
-}
-
-#solution-heading {
-    text-decoration: underline;
-}
-  
-
-  
-  /* .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-  } */
-  
-  #solution-canvas {
-    width: 100%; 
-    height: 80%;
-    top: 0;
-    left: 0;
-    border: 1px solid #000;
-  }
-  
