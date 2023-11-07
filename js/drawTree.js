@@ -3,7 +3,8 @@ import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 let scaleFactor;
 
 
-export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1, selectedKey, isBoundSnap, isBoundBin ) {
+
+export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1,selectedKey, isBoundSnap, isBoundBin ) {
     scaleFactor = scaleFactor1;
     graphics = canvas.getContext("2d");
     //let canvasWidth = canvas.width;
@@ -47,6 +48,8 @@ export function drawTree(node, canvas, freeNodes, moveFullNodeMode, scaleFactor1
     
 
 }
+
+
 
 function drawFreeNodes(freeNodes, moveFullNodeMode,selectedKey, isBoundSnap, isBoundBin){
     
