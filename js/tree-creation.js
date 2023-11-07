@@ -457,7 +457,7 @@ let deleteInput = document.getElementById('delete');
 
 let customTreeButton = document.querySelector('button.custom-tree');
 let randomTreeButton = document.querySelector('button.random-tree');
-let randomQuestionButton = document.querySelector('.random-question');
+let nextQuestionButton = document.querySelector('.random-question');
 let generateQuestionsSingleTreeButton = document.querySelector('#generate-questions-single-tree');
 
 let maxDegreeInput = document.getElementById('max-degree');
@@ -664,9 +664,9 @@ randomTreeButton.addEventListener('click', () => {
     }
 });
 
-randomQuestionButton.addEventListener('click', function () {
+nextQuestionButton.addEventListener('click', function () {
     generateRandomQuestion(seed);
-    if (showCorrectTreeButton.classList.contains('visible')) {
+    if (!showCorrectTreeButton.classList.contains('invisible')) {
         showCorrectTreeButton.classList.toggle('invisible');
         showCorrectTreeButton.classList.toggle('visible');
     }
@@ -927,6 +927,7 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
         //show
         questionsParametersContainer.classList.toggle('invisible');
         questionsParametersContainer.classList.toggle('visible');
+        showCorrectTreeButton.classList.toggle('visible');
         // hide showCorrectTreeButton on show of parameters container q
         if (showCorrectTreeButton.classList.contains('visible')) {
             showCorrectTreeButton.classList.toggle('invisible');
