@@ -342,10 +342,10 @@ input[type="checkbox"]:checked::before {
 .popup {
     display: none;
     position: fixed;
-    top: 0;
+    top: -10%;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 60%;
     z-index: 1;
   }
 .solbutton{
@@ -376,7 +376,7 @@ input[type="checkbox"]:checked::before {
   
   #solution-canvas {
     width: 100%; 
-    height: 80%;
+    height: 60%;
     top: 0;
     left: 0;
     border: 1px solid #000;
