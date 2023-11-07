@@ -36,6 +36,7 @@ import { validateTree } from "./validateTree.js";
 import * as saveTreeUtils from "./saveTree.js";
 
 // DECLARE GLOBAL VARIABLES
+let savedTreeInfo;
 let canvas;
 let graphics;
 let logicTree;
@@ -294,7 +295,22 @@ function collectBTreeInfo(node, levels) {
     return info;
 }
 
+export function saveTree(rootNode, levels) {
+    // Collect B-tree information using depth-first traversal
+    savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
+    savedTreeInfo += collectBTreeInfo(rootNode, levels);
+    
+    // console.log(savedTreeInfo);
+}
 
+export function loadSavedTree() {
+    console.log(savedTreeInfo);
+    reconstructBTreeFromText(savedTreeInfo);
+    // Move your tree drawing and manipulation functions here
+    // logicTree.traverse();
+    // userDrawingTree.traverse();
+    drawCreate();
+}
 
 
 // Function to save B-tree information to a text file
@@ -330,8 +346,8 @@ function reconstructBTreeFromText(text) {
     const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
 
     // Create a new B-tree with the specified degree
-     userDrawingTree = new BTree(degree);
-     logicTree = new BTree(degree);
+    userDrawingTree = new BTree(degree);
+    logicTree = new BTree(degree);
 
 
     // Initialize level coordinates
@@ -392,7 +408,7 @@ function reconstructBTreeFromText(text) {
 
             for (let i = 0; i < keys.length; i++) {
                 newNode.keys[i].value = keys[i];
-                newNode.n +=1;
+                newNode.n += 1;
             }
 
 
@@ -411,8 +427,8 @@ function reconstructBTreeFromText(text) {
     // Set the levels array in the BTree
     userDrawingTree.levels = levels;
     logicTree.levels = levels;
-
 }
+
 function uploadtxt() {
     // Get references to the HTML elements
     const fileInput = document.getElementById("fileInput");
@@ -432,9 +448,9 @@ function uploadtxt() {
                 logicTree.traverse();
                 userDrawingTree.traverse();
                 drawCreate();
-        
+
                 fileInput.blur(); // Blur the input element
-           
+
             };
 
             reader.readAsText(selectedFile);
@@ -675,9 +691,9 @@ nextQuestionButton.addEventListener('click', function () {
 validateButton.addEventListener('click', (e) => {
     let validationLabel = document.getElementById('validation');
 
-    if (userDrawingTree && logicTree){
-        let treeCorrect = validateTree(logicTree,userDrawingTree);
-        if (treeCorrect){
+    if (userDrawingTree && logicTree) {
+        let treeCorrect = validateTree(logicTree, userDrawingTree);
+        if (treeCorrect) {
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid!";
             validateButton.disabled = true;
@@ -918,7 +934,9 @@ document.addEventListener("keydown", function (event) {
 
 generateQuestionsSingleTreeButton.addEventListener('click', () => {
     if (logicTree && userDrawingTree) {
-        saveTreeUtils.saveTree(logicTree);
+        console.log("Logic tree just before saving: ")
+        console.log(logicTree);
+        saveTree(userDrawingTree.root, userDrawingTree.levels);
         let treeDegreeLabel = document.getElementById('treeDegree');
         //hide
         createTreeParametersContainer.classList.toggle('invisible');
@@ -954,16 +972,11 @@ backButton.addEventListener('click', () => {
     if (createTreeParametersContainer.classList.contains('invisible')) {
         createTreeParametersContainer.classList.toggle('visible');
         insertDeleteSection.classList.toggle('visible');
-    
+
         createTreeParametersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     }
-    logicTree = Object.assign(saveTreeUtils.getSavedTree());
-    console.log('Logic tree is');
-    console.log(logicTree);
-    userDrawingTree = Object.assign(saveTreeUtils.getSavedTree());
-    console.log(userDrawingTree);
-    drawCreate();
+    loadSavedTree();
 });
 
 /* TODO: You cannot generate questions on an invalid tree since they 
