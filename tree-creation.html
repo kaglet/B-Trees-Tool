@@ -10,6 +10,7 @@
 
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://kit.fontawesome.com/fbeeabe0fc.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
@@ -17,7 +18,11 @@
 
 <body>
     <section class="main-container">
-        <i class="fas fa-lightbulb dark-mode-toggle"></i>
+        <section class="icon-container">
+            <i class="fas fa-lightbulb dark-mode-toggle"></i>
+            <i class="fa-solid fa-rotate-right reset-icon"></i>
+        </section>
+
         <section class="canvas-container">
             <section class="insert-delete-container" id="insert-delete-section">
                 <ul>
@@ -47,7 +52,7 @@
                     <button type="button" class="l">
                         < </button>
                             <button type="button" class="m">
-                                Reset
+                                Center
                             </button>
                             <button type="button" class="r">
                                 >
@@ -139,7 +144,7 @@
                 <h2>Question</h2>
                 <li>
                     <button class="random-question">
-                        Generate Next Question
+                        Next Question
                     </button>
                 </li>
                 <li>
@@ -147,28 +152,23 @@
                 </li>
                 <li>
                     <button class="validate">
-                        Validate
+                        Check Answer
+                    </button>
+                </li>
+                <li>
+                    <button class="show-correct-tree">
+                        Show Correct Tree
                     </button>
                 </li>
                 <li>
                     <label id="validation" value=""></label>
                 </li>
             </ul>
-            <ul>
-                <h2>Save/Load</h2>
-                <li>
-                    <button class="save">
-                        Save
-                    </button>
-                </li>
-                <li>
-                    <input type="file" id="fileInput" accept=".txt" class="load" value="Load">
-                </li>
-            </ul>
+
             <ul>
                 <h2>More</h2>
                 <li>
-                    <button id="generate-questions-single-tree">Back to Custom Creation</button>
+                    <button class="back">Back to Custom Creation</button>
                 </li>
                 <li>
                     <button id="help-button">Need Help?</button>

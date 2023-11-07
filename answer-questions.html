@@ -7,7 +7,7 @@
     <title>Tree Creation</title>
     <link href="css/styles.css" rel="stylesheet">
     <script src="js/answer-questions.js" type="module" defer></script>
-
+    <script src="https://kit.fontawesome.com/fbeeabe0fc.js" crossorigin="anonymous"></script>
     <!-- import custom font Nunito -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
@@ -17,7 +17,11 @@
 
 <body>
     <section class="main-container">
-        <i class="fas fa-lightbulb dark-mode-toggle"></i>
+        <section class="icon-container">
+            <i class="fas fa-lightbulb dark-mode-toggle"></i>
+            <i class="fa-solid fa-rotate-right reset-icon"></i>
+        </section>
+        
         <section class="canvas-container">
             <canvas id="canvas" width="900px" height="670px">
             </canvas>
@@ -44,7 +48,7 @@
                 <div id="solution-panel" class ="solution">
                 <span class= "close" id="close-solution">&times;</span>
                 <h2 id="solution-heading">Correct Tree</h2>
-                <canvas id="solution-canvas" width="900px" height="670px"></canvas>
+                <canvas id="solution-canvas" width="900px" height="450px"></canvas>
                 </div>
             </div>
 
@@ -68,8 +72,6 @@
                             tree.</li>
                     </ul>
                 </div>
-            
-               
             </div>
         </section>
     </section>
@@ -86,7 +88,7 @@
                 <h2>Question</h2>
                 <li>
                     <button class="random-question">
-                        Generate Next Question
+                        Next Question
                     </button>
                 </li>
                 <li>
@@ -94,16 +96,16 @@
                 </li>
                 <li>
                     <button class="validate">
-                        Validate
+                        Check Answer
+                    </button>
+                </li>
+                <li>
+                    <button class="show-correct-tree">
+                        Show Correct Tree
                     </button>
                 </li>
                 <li>
                     <label id="validation" value=""></label>
-                </li>
-                <li>
-                    <button id = "solution-button" class= "solbutton">
-                        Solution
-                    </button>
                 </li>
             </ul>
             <ul>
