@@ -33,6 +33,7 @@ import {
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { validateTree } from "./validateTree.js";
+import * as saveTreeUtils from "./saveTree.js";
 
 // DECLARE GLOBAL VARIABLES
 let canvas;
@@ -457,6 +458,7 @@ let deleteInput = document.getElementById('delete');
 let customTreeButton = document.querySelector('button.custom-tree');
 let randomTreeButton = document.querySelector('button.random-tree');
 let randomQuestionButton = document.querySelector('.random-question');
+let generateQuestionsSingleTreeButton = document.querySelector('#generate-questions-single-tree');
 
 let maxDegreeInput = document.getElementById('max-degree');
 let numKeysInput = document.getElementById('num-keys');
@@ -470,16 +472,16 @@ const body = document.body;
 
 let errorMessageLabel = document.getElementById('error-message');
 
-let createTreeParamtersContainer = document.getElementById('parameters-container-c');
-let questionsParamtersContainer = document.getElementById('parameters-container-q');
-
-let generateQuestionsSingleTreeButton = document.querySelector('#generate-questions-single-tree');
+let createTreeParametersContainer = document.getElementById('parameters-container-c');
+let questionsParametersContainer = document.getElementById('parameters-container-q');
 
 let showCorrectTreeButton = document.querySelector('.show-correct-tree');
 
+let backButton = document.querySelector('.back');
+
 canvas = document.getElementById("canvas");
 
-window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParamtersContainer));
+window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParametersContainer));
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -916,17 +918,19 @@ document.addEventListener("keydown", function (event) {
 
 generateQuestionsSingleTreeButton.addEventListener('click', () => {
     if (logicTree && userDrawingTree) {
+        saveTreeUtils.saveTree(logicTree);
         let treeDegreeLabel = document.getElementById('treeDegree');
         //hide
-        saveButton.classList.toggle('invisible');
-        createTreeParamtersContainer.classList.toggle('invisible');
+        createTreeParametersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
 
         //show
-        questionsParamtersContainer.classList.toggle('invisible');
-        questionsParamtersContainer.classList.toggle('visible');
+        questionsParametersContainer.classList.toggle('invisible');
+        questionsParametersContainer.classList.toggle('visible');
         // hide showCorrectTreeButton on show of parameters container q
-        showCorrectTreeButton.classList.toggle('invisible');
+        if (showCorrectTreeButton.classList.contains('visible')) {
+            showCorrectTreeButton.classList.toggle('invisible');
+        }
 
         treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
@@ -938,4 +942,25 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
 
 showCorrectTreeButton.addEventListener('click', () => {
     // Place button that shows correct tree here
+});
+
+backButton.addEventListener('click', () => {
+    // TODO: Cascade might conflict with too much class management, so need only one class visible or invisible else it is hard to keep track of
+    if (questionsParametersContainer.classList.contains('visible')) {
+        questionsParametersContainer.classList.toggle('invisible');
+        questionsParametersContainer.classList.toggle('visible');
+    }
+    if (createTreeParametersContainer.classList.contains('invisible')) {
+        createTreeParametersContainer.classList.toggle('visible');
+        insertDeleteSection.classList.toggle('visible');
+    
+        createTreeParametersContainer.classList.toggle('invisible');
+        insertDeleteSection.classList.toggle('invisible');
+    }
+
+    logicTree = saveTreeUtils.getSavedTree();
+    console.log('Logic tree is');
+    console.log(logicTree);
+    userDrawingTree = saveTreeUtils.getSavedTree();
+    console.log(userDrawingTree);
 });
