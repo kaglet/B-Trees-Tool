@@ -957,10 +957,14 @@ backButton.addEventListener('click', () => {
         createTreeParametersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     }
-
-    logicTree = saveTreeUtils.getSavedTree();
+    logicTree = Object.assign(saveTreeUtils.getSavedTree());
     console.log('Logic tree is');
     console.log(logicTree);
-    userDrawingTree = saveTreeUtils.getSavedTree();
+    userDrawingTree = Object.assign(saveTreeUtils.getSavedTree());
     console.log(userDrawingTree);
+    drawCreate();
 });
+
+/* TODO: You cannot generate questions on an invalid tree since they 
+technically can just do that and save any tree even a wrong one and 
+it will be reconstructed */
