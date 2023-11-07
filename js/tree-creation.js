@@ -228,6 +228,219 @@ function generateRandomQuestion(seed) {
     graphics.setTransform(1, 0, 0, 1, 0, 0);
 }
 
+
+//Save to file
+function getCoordinates(node, levels) {
+    for (let row = 0; row < levels.length; row++) {
+        for (let col = 0; col < levels[row].length; col++) {
+            if (levels[row][col] === node) {
+                return { row, col };
+            }
+        }
+    }
+    return null; // Node not found
+}
+
+function collectBTreeInfo(node, levels) {
+    if (!node) {
+        return '';
+    }
+
+    let info = '';
+
+    // Node Type (L for leaf, I for internal)
+    info += node.leaf ? 'L' : 'I';
+
+    // Get current node coordinates
+    const currentCoordinates = getCoordinates(node, levels);
+
+    if (currentCoordinates) {
+        // Current Node Row and Column
+        info += `|${currentCoordinates.row}|${currentCoordinates.col}`;
+    } else {
+        // Node not found in levels
+        info += '|-1|-1';
+    }
+
+    // Node Keys (comma-separated values)
+    if (node.keys && node.keys.length > 0) {
+        info += `|${node.keys.map(key => key.value).join(',')}`;
+    }
+
+    // Find parent coordinates
+    const parentCoordinates = getCoordinates(node.parent, levels);
+
+    if (parentCoordinates) {
+        // Parent Row and Column
+        info += `|${parentCoordinates.row}|${parentCoordinates.col}`;
+    } else {
+        // Root node (no parent)
+        info += '|-1|-1';
+    }
+
+    // Additional Node Properties (customize this as needed)
+    // info += `|${node.someProperty}`;
+
+    info += '\n';
+
+    // Recursively traverse all children
+    if (!node.leaf) {
+        node.C.forEach((child) => {
+            info += collectBTreeInfo(child, levels);
+        });
+    }
+
+    return info;
+}
+
+
+
+
+// Function to save B-tree information to a text file
+function saveBTreeToFile(rootNode, levels) {
+    // Collect B-tree information using depth-first traversal
+    let treeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
+    treeInfo += collectBTreeInfo(rootNode, levels);
+
+    // Create a Blob containing the tree information
+    const blob = new Blob([treeInfo], { type: 'text/plain' });
+
+    // Create a link to download the Blob as a text file
+    const a = document.createElement('a');
+    a.href = window.URL.createObjectURL(blob);
+    a.download = 'btree.txt'; // Set the desired file name
+    a.style.display = 'none';
+
+    // Append the link to the document and trigger a click event to download the file
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+
+
+}
+
+
+function reconstructBTreeFromText(text) {
+    // Split the text into lines
+    const lines = text.split('\n');
+
+    // Extract the B-tree parameters from the first line
+    const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
+
+    // Create a new B-tree with the specified degree
+     userDrawingTree = new BTree(degree);
+     logicTree = new BTree(degree);
+
+
+    // Initialize level coordinates
+    let currentRow = 0;
+    let currentCol = 0;
+
+    // Create an array to keep track of the nodes at each level
+    const levels = [[]];
+
+    // Loop through the lines starting from line 1
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (line) {
+            const parts = line.split('|');
+            // console.log(parts);
+            const [nodeType, row, col, keys, parentRow, parentCol] = parts.map((part, index) => {
+                if (index === 3) {
+                    // Split the keys part into an array of strings
+                    return part.split(',').filter(value => value !== '');
+                } else if (index === 0) {
+                    // Keep nodeType as a string
+                    return part;
+                } else {
+                    // Parse other parts as integers
+                    return parseInt(part);
+                }
+            });
+
+            // Create a new B-tree node
+            const newNode = new BTreeNode(degree, nodeType === 'L'); // Compare with 'L' to set as leaf
+
+            // Set the parent node (null for the root node)
+            // Set the parent node (null for the root node)
+            if (parentRow >= 0 && parentCol >= 0) {
+                const parent = levels[parentRow][parentCol];
+                newNode.parent = parent;
+
+                // Initialize a counter to find the first empty slot
+                let emptySlotIndex = -1;
+
+                for (let j = 0; j < 2 * degree; j++) {
+                    if (!parent.C[j]) {
+                        emptySlotIndex = j;
+                        break;
+                    }
+                }
+
+                if (emptySlotIndex !== -1) {
+                    // Assign newNode to the first empty slot
+                    parent.C[emptySlotIndex] = newNode;
+                }
+            } else {
+                userDrawingTree.root = newNode;
+                logicTree.root = newNode;
+            }
+
+
+            for (let i = 0; i < keys.length; i++) {
+                newNode.keys[i].value = keys[i];
+                newNode.n +=1;
+            }
+
+
+            // Add the node to the levels array
+            if (row >= levels.length) {
+                levels.push([]);
+            }
+            levels[row][col] = newNode;
+
+            // Update current coordinates
+            currentRow = row;
+            currentCol = col;
+        }
+    }
+
+    // Set the levels array in the BTree
+    userDrawingTree.levels = levels;
+    logicTree.levels = levels;
+
+}
+function uploadtxt() {
+    // Get references to the HTML elements
+    const fileInput = document.getElementById("fileInput");
+
+    // Add an event listener to the file input element to handle file selection
+    fileInput.addEventListener("change", function (event) {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            // Handle the selected file, e.g., read its contents
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                // File content is available in e.target.result
+                const fileContent = e.target.result;
+                reconstructBTreeFromText(fileContent);
+                // Move your tree drawing and manipulation functions here
+                logicTree.traverse();
+                userDrawingTree.traverse();
+                drawCreate();
+        
+                fileInput.blur(); // Blur the input element
+           
+            };
+
+            reader.readAsText(selectedFile);
+        }
+    });
+}
+
 // Initialize all GUI components
 let insertDeleteSection = document.getElementById('insert-delete-section');
 
@@ -259,11 +472,10 @@ let errorMessageLabel = document.getElementById('error-message');
 
 let createTreeParamtersContainer = document.getElementById('parameters-container-c');
 let questionsParamtersContainer = document.getElementById('parameters-container-q');
-let questionLabel = document.getElementById('question');
-
-let seedInput = document.querySelector('#seed');
 
 let generateQuestionsSingleTreeButton = document.querySelector('#generate-questions-single-tree');
+
+let showCorrectTreeButton = document.querySelector('.show-correct-tree');
 
 canvas = document.getElementById("canvas");
 
@@ -452,6 +664,8 @@ randomTreeButton.addEventListener('click', () => {
 
 randomQuestionButton.addEventListener('click', function () {
     generateRandomQuestion(seed);
+    showCorrectTreeButton.classList.toggle('invisible');
+    showCorrectTreeButton.classList.toggle('visible');
 });
 
 validateButton.addEventListener('click', (e) => {
@@ -459,7 +673,7 @@ validateButton.addEventListener('click', (e) => {
 
     if (userDrawingTree && logicTree){
         let treeCorrect = validateTree(logicTree,userDrawingTree);
-        if (1){
+        if (treeCorrect){
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid!";
             validateButton.disabled = true;
@@ -472,7 +686,13 @@ validateButton.addEventListener('click', (e) => {
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
-            setTimeout(() => validationLabel.textContent = "", 2000);
+            setTimeout(() => {
+                validationLabel.textContent = "";
+                if (showCorrectTreeButton.classList.contains('invisible')) {
+                    showCorrectTreeButton.classList.toggle('invisible');
+                    showCorrectTreeButton.classList.toggle('visible');
+                }
+            }, 2000);
         }
     }
 });
@@ -703,6 +923,8 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
         //show
         questionsParamtersContainer.classList.toggle('invisible');
         questionsParamtersContainer.classList.toggle('visible');
+        // hide showCorrectTreeButton on show of parameters container q
+        showCorrectTreeButton.classList.toggle('invisible');
 
         treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
@@ -710,227 +932,8 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
     } else {
         errorMessageLabel.textContent = "Please create a tree before saving";
     }
-})
+});
 
-
-
-
-// TODO: Draw free nodes where they are supposed be be on zoom and pan so i.e. apply translations to those nodes too don't just call redraw
-
-// They are the coordinates of the center and 30 is the width and height 
-// So check 15 to right and left, and 15 up and down to see if mouse click is within that key.
-// from mouse click check horizontal bounds and vertical bounds with withinBounds booleans
-// In fact its 30 in both directions
-
-
-//Save to file
-function getCoordinates(node, levels) {
-    for (let row = 0; row < levels.length; row++) {
-        for (let col = 0; col < levels[row].length; col++) {
-            if (levels[row][col] === node) {
-                return { row, col };
-            }
-        }
-    }
-    return null; // Node not found
-}
-
-function collectBTreeInfo(node, levels) {
-    if (!node) {
-        return '';
-    }
-
-    let info = '';
-
-    // Node Type (L for leaf, I for internal)
-    info += node.leaf ? 'L' : 'I';
-
-    // Get current node coordinates
-    const currentCoordinates = getCoordinates(node, levels);
-
-    if (currentCoordinates) {
-        // Current Node Row and Column
-        info += `|${currentCoordinates.row}|${currentCoordinates.col}`;
-    } else {
-        // Node not found in levels
-        info += '|-1|-1';
-    }
-
-    // Node Keys (comma-separated values)
-    if (node.keys && node.keys.length > 0) {
-        info += `|${node.keys.map(key => key.value).join(',')}`;
-    }
-
-    // Find parent coordinates
-    const parentCoordinates = getCoordinates(node.parent, levels);
-
-    if (parentCoordinates) {
-        // Parent Row and Column
-        info += `|${parentCoordinates.row}|${parentCoordinates.col}`;
-    } else {
-        // Root node (no parent)
-        info += '|-1|-1';
-    }
-
-    // Additional Node Properties (customize this as needed)
-    // info += `|${node.someProperty}`;
-
-    info += '\n';
-
-    // Recursively traverse all children
-    if (!node.leaf) {
-        node.C.forEach((child) => {
-            info += collectBTreeInfo(child, levels);
-        });
-    }
-
-    return info;
-}
-
-
-
-
-// Function to save B-tree information to a text file
-function saveBTreeToFile(rootNode, levels) {
-    // Collect B-tree information using depth-first traversal
-    let treeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
-    treeInfo += collectBTreeInfo(rootNode, levels);
-
-    // Create a Blob containing the tree information
-    const blob = new Blob([treeInfo], { type: 'text/plain' });
-
-    // Create a link to download the Blob as a text file
-    const a = document.createElement('a');
-    a.href = window.URL.createObjectURL(blob);
-    a.download = 'btree.txt'; // Set the desired file name
-    a.style.display = 'none';
-
-    // Append the link to the document and trigger a click event to download the file
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-
-
-}
-
-
-function reconstructBTreeFromText(text) {
-    // Split the text into lines
-    const lines = text.split('\n');
-
-    // Extract the B-tree parameters from the first line
-    const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
-
-    // Create a new B-tree with the specified degree
-     userDrawingTree = new BTree(degree);
-     logicTree = new BTree(degree);
-
-
-    // Initialize level coordinates
-    let currentRow = 0;
-    let currentCol = 0;
-
-    // Create an array to keep track of the nodes at each level
-    const levels = [[]];
-
-    // Loop through the lines starting from line 1
-    for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
-
-        if (line) {
-            const parts = line.split('|');
-            // console.log(parts);
-            const [nodeType, row, col, keys, parentRow, parentCol] = parts.map((part, index) => {
-                if (index === 3) {
-                    // Split the keys part into an array of strings
-                    return part.split(',').filter(value => value !== '');
-                } else if (index === 0) {
-                    // Keep nodeType as a string
-                    return part;
-                } else {
-                    // Parse other parts as integers
-                    return parseInt(part);
-                }
-            });
-
-            // Create a new B-tree node
-            const newNode = new BTreeNode(degree, nodeType === 'L'); // Compare with 'L' to set as leaf
-
-            // Set the parent node (null for the root node)
-            // Set the parent node (null for the root node)
-            if (parentRow >= 0 && parentCol >= 0) {
-                const parent = levels[parentRow][parentCol];
-                newNode.parent = parent;
-
-                // Initialize a counter to find the first empty slot
-                let emptySlotIndex = -1;
-
-                for (let j = 0; j < 2 * degree; j++) {
-                    if (!parent.C[j]) {
-                        emptySlotIndex = j;
-                        break;
-                    }
-                }
-
-                if (emptySlotIndex !== -1) {
-                    // Assign newNode to the first empty slot
-                    parent.C[emptySlotIndex] = newNode;
-                }
-            } else {
-                userDrawingTree.root = newNode;
-                logicTree.root = newNode;
-            }
-
-
-            for (let i = 0; i < keys.length; i++) {
-                newNode.keys[i].value = keys[i];
-                newNode.n +=1;
-            }
-
-
-            // Add the node to the levels array
-            if (row >= levels.length) {
-                levels.push([]);
-            }
-            levels[row][col] = newNode;
-
-            // Update current coordinates
-            currentRow = row;
-            currentCol = col;
-        }
-    }
-
-    // Set the levels array in the BTree
-    userDrawingTree.levels = levels;
-    logicTree.levels = levels;
-
-}
-function uploadtxt() {
-    // Get references to the HTML elements
-    const fileInput = document.getElementById("fileInput");
-
-    // Add an event listener to the file input element to handle file selection
-    fileInput.addEventListener("change", function (event) {
-        const selectedFile = event.target.files[0];
-        if (selectedFile) {
-            // Handle the selected file, e.g., read its contents
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                // File content is available in e.target.result
-                const fileContent = e.target.result;
-                reconstructBTreeFromText(fileContent);
-                // Move your tree drawing and manipulation functions here
-                logicTree.traverse();
-                userDrawingTree.traverse();
-                drawCreate();
-        
-                fileInput.blur(); // Blur the input element
-           
-            };
-
-            reader.readAsText(selectedFile);
-        }
-    });
-}
+showCorrectTreeButton.addEventListener('click', () => {
+    // Place button that shows correct tree here
+});
