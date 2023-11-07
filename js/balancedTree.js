@@ -446,7 +446,7 @@ export class BTree {
                         nodelength += 60* scaleFactor;
 
                         // 60 moves the entire tree down by 60 units
-                        const keyY = i * ySpacing + 60* scaleFactor;
+                        const keyY = i * ySpacing + 60* scaleFactor + 120;
         
                         // Assign x and y values to the BTreeKey if the node exists
                         if (currNode.keys[k].value != undefined){
