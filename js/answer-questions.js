@@ -39,11 +39,12 @@ let seed;
 let dropOffKeyIndex, dropOffNodeKeyIndex, dropOffLevelKeyIndex;
 
 // Try initialize canvas and graphics else display unsupported canvas error
-function init() {
+function init(showCorrectTreeButton) {
     try {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
-        
+        // hide showCorrectTreeButton on show of parameters container q
+        showCorrectTreeButton.classList.toggle('invisible');
         showRandomTreeAndQuestion();
     } catch (e) {
         document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
@@ -232,9 +233,11 @@ let zoomButtons = document.querySelectorAll('.zoom-controls button');
 const darkModeIcon = document.querySelector('.dark-mode-toggle');
 const body = document.body;
 
+let showCorrectTreeButton = document.querySelector('.show-correct-tree');
+
 canvas = document.getElementById("canvas");
 
-window.addEventListener('load', init);
+window.addEventListener('load', () => init(showCorrectTreeButton));
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -263,6 +266,11 @@ darkModeIcon.addEventListener('click', () => {
 
 randomQuestionButton.addEventListener('click', function () {
     showRandomTreeAndQuestion();
+    // hide showCorrectTreeButton on show of parameters container q;
+    if (showCorrectTreeButton.classList.contains('visible')) {
+        showCorrectTreeButton.classList.toggle('invisible');
+        showCorrectTreeButton.classList.toggle('visible');
+    }
 });
 
 validateButton.addEventListener('click', (e) => {
@@ -270,19 +278,25 @@ validateButton.addEventListener('click', (e) => {
 
     if (userDrawingTree && logicTree) {
         let treeCorrect = validateTree(logicTree, userDrawingTree);
-        if (1) {
+        if (treeCorrect) {
             validationLabel.style.color = "green";
             validationLabel.textContent = "Your operation was valid!";
             validateButton.disabled = true;
             setTimeout(() => {
                 validationLabel.textContent = "";
-                generateRandomQuestion(seed);
+                showRandomTreeAndQuestion();
                 validateButton.disabled = false;
             }, 2000);
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
-            setTimeout(() => validationLabel.textContent = "", 2000);
+            setTimeout(() => {
+                validationLabel.textContent = "";
+                if (showCorrectTreeButton.classList.contains('invisible')) {
+                    showCorrectTreeButton.classList.toggle('invisible');
+                    showCorrectTreeButton.classList.toggle('visible');
+                }
+            }, 2000);
         }
     }
 });
@@ -504,4 +518,6 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-randomTreeButton.addEventListener('click', showRandomTreeAndQuestion)
+showCorrectTreeButton.addEventListener('click', () => {
+    // Place button that shows correct tree here
+});

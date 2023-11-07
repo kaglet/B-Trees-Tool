@@ -664,8 +664,10 @@ randomTreeButton.addEventListener('click', () => {
 
 randomQuestionButton.addEventListener('click', function () {
     generateRandomQuestion(seed);
-    showCorrectTreeButton.classList.toggle('invisible');
-    showCorrectTreeButton.classList.toggle('visible');
+    if (showCorrectTreeButton.classList.contains('visible')) {
+        showCorrectTreeButton.classList.toggle('invisible');
+        showCorrectTreeButton.classList.toggle('visible');
+    }
 });
 
 validateButton.addEventListener('click', (e) => {
