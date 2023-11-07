@@ -105,6 +105,11 @@ function generateRandomTree(numKeys, seed) {
     const rng = new Math.seedrandom(seed);
     for (let i = 0; i < numKeys; i++) {
         const key = +Math.floor(rng() * 100);
+
+        while (logicTree.root.search(key) != null) {
+            key = +Math.floor(rng() * 100);
+        }
+        
         logicTree.insert(key);
         logicTree.traverse();
 
