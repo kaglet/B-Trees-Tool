@@ -1,4 +1,5 @@
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
+import { drawSplitFunction } from "./drawTree.js";
 
 //const hitBoxSize = 10;
 
@@ -748,6 +749,82 @@ export function detectMouseHoverOverArrowHitbox(levels, freeNodes, mouseX, mouse
 
     return isHovering;
 }
+
+export function detectMouseHoverOverRootMedian(levels, mouseX, mouseY, graphics) {
+
+    let isHovering = false;
+        let rootNodeLength = levels[0][0].keys.filter((key) => key.value != undefined).length;
+        if (rootNodeLength === levels[0][0].t *2-1) {
+            levels[0][0].keys.forEach((key, k) => {
+                if ((rootNodeLength+1)/2 - 1  === k){
+                    // if index is undefined then ensure you first check lenght vs key number !!!!!!!!!!!!!!!!!!!!!!!!!!
+                    if (key && key.value !== undefined) {
+                            if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY-60)) {
+                                console.log('HAPPENING');
+                                    isHovering = true;
+                                    //drawRedCircleForHitbox(graphics, key.arrowHitbox.centerX, key.arrowHitbox.centerY - 60, key.arrowHitbox.radius);
+                                    drawSplitFunction(graphics, [key.arrowHitbox.centerX, key.arrowHitbox.centerY - 60, key.arrowHitbox.centerX, key.arrowHitbox.centerY - 100], 10, 5);
+                            }
+                        }                    
+                    }
+                  
+            });
+        }
+      
+
+    return isHovering;
+}
+
+export function splitRootNode(levels) {
+
+        let RootNode;
+        let leftChildRootNode;
+        let rightChildRootNode;
+        let split = false;
+        let rootNodeLength = levels[0][0].keys.filter((key) => key.value != undefined).length;
+        if (rootNodeLength === levels[0][0].t *2-1) {
+            levels[0][0].keys.forEach((key, k) => {
+                if ((rootNodeLength+1)/2 - 1  === k){
+                    RootNode =  new BTreeNode(levels[0][0].t, false);
+                    RootNode.keys[0] = key;
+                    key.centerY -= 100;
+                    key.calculateArrowHitbox(30);
+                    split = true;
+                    if (levels.length>1){
+                        leftChildRootNode =  new BTreeNode(levels[0][0].t, false);
+                        rightChildRootNode =  new BTreeNode(levels[0][0].t, false);
+                    } else {
+                        leftChildRootNode =  new BTreeNode(levels[0][0].t, true);
+                        rightChildRootNode =  new BTreeNode(levels[0][0].t, true);
+                    }       
+                    RootNode.C[0] =  leftChildRootNode;
+                    RootNode.C[1] =  rightChildRootNode;      
+                }                     
+            });
+
+            if (split){
+                levels[0][0].keys.forEach((key, k) => {
+                    //left child node
+                    if ((rootNodeLength+1)/2 - 1  < k){
+                        leftChildRootNode.keys[k] = key
+                        leftChildRootNode.C[k] = levels[0][0].C[k];
+                    }
+                    //right child node
+                    if ((rootNodeLength+1)/2 - 1  > k){
+                        leftChildRootNode.keys[k- (rootNodeLength+1)/2 - 2] = key;
+                        leftChildRootNode.C[k-(rootNodeLength+1)/2 - 2] = levels[0][0].C[k-(rootNodeLength+1)/2 - 2];
+                    }
+                });
+                
+                levels.unshift([]);
+                levels[0].push(RootNode);
+                levels[1].splice(0,1);
+                levels[1].push(leftChildRootNode);
+                levels[1].push(rightChildRootNode);
+            }
+        }
+}
+
 
 // finds the selcted node, level and key when selecting the hit box
 export function findselectedItemsFromArrowHitBoxClick(levels,freeNodes,mouseX,mouseY){

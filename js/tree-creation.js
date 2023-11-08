@@ -24,11 +24,11 @@ Bugs:
 -NB a key never slighty overlaps another key (only if bugs arrise)
 */
 
-import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
+import { drawTree, drawArrowhead, drawArrow, drawSplitFunction } from "./drawTree.js";
 import {
     pullKeyOffTheTree, snapFreeNodeOntoNode, findDropOffAreaOfNode,
     detectMouseHoverOverArrowHitbox, recieveNodesRedCircles, findselectedItemsFromArrowHitBoxClick,
-    makeNodeHaveChild, drawBinIcon
+    makeNodeHaveChild, drawBinIcon, detectMouseHoverOverRootMedian, splitRootNode
 } from "./manipulateTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
@@ -51,6 +51,8 @@ let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
 let isMouseHoveringOverHitbox = false;
+let isMouseHoveringOverRootMedian = false;
+
 let isDrawArrowMode = false;
 let selectedKeyForDrawArrow;
 let selectedNodeForDrawArrow;
@@ -106,10 +108,6 @@ function generateRandomTree(numKeys, seed) {
     const rng = new Math.seedrandom(seed);
     for (let i = 0; i < numKeys; i++) {
         const key = +Math.floor(rng() * 100);
-
-        while (logicTree.root.search(key) != null) {
-            key = +Math.floor(rng() * 100);
-        }
         
         logicTree.insert(key);
         logicTree.traverse();
@@ -785,6 +783,14 @@ canvas.addEventListener('mousedown', (e) => {
             console.log("isDrawarrowMode: ", isDrawArrowMode);
             console.log(selectedKeyForDrawArrow);
         }
+
+        isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
+        if (isMouseHoveringOverRootMedian){
+            splitRootNode(userDrawingTree.levels);
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, false, false);
+
+        }
     }
 });
 
@@ -839,11 +845,12 @@ canvas.addEventListener('mousemove', (e) => {
             // draws the red dot
             if (userDrawingTree) {
                 isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(userDrawingTree.levels, userDrawingTree.freeNodes, mouseX, mouseY, graphics);
-                if (!isMouseHoveringOverHitbox) {
+                isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
+
+                if (!isMouseHoveringOverHitbox && !isMouseHoveringOverRootMedian) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height);
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
-
-                }
+                } 
                 if (isDrawArrowMode && selectedKeyForDrawArrow) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
