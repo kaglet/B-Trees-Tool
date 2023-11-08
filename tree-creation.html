@@ -43,11 +43,11 @@
             <section class="controls">
                 <section class="zoom-controls">
                     <button type="button" class="zoom-in">
-                    + </button>
+                        + </button>
                     <button type="button" class="zoom-out">
-                    - </button>
+                        - </button>
                 </section>
-    
+
                 <section class="panning-controls">
                     <button type="button" class="l">
                         < </button>
@@ -66,12 +66,18 @@
                     <h2 id="guide-heading">Getting Started Guide</h2>
                     <p>Here's a guide to using this B-tree simulator:</p>
                     <ul>
-                        <li><strong>Max Degree (for tree creation):</strong> Enter a number as the maximum degree of the B-tree.</li>
-                        <li><strong>Num keys (for tree creation):</strong> Enter a number as the number of keys in the tree.</li>
-                        <li><strong>Random Tree:</strong> Click this button when you have filled in Max Degree and Num Keys to have a randomised tree.</li>
-                        <li><strong>Custom Tree:</strong> Click this button to create your own B-tree, this will enable the insert and delete buttons.</li>
-                        <li><strong>Insert:</strong> Enter a number and click this button to insert a node into the tree.</li>
-                        <li><strong>Delete:</strong> Enter a number and click this button to delete a node from the tree.</li>
+                        <li><strong>Max Degree (for tree creation):</strong> Enter a number as the maximum degree of the
+                            B-tree.</li>
+                        <li><strong>Num keys (for tree creation):</strong> Enter a number as the number of keys in the
+                            tree.</li>
+                        <li><strong>Random Tree:</strong> Click this button when you have filled in Max Degree and Num
+                            Keys to have a randomised tree.</li>
+                        <li><strong>Custom Tree:</strong> Click this button to create your own B-tree, this will enable
+                            the insert and delete buttons.</li>
+                        <li><strong>Insert:</strong> Enter a number and click this button to insert a node into the
+                            tree.</li>
+                        <li><strong>Delete:</strong> Enter a number and click this button to delete a node from the
+                            tree.</li>
                     </ul>
                 </div>
             </div>
@@ -121,7 +127,10 @@
                     </button>
                 </li>
                 <li>
-                    <input type="file" id="fileInput" accept=".txt" class="load" value="Load">
+                    <label for="fileInput" class="custom-file-upload">
+                        Load
+                        <input type="file" id="fileInput" accept=".txt" class="load" value="Load">
+                    </label>
                 </li>
             </ul>
             <ul>
@@ -135,7 +144,7 @@
 
         <!-- Question View -->
         <section class="parameters-container" id="parameters-container-q">
-            <ul>  
+            <ul>
                 <li>
                     <label id="treeDegree" value=""></label>
                 </li>
@@ -174,7 +183,7 @@
                     <button id="help-button">Need Help?</button>
                 </li>
             </ul>
-        </section>        
+        </section>
     </section>
 </body>
 
