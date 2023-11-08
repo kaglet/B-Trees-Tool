@@ -428,8 +428,13 @@ input[type="checkbox"]:checked::before {
 }
 
 .holder ul {
+    color: rgb(64, 60, 58);
     position: absolute;
     top: 10px;
     right: 10px;
     width: fit-content;
+}
+
+body.dark-mode .holder ul {
+    color: white;
 }
