@@ -74,6 +74,9 @@ function drawQuestion() {
 }
 
 function generateRandomTree(numKeys, seed) {
+    let treeDegreeLabel = document.getElementById('treeDegree');
+    treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
+
     const rng = new Math.seedrandom(seed);
     for (let i = 0; i < 2; i++) {
         const key = Math.floor(rng() * 100);

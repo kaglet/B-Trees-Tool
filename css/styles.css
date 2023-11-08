@@ -298,7 +298,7 @@ i.reset-icon {
     left: calc(var(--panel-padding-tb) - 0.7rem);
 }
 
-body.dark-mode .dark-mode-toggle {
+body.dark-mode i {
     color: white;
 }
 
@@ -333,8 +333,11 @@ body.dark-mode input {
     color: white;
 }
 
-/* Style the checkbox in a custom way*/
+body.dark-mode button:disabled {
+    color: grey;
+}
 
+/* Style the checkbox in a custom way*/
 input[type="checkbox"] {
     appearance: none;
     position: relative;
