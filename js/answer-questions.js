@@ -79,22 +79,36 @@ function generateRandomTree(numKeys, seed) {
     treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
     const rng = new Math.seedrandom(seed);
-    for (let i = 0; i < 2; i++) {
-        const key = Math.floor(rng() * 100);
-        logicTree.insert(key); // Insert the key into the tree
-        userDrawingTree.insert(key);
-        logicTree.traverse();
-        userDrawingTree.traverse();
-    }
+    // for (let i = 0; i < 2; i++) {
+    //     const key = Math.floor(rng() * 100);
+    //     logicTree.insert(key); // Insert the key into the tree
+    //     userDrawingTree.insert(key);
+    //     logicTree.traverse();
+    //     userDrawingTree.traverse();
+    // }
 
-    for (let i = 2; i < numKeys; i++) {
-        const key = +Math.floor(rng() * 100);
+    // for (let i = 2; i < numKeys; i++) {
+    //     const key = +Math.floor(rng() * 100);
+    //     logicTree.insert(key);
+    //     logicTree.traverse();
+
+    //     userDrawingTree.insert(key);
+    //     userDrawingTree.traverse();
+    // }
+    let generatedKeys = new Set();
+    for (let i = 0; i < numKeys; i++) {
+        let key;
+        do {
+            key = Math.floor(rng() * 100);
+        } while (generatedKeys.has(key)); // Keep generating until you get a unique key
+
+        generatedKeys.add(key); // Add the key to the set of generated keys
         logicTree.insert(key);
-        logicTree.traverse();
-
         userDrawingTree.insert(key);
+        logicTree.traverse();
         userDrawingTree.traverse();
     }
+
     console.log(logicTree);
     console.log(logicTree.t);
     console.log(userDrawingTree);
@@ -229,7 +243,7 @@ function showRandomTreeAndQuestion() {
     min = 1;
     max = Number.MAX_VALUE;
     let randomSeed = Math.floor(Math.random() * (max - min + 1)) + min;
-    min = 1;
+    min = 2;
     max = 20;
     let randomNodeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     logicTree = new BTree(randomDegree);

@@ -105,14 +105,20 @@ function drawQuestion() {
 }
 
 function generateRandomTree(numKeys, seed) {
-    const rng = new Math.seedrandom(seed);
-    for (let i = 0; i < numKeys; i++) {
-        const key = +Math.floor(rng() * 100);
-        
-        logicTree.insert(key);
-        logicTree.traverse();
 
+    const rng = new Math.seedrandom(seed);
+    let generatedKeys = new Set();
+
+    for (let i = 0; i < numKeys; i++) {
+        let key;
+        do {
+            key = Math.floor(rng() * 100);
+        } while (generatedKeys.has(key)); // Keep generating until you get a unique key
+
+        generatedKeys.add(key); // Add the key to the set of generated keys
+        logicTree.insert(key);
         userDrawingTree.insert(key);
+        logicTree.traverse();
         userDrawingTree.traverse();
     }
     console.log(logicTree);
