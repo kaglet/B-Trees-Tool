@@ -220,7 +220,9 @@ function generateRandomQuestion(seed) {
         tempNode.keys[0].calculateArrowHitbox();
 
         userDrawingTree.freeNodes.push(tempNode);
+        questionDisplay.classList.toggle('scale-big');
         questionDisplay.textContent = "Insert: " + key;
+        questionDisplay.classList.toggle('scale-big');
     } else if (question == 1) {
         console.log(logicTree);
         //delete
@@ -252,7 +254,9 @@ function generateRandomQuestion(seed) {
         logicTree.remove(key);
         logicTree.traverse();
 
+        questionDisplay.classList.toggle('scale-big');
         questionDisplay.textContent = "Delete: " + key;
+        questionDisplay.classList.toggle('scale-big');
     } else if (question == 2) {
         //search
         key = Math.floor(Math.random() * 100); 

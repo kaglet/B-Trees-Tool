@@ -410,3 +410,26 @@ input[type="checkbox"]:checked::before {
     border: 1px solid #000;
   }
   
+/* Small to big and big to small transition */
+
+.question.scale-small {
+    transform: scale(0.6, 0.6);
+    transition: transform 4.5s ease-in 0s;
+}
+
+.question {
+    transform: scale(1.0, 1.0);
+}
+
+.holder {
+    width: 900px;
+    height: 670px;
+    position: relative;
+}
+
+.holder ul {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: fit-content;
+}

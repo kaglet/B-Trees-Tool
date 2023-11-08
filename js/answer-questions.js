@@ -172,6 +172,8 @@ function generateRandomQuestion(seed) {
 
     let key = +Math.floor(rng() * 100);
     let questionDisplay = document.getElementById("question");
+    let questionDisplayContainer = document.querySelector('.question');
+    questionDisplayContainer.classList.add('scale-small');
     if (question == 0) {
         //insert
         while (logicTree.root.search(key) != null) {
@@ -191,7 +193,12 @@ function generateRandomQuestion(seed) {
         tempNode.keys[0].calculateArrowHitbox();
 
         userDrawingTree.freeNodes.push(tempNode);
+        // toggling off will set to normal scale but why not with transition? Because it's not detected by the other selector
+        // it should still transition out on same selector right?
+        // not sure that's how it works unless it's global
+        // I am right that's how the transition property seems to work
         questionDisplay.textContent = "Insert: " + key;
+        questionDisplayContainer.classList.remove('scale-small');
     } else if (question == 1) {
         //delete
         while (logicTree.root.search(key) == null) {
@@ -199,8 +206,11 @@ function generateRandomQuestion(seed) {
         }
         logicTree.remove(key);
         logicTree.traverse();
-
+        // toggle scale-small off and toggle on in time for next question
+        // start small and go big each time
         questionDisplay.textContent = "Delete: " + key;
+        questionDisplayContainer.classList.remove('scale-small');
+
     } else if (question == 2) {
         //search
         key = Math.floor(rng() * 100);
@@ -223,6 +233,7 @@ function showRandomTreeAndQuestion() {
     let randomNodeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     logicTree = new BTree(randomDegree);
     userDrawingTree = new BTree(randomDegree);
+
     generateRandomTree(randomNodeNumber, randomSeed);
     generateRandomQuestion(randomSeed);
 }
