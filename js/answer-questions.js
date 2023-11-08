@@ -2,7 +2,7 @@ import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import {
     pullKeyOffTheTree, snapFreeNodeOntoNode, findDropOffAreaOfNode,
     detectMouseHoverOverArrowHitbox, recieveNodesRedCircles, findselectedItemsFromArrowHitBoxClick,
-    makeNodeHaveChild, drawBinIcon
+    makeNodeHaveChild, drawBinIcon, splitRootNode, detectMouseHoverOverRootMedian
 } from "./manipulateTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
@@ -23,6 +23,7 @@ let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
 let isMouseHoveringOverHitbox = false;
+let isMouseHoveringOverRootMedian;
 let isDrawArrowMode = false;
 let selectedKeyForDrawArrow;
 let selectedNodeForDrawArrow;
@@ -222,8 +223,8 @@ function generateRandomQuestion(seed) {
 }
 
 function showRandomTreeAndQuestion() {
-    let min = 3;
-    let max = 4;
+    let min = 2;
+    let max = 3;
     const randomDegree = Math.floor(Math.random() * (max - min + 1)) + min;
     min = 1;
     max = Number.MAX_VALUE;
@@ -378,6 +379,15 @@ canvas.addEventListener('mousedown', (e) => {
             console.log("isDrawarrowMode: ", isDrawArrowMode);
             console.log(selectedKeyForDrawArrow);
         }
+        
+        isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
+        if (isMouseHoveringOverRootMedian){
+            splitRootNode(userDrawingTree.levels, userDrawingTree);
+            
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, false, false);
+
+        }
     }
 });
 
@@ -432,11 +442,12 @@ canvas.addEventListener('mousemove', (e) => {
             // draws the red dot
             if (userDrawingTree) {
                 isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(userDrawingTree.levels, userDrawingTree.freeNodes, mouseX, mouseY, graphics);
-                if (!isMouseHoveringOverHitbox) {
+                isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
+
+                if (!isMouseHoveringOverHitbox && !isMouseHoveringOverRootMedian) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height);
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
-
-                }
+                } 
                 if (isDrawArrowMode && selectedKeyForDrawArrow) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);

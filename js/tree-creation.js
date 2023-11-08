@@ -204,7 +204,12 @@ function generateRandomQuestion(seed) {
             });
         });
         const keyToInsertIndex = Math.floor(Math.random() * keysSelection.length) ;
-        let key = keysSelection[keyToInsertIndex].value;
+        let key = Math.floor(Math.random() * 100);
+        while (key ===  keysSelection[keyToInsertIndex].value){
+            key = Math.floor(Math.random() * 100);
+            keyToInsertIndex = Math.floor(Math.random() * keysSelection.length);
+        }
+    
         
         console.log('Key to insert');
         console.log(key);
@@ -871,7 +876,8 @@ canvas.addEventListener('mousedown', (e) => {
 
         isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
         if (isMouseHoveringOverRootMedian){
-            splitRootNode(userDrawingTree.levels);
+            splitRootNode(userDrawingTree.levels, userDrawingTree);
+            
             graphics.clearRect(0, 0, canvas.width, canvas.height);
             drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, false, false);
 
