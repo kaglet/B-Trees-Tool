@@ -23,8 +23,17 @@
         </section>
         
         <section class="canvas-container">
-            <canvas id="canvas" width="900px" height="670px">
-            </canvas>
+
+            <div class="holder">
+                <ul>  
+                    <li>
+                        <label id="treeDegree" value=""></label>
+                    </li>
+                </ul>
+                <canvas id="canvas" width="900px" height="670px">
+                </canvas>
+            </div>
+
 
             <section class="zoom-controls">
                 <button type="button" class="zoom-in">
@@ -79,20 +88,14 @@
     <section class="side-panel">
         <!-- Question View -->
         <section class="parameters-container" id="parameters-container-q">
-            <ul>  
-                <li>
-                    <label id="treeDegree" value=""></label>
-                </li>
-            </ul>
             <ul>
-                <h2>Question</h2>
+                <li class="question">
+                    <label id="question" value=""></label>
+                </li>
                 <li>
                     <button class="random-question">
                         Next Question
                     </button>
-                </li>
-                <li>
-                    <label id="question" value=""></label>
                 </li>
                 <li>
                     <button class="validate">

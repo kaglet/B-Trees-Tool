@@ -30,11 +30,21 @@ body {
     min-height: 100vh;
 }
 
-button {
+button,
+label[for="fileInput"] {
     font-family: var(--main-font-family);
     border: none;
     border-radius: 3px;
     padding: 0.5rem 1.7rem;
+}
+
+label[for="fileInput"] {
+    display: block;
+    text-align: center;
+}
+
+.side-panel input[type="file"] {
+    display: none;
 }
 
 button:hover {
@@ -180,11 +190,13 @@ label {
 }
 
 .side-panel button,
-.side-panel input {
+.side-panel input, 
+label[for="fileInput"] {
     background-color: var(--side-panel-input-color);
 }
 
-.side-panel button {
+.side-panel button,
+label[for="fileInput"] {
     width: 100%;
 }
 
@@ -286,7 +298,7 @@ i.reset-icon {
     left: calc(var(--panel-padding-tb) - 0.7rem);
 }
 
-body.dark-mode .dark-mode-toggle {
+body.dark-mode i {
     color: white;
 }
 
@@ -321,8 +333,11 @@ body.dark-mode input {
     color: white;
 }
 
-/* Style the checkbox in a custom way*/
+body.dark-mode button:disabled {
+    color: grey;
+}
 
+/* Style the checkbox in a custom way*/
 input[type="checkbox"] {
     appearance: none;
     position: relative;
@@ -358,7 +373,8 @@ input[type="checkbox"]:checked::before {
     width: 100%;
     height: 60%;
     z-index: 1;
-  }
+}
+
 .solbutton {
     display: none;
 }
@@ -394,3 +410,35 @@ input[type="checkbox"]:checked::before {
     border: 1px solid #000;
   }
   
+/* Small to big and big to small transition */
+
+.question.scale-small {
+    transform: scale(0.6, 0.6);
+    transition: transform 4.5s ease-in 0s;
+}
+
+.question {
+    transform: scale(1.0, 1.0);
+}
+
+.question label {
+    font-size: 1.8rem;
+}
+
+.holder {
+    width: 900px;
+    height: 670px;
+    position: relative;
+}
+
+.holder ul {
+    color: rgb(64, 60, 58);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: fit-content;
+}
+
+body.dark-mode .holder ul {
+    color: white;
+}
