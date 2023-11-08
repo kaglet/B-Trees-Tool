@@ -421,6 +421,10 @@ input[type="checkbox"]:checked::before {
     transform: scale(1.0, 1.0);
 }
 
+.question label {
+    font-size: 1.8rem;
+}
+
 .holder {
     width: 900px;
     height: 670px;

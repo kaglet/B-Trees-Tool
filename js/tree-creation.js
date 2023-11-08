@@ -363,6 +363,8 @@ export function loadSavedTree() {
     // logicTree.traverse();
     // userDrawingTree.traverse();
     // drawCreate();
+    let treeDegreeLabel = document.getElementById('treeDegree');
+    treeDegreeLabel.textContent = "";
 }
 
 
@@ -684,6 +686,8 @@ customTreeButton.addEventListener('click', () => {
             customTreePresent = false;
             customTreeButton.textContent = "Custom Tree";
             errorMessageLabel.textContent = "";
+            let treeDegreeLabel = document.getElementById('treeDegree');
+            treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
             return;
         }
     } else {
@@ -738,6 +742,8 @@ randomTreeButton.addEventListener('click', () => {
                 randomTreePresent = true;
                 randomTreeButton.textContent = "Cancel";
                 insertInput.focus();
+                let treeDegreeLabel = document.getElementById('treeDegree');
+                treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
                 return;
             }
         } else {
