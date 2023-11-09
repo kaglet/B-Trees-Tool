@@ -102,7 +102,7 @@
             });
         }
 
-        // func for FAQ based on user input
+        // func for FAQ based on strict user input
         function searchFAQ() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const faqList = document.getElementById('faqList');
@@ -121,6 +121,35 @@
             });
         }
 
+        //func for search based on keywords
+        function searchFAQ() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const faqList = document.getElementById('faqList');
+            faqList.innerHTML = ''; 
+
+            const commonWords = ['is', 'are', 'from', 'the', 'how', 'what', 'where', 'when', 'who', 'why'];
+
+            const refinedSearchInput = searchInput
+                .split(' ')
+                .filter(word => !commonWords.includes(word.toLowerCase()))
+                .join(' ');
+
+            faqData.forEach(item => {
+                const question = item.question.toLowerCase();
+                const answer = item.answer.toLowerCase();
+
+                if (
+                    question.includes(refinedSearchInput) ||
+                    answer.includes(refinedSearchInput)
+                ) {
+                    const li = document.createElement('li');
+                    li.classList.add('faq-item');
+                    li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
+                    faqList.appendChild(li);
+                }
+            });
+        }
+        
         window.onload = function () {
             initFAQ();
         };
