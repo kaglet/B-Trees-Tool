@@ -29,10 +29,19 @@
             margin-bottom: 20px;
         }
 
+        .page-heading {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
 
     </style>
 </head>
 <body>
+    <div class="page-heading">
+        Frequently Asked Questions - FAQ
+    </div>
     
     <div class="search-container">
         <input type="text" id="searchInput" oninput="searchFAQ()" placeholder="Search...">
@@ -82,7 +91,6 @@
             answer: 'The application provides a light or dark mode. You can toggle this by pressing the lightbulb icon.'
         }
     ];
-
 
         function initFAQ() {
             const faqList = document.getElementById('faqList');
