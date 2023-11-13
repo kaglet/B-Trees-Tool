@@ -10,6 +10,7 @@ import { validateTree } from "./validateTree.js";
 
 // DECLARE GLOBAL VARIABLES
 let savedTreeInfo;
+ //let randomSeed
 let canvas;
 let graphics;
 let logicTree;
@@ -116,7 +117,7 @@ function generateRandomTree(numKeys, seed) {
    
     drawCreate();
     
-    saveTree(userDrawingTree.root, userDrawingTree.levels);
+    saveTree(userDrawingTree.root, userDrawingTree.levels, numKeys);
 }
 
 function clear() {
@@ -640,11 +641,11 @@ function collectBTreeInfo(node, levels) {
     return info;
 }
 
-function saveTree(rootNode, levels) {
+function saveTree(rootNode, levels, numKeys) {
     console.log('Saved tree info before function call:');
    console.log(savedTreeInfo);
     // Collect B-tree information using depth-first traversal
-    savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
+    savedTreeInfo = `|${rootNode.t}|${+numKeys}\n`;
     savedTreeInfo += collectBTreeInfo(rootNode, levels);
 
 
