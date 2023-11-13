@@ -200,7 +200,6 @@ function generateRandomQuestion(seed) {
     let questionDisplay = document.getElementById("question");
     userDrawingTree.freeNodes.length = 0;
     if (question == 0) {
-        // userDrawingTree.freeNodes = [];
         let keysSelection = [];
         //insert
         userDrawingTree.levels.forEach((level) => {
@@ -413,7 +412,6 @@ function saveBTreeToFile(rootNode, levels) {
 function reconstructBTreeFromText(text) {
     // Split the text into lines
     const lines = text.split('\n');
-    console.log(lines);
 
     // Extract the B-tree parameters from the first line
     const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
@@ -1124,11 +1122,7 @@ backButton.addEventListener('click', () => {
 });
 
 resetIcon.addEventListener('click', () => {
-<<<<<<< HEAD
-    if (randomTreePresent){
-=======
     if (!customTreePresent) {
->>>>>>> 7d4b1c88c260ca7c14fb24ad75718ccedc0fe398
         loadSavedTree();
     }
 
