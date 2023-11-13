@@ -20,6 +20,7 @@
     --input-height: 31px;
     --canvas-container-gap: 10px;
     --insert-delete-reserve-space: calc(var(--input-height) + var(--canvas-container-gap));
+    --icon-size: 1.4rem;
 }
 
 /* SET LAYOUT, SIZING AND FONT PROPERTIES*/
@@ -280,15 +281,17 @@ label#question {
 i.dark-mode-toggle {
     display: block;
     align-self: flex-start;
-    font-size: 1.4rem;
-    margin-bottom: 1.2rem;
-    color: #444;
+    font-size: var(--icon-size);
 }
 
 i.reset-icon {
     display: block;
+    font-size: var(--icon-size)
+}
+
+i {
     color: #444;
-    font-size: 1.4rem;
+    font-size: var(--icon-size);
 }
 
 .icon-container {
@@ -296,6 +299,7 @@ i.reset-icon {
     position: fixed;
     top: calc(var(--panel-padding-tb) - 1.3rem);
     left: calc(var(--panel-padding-tb) - 0.7rem);
+    text-align: center;
 }
 
 body.dark-mode i {
@@ -341,8 +345,8 @@ body.dark-mode button:disabled {
 input[type="checkbox"] {
     appearance: none;
     position: relative;
-    width: 1.5em;
-    height: 1.5em;
+    width: 1.5rem;
+    height: 1.5rem;
     border: none;
     background-color: var(--side-panel-input-color);
     /* Adjusts the position of the checkboxes on the text baseline */
@@ -354,9 +358,9 @@ input[type="checkbox"] {
 input[type="checkbox"]::before {
     content: "✔";
     position: absolute;
-    font-size: 1.7em;
+    font-size: 1.7rem;
     right: -1px;
-    top: -0.13em;
+    top: -2px;
     visibility: hidden;
 }
 
@@ -391,8 +395,6 @@ input[type="checkbox"]:checked::before {
 #solution-heading {
     text-decoration: underline;
 }
-  
-
   
   /* .close {
     position: absolute;
@@ -442,3 +444,8 @@ input[type="checkbox"]:checked::before {
 body.dark-mode .holder ul {
     color: white;
 }
+
+.icon-container :nth-child(n) {
+    margin-bottom: 1rem;
+}
+

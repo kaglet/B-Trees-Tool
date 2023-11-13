@@ -295,9 +295,9 @@ export function drawArrow(graphics,arrowCoordinates,arrowSize,childWidth){
 
 export function drawSplitFunction(graphics,arrowCoordinates,arrowSize,childWidth){
     drawArrow(graphics,arrowCoordinates,arrowSize,childWidth);
-    let leftArrowCoordinates = [arrowCoordinates[0],arrowCoordinates[1]-10,arrowCoordinates[2]-30,arrowCoordinates[3]+10];
+    let leftArrowCoordinates = [arrowCoordinates[0],arrowCoordinates[1]-10,arrowCoordinates[2]-15,arrowCoordinates[3]+10];
     drawArrow(graphics,leftArrowCoordinates,arrowSize,childWidth);
-    let rightArrowCoordinates = [arrowCoordinates[0],arrowCoordinates[1]-10,arrowCoordinates[2]+30,arrowCoordinates[3]+10];
+    let rightArrowCoordinates = [arrowCoordinates[0],arrowCoordinates[1]-10,arrowCoordinates[2]+15,arrowCoordinates[3]+10];
     drawArrow(graphics,rightArrowCoordinates,arrowSize,childWidth);
     
 }

@@ -759,11 +759,11 @@ export function detectMouseHoverOverRootMedian(levels, mouseX, mouseY, graphics)
                 if ((rootNodeLength+1)/2 - 1  === k){
                     // if index is undefined then ensure you first check lenght vs key number !!!!!!!!!!!!!!!!!!!!!!!!!!
                     if (key && key.value !== undefined) {
-                            if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY-60)) {
+                            if (isMouseWithinHitboxBounds(mouseX, mouseY, key.arrowHitbox.centerX, key.arrowHitbox.centerY-80)) {
                                 console.log('HAPPENING');
                                     isHovering = true;
                                     //drawRedCircleForHitbox(graphics, key.arrowHitbox.centerX, key.arrowHitbox.centerY - 60, key.arrowHitbox.radius);
-                                    drawSplitFunction(graphics, [key.arrowHitbox.centerX, key.arrowHitbox.centerY - 60, key.arrowHitbox.centerX, key.arrowHitbox.centerY - 100], 10, 5);
+                                    drawSplitFunction(graphics, [key.arrowHitbox.centerX, key.arrowHitbox.centerY - 60, key.arrowHitbox.centerX, key.arrowHitbox.centerY - 105], 10, 5);
                             }
                         }                    
                     }
@@ -775,19 +775,20 @@ export function detectMouseHoverOverRootMedian(levels, mouseX, mouseY, graphics)
     return isHovering;
 }
 
-export function splitRootNode(levels) {
+export function splitRootNode(levels, tree) {
 
         let RootNode;
         let leftChildRootNode;
         let rightChildRootNode;
         let split = false;
+
         let rootNodeLength = levels[0][0].keys.filter((key) => key.value != undefined).length;
         if (rootNodeLength === levels[0][0].t *2-1) {
             levels[0][0].keys.forEach((key, k) => {
                 if ((rootNodeLength+1)/2 - 1  === k){
                     RootNode =  new BTreeNode(levels[0][0].t, false);
                     RootNode.keys[0] = key;
-                    key.centerY -= 100;
+                    key.y -= 100;
                     key.calculateArrowHitbox(30);
                     split = true;
                     if (levels.length>1){
@@ -799,28 +800,54 @@ export function splitRootNode(levels) {
                     }       
                     RootNode.C[0] =  leftChildRootNode;
                     RootNode.C[1] =  rightChildRootNode;      
+                    leftChildRootNode.parent = RootNode;
+                    rightChildRootNode.parent = RootNode;
                 }                     
             });
 
-            if (split){
+            if (split){                    
                 levels[0][0].keys.forEach((key, k) => {
                     //left child node
-                    if ((rootNodeLength+1)/2 - 1  < k){
-                        leftChildRootNode.keys[k] = key
-                        leftChildRootNode.C[k] = levels[0][0].C[k];
+                    if ((rootNodeLength+1)/2 - 1  > k){
+                        console.log('left indexes', k);
+
+                        leftChildRootNode.keys[k] = key;
+                        if (!leftChildRootNode.leaf){
+                            leftChildRootNode.C[k] = levels[0][0].C[k];
+                            leftChildRootNode.C[k].parent = leftChildRootNode;
+                            
+                            if (k +1 ===(rootNodeLength+1)/2 - 1) {
+                                leftChildRootNode.C[k+1] = levels[0][0].C[k+1];
+                                leftChildRootNode.C[k+1].parent = leftChildRootNode;
+                            }
+                        }
+                        
+
                     }
                     //right child node
-                    if ((rootNodeLength+1)/2 - 1  > k){
-                        leftChildRootNode.keys[k- (rootNodeLength+1)/2 - 2] = key;
-                        leftChildRootNode.C[k-(rootNodeLength+1)/2 - 2] = levels[0][0].C[k-(rootNodeLength+1)/2 - 2];
+                    if ((rootNodeLength+1)/2 - 1  < k){
+                        console.log('right indexes', k- (rootNodeLength+1)/2);
+
+                        rightChildRootNode.keys[k- (rootNodeLength+1)/2] = key;
+                        if (!rightChildRootNode.leaf){
+                            rightChildRootNode.C[k-(rootNodeLength+1)/2] = levels[0][0].C[k];
+                            rightChildRootNode.C[k-(rootNodeLength+1)/2].parent = rightChildRootNode;
+
+                            if (k === rootNodeLength-1) {
+                                rightChildRootNode.C[k-(rootNodeLength+1)/2+1] = levels[0][0].C[k+1];
+                                rightChildRootNode.C[k-(rootNodeLength+1)/2+1].parent = rightChildRootNode;
+                            }
+                        }
                     }
                 });
                 
                 levels.unshift([]);
                 levels[0].push(RootNode);
-                levels[1].splice(0,1);
+                levels[1].length = 0;
                 levels[1].push(leftChildRootNode);
                 levels[1].push(rightChildRootNode);
+                tree.root = RootNode;
+
             }
         }
 }

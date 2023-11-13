@@ -2,7 +2,7 @@ import { drawTree, drawArrowhead, drawArrow } from "./drawTree.js";
 import {
     pullKeyOffTheTree, snapFreeNodeOntoNode, findDropOffAreaOfNode,
     detectMouseHoverOverArrowHitbox, recieveNodesRedCircles, findselectedItemsFromArrowHitBoxClick,
-    makeNodeHaveChild, drawBinIcon
+    makeNodeHaveChild, drawBinIcon, splitRootNode, detectMouseHoverOverRootMedian
 } from "./manipulateTree.js";
 import { makeTree } from "./makeTree.js";
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
@@ -23,6 +23,7 @@ let draggedKeyIndex;
 let draggedKeyNodeIndex;
 let draggedKeyLevelIndex;
 let isMouseHoveringOverHitbox = false;
+let isMouseHoveringOverRootMedian;
 let isDrawArrowMode = false;
 let selectedKeyForDrawArrow;
 let selectedNodeForDrawArrow;
@@ -78,22 +79,36 @@ function generateRandomTree(numKeys, seed) {
     treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
     const rng = new Math.seedrandom(seed);
-    for (let i = 0; i < 2; i++) {
-        const key = Math.floor(rng() * 100);
-        logicTree.insert(key); // Insert the key into the tree
-        userDrawingTree.insert(key);
-        logicTree.traverse();
-        userDrawingTree.traverse();
-    }
+    // for (let i = 0; i < 2; i++) {
+    //     const key = Math.floor(rng() * 100);
+    //     logicTree.insert(key); // Insert the key into the tree
+    //     userDrawingTree.insert(key);
+    //     logicTree.traverse();
+    //     userDrawingTree.traverse();
+    // }
 
-    for (let i = 2; i < numKeys; i++) {
-        const key = +Math.floor(rng() * 100);
+    // for (let i = 2; i < numKeys; i++) {
+    //     const key = +Math.floor(rng() * 100);
+    //     logicTree.insert(key);
+    //     logicTree.traverse();
+
+    //     userDrawingTree.insert(key);
+    //     userDrawingTree.traverse();
+    // }
+    let generatedKeys = new Set();
+    for (let i = 0; i < numKeys; i++) {
+        let key;
+        do {
+            key = Math.floor(rng() * 100);
+        } while (generatedKeys.has(key)); // Keep generating until you get a unique key
+
+        generatedKeys.add(key); // Add the key to the set of generated keys
         logicTree.insert(key);
-        logicTree.traverse();
-
         userDrawingTree.insert(key);
+        logicTree.traverse();
         userDrawingTree.traverse();
     }
+
     console.log(logicTree);
     console.log(logicTree.t);
     console.log(userDrawingTree);
@@ -222,13 +237,13 @@ function generateRandomQuestion(seed) {
 }
 
 function showRandomTreeAndQuestion() {
-    let min = 3;
-    let max = 4;
+    let min = 2;
+    let max = 3;
     const randomDegree = Math.floor(Math.random() * (max - min + 1)) + min;
     min = 1;
     max = Number.MAX_VALUE;
     let randomSeed = Math.floor(Math.random() * (max - min + 1)) + min;
-    min = 1;
+    min = 2;
     max = 20;
     let randomNodeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     logicTree = new BTree(randomDegree);
@@ -378,6 +393,15 @@ canvas.addEventListener('mousedown', (e) => {
             console.log("isDrawarrowMode: ", isDrawArrowMode);
             console.log(selectedKeyForDrawArrow);
         }
+        
+        isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
+        if (isMouseHoveringOverRootMedian){
+            splitRootNode(userDrawingTree.levels, userDrawingTree);
+            
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
+            drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, false, false);
+
+        }
     }
 });
 
@@ -432,11 +456,12 @@ canvas.addEventListener('mousemove', (e) => {
             // draws the red dot
             if (userDrawingTree) {
                 isMouseHoveringOverHitbox = detectMouseHoverOverArrowHitbox(userDrawingTree.levels, userDrawingTree.freeNodes, mouseX, mouseY, graphics);
-                if (!isMouseHoveringOverHitbox) {
+                isMouseHoveringOverRootMedian = detectMouseHoverOverRootMedian(userDrawingTree.levels, mouseX, mouseY, graphics);
+
+                if (!isMouseHoveringOverHitbox && !isMouseHoveringOverRootMedian) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height);
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
-
-                }
+                } 
                 if (isDrawArrowMode && selectedKeyForDrawArrow) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            padding: 10px;
+            width: 300px;
+        }
+
+        .faq-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+        }
+
+        .page-heading {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="page-heading">
+        Frequently Asked Questions - FAQ
+    </div>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" oninput="searchFAQ()" placeholder="Search...">
+    </div>
+
+    <ul class="faq-list" id="faqList">
+        <!-- faq added here if searched -->
+    </ul>
+
+    <script>
+        // put FAQ data 
+        const faqData = [
+        {
+            question: 'How do I get started with the application?',
+            answer: 'To get started, you will appear on a menu screen where you can select what you want to do, for in-depth instructions, click ”User Guide”. For basic instructions, click on the ”Custom Tree Creation” and then on the ”Need help?” button in the application to open the Getting Started Guide.'
+        },
+        {
+            question: 'Is the application available for mobile devices?',
+            answer: 'Currently, the application is only available for desktop computers.'
+        },
+        {
+            question: 'Is the application available for all students?',
+            answer: 'At present, the application is only accessible to individuals who possess the source code. However, if future enhancements are made, it will be our priority to seamlessly integrated into Moodle via LTI for a broader availability.'
+        },
+        {
+            question: 'What level of prior knowledge about B-trees do I need before using this app?',
+            answer: 'Currently, the application does not have a teaching mode. This is due to the fact that it is designed mostly for practice and testing. So having a bit of knowledge about B-trees would help in answering the questions.'
+        },
+        {
+            question: 'What are the limitations on tree properties and questions?',
+            answer: 'The primary constraints are that the maximum number of keys is limited to 20, and the degree must fall within the range of 2 to 4.'
+        },
+        {
+            question: 'What happens if I try to insert a duplicate key into the B-tree?',
+            answer: 'If you attempt to insert a key that already exists in the B-tree, the application will add the duplicate and validate on either one that you remove or insert, so it doesn’t impact logical correctness.'
+        },
+        {
+            question: 'How do I insert or delete nodes from a tree?',
+            answer: 'If you want to insert or delete nodes when making a tree, it is required that you enter a maximum degree for the tree first and optionally the number of keys if you are using random generation. Then you would see the option for insertion and deletion at the top of the page where you can enter the number to insert or delete.'
+        },
+        {
+            question: 'Can I import or export a tree that I made?',
+            answer: 'Yes you can. Upon creating a custom tree or generating a random tree, clicking the ”Save” button will save the tree with a depth-first traversal. This downloads a .txt file to your computer. You can then load a tree with the ”Load” button and uploading a .txt file.'
+        },
+        {
+            question: 'Can I customize the appearance of the B-tree, such as colors and styles?',
+            answer: 'The application provides a light or dark mode. You can toggle this by pressing the lightbulb icon.'
+        }
+    ];
+
+        function initFAQ() {
+            const faqList = document.getElementById('faqList');
+            faqData.forEach(item => {
+                const li = document.createElement('li');
+                li.classList.add('faq-item');
+                li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
+                faqList.appendChild(li);
+            });
+        }
+
+        // func for FAQ based on strict user input
+        function searchFAQ() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const faqList = document.getElementById('faqList');
+            faqList.innerHTML = ''; // clears existing list
+
+            faqData.forEach(item => {
+                const question = item.question.toLowerCase();
+                const answer = item.answer.toLowerCase();
+
+                if (question.includes(searchInput) || answer.includes(searchInput)) {
+                    const li = document.createElement('li');
+                    li.classList.add('faq-item');
+                    li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
+                    faqList.appendChild(li);
+                }
+            });
+        }
+
+        //func for search based on keywords
+        function searchFAQ() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const faqList = document.getElementById('faqList');
+            faqList.innerHTML = ''; 
+
+            const commonWords = ['is', 'are', 'from', 'the', 'how', 'what', 'where', 'when', 'who', 'why'];
+
+            const refinedSearchInput = searchInput
+                .split(' ')
+                .filter(word => !commonWords.includes(word.toLowerCase()))
+                .join(' ');
+
+            faqData.forEach(item => {
+                const question = item.question.toLowerCase();
+                const answer = item.answer.toLowerCase();
+
+                if (
+                    question.includes(refinedSearchInput) ||
+                    answer.includes(refinedSearchInput)
+                ) {
+                    const li = document.createElement('li');
+                    li.classList.add('faq-item');
+                    li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
+                    faqList.appendChild(li);
+                }
+            });
+        }
+        
+        window.onload = function () {
+            initFAQ();
+        };
+    </script>
+</body>
+</html>
