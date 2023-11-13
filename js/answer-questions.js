@@ -9,6 +9,7 @@ import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { validateTree } from "./validateTree.js";
 
 // DECLARE GLOBAL VARIABLES
+let savedTreeInfo;
 let canvas;
 let graphics;
 let logicTree;
@@ -112,8 +113,10 @@ function generateRandomTree(numKeys, seed) {
     console.log(logicTree);
     console.log(logicTree.t);
     console.log(userDrawingTree);
-    saveTree(userDrawingTree.root, userDrawingTree.levels);
+   
     drawCreate();
+    
+    saveTree(userDrawingTree.root, userDrawingTree.levels);
 }
 
 function clear() {
@@ -564,9 +567,8 @@ showCorrectTreeButton.addEventListener('click', () => {
 });
 
 resetIcon.addEventListener('click', () => {
-    if (randomTreePresent){
     loadSavedTree();
-    }
+
     
 });
 
@@ -574,6 +576,17 @@ resetIcon.addEventListener('click', () => {
 
 
 // will be imported later
+
+function getCoordinates(node, levels) {
+    for (let row = 0; row < levels.length; row++) {
+        for (let col = 0; col < levels[row].length; col++) {
+            if (levels[row][col] === node) {
+                return { row, col };
+            }
+        }
+    }
+    return null; // Node not found
+}
 
 function collectBTreeInfo(node, levels) {
     if (!node) {
@@ -627,63 +640,36 @@ function collectBTreeInfo(node, levels) {
     return info;
 }
 
-export function saveTree(rootNode, levels) {
-    //console.log('Saved tree info before function call:');
-   // console.log(savedTreeInfo);
+function saveTree(rootNode, levels) {
+    console.log('Saved tree info before function call:');
+   console.log(savedTreeInfo);
     // Collect B-tree information using depth-first traversal
     savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
     savedTreeInfo += collectBTreeInfo(rootNode, levels);
+
+
     
-  //  console.log('Saved tree info after function calls');
-  // console.log(savedTreeInfo);
+   console.log('Saved tree info after function calls');
+  console.log(savedTreeInfo);
 }
 
-export function loadSavedTree() {
+function loadSavedTree() {
     // TODO: do whatever happens on cancel button click
-    insertDeleteSection.classList.toggle('invisible');
     graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     clear();
     userDrawingTree = null;
     logicTree = null;
-    customTreePresent = false;
-    randomTreePresent = false;
-    customTreeButton.textContent = "Custom Tree";
-    randomTreeButton.textContent = "Random Tree";
-    errorMessageLabel.textContent = "";
     // console.log(savedTreeInfo);
     reconstructBTreeFromText(savedTreeInfo);
     // // Move your tree drawing and manipulation functions here
     logicTree.traverse();
     userDrawingTree.traverse();
     drawCreate();
-    let treeDegreeLabel = document.getElementById('treeDegree');
-    treeDegreeLabel.textContent = "";
+
 }
 
 
 // Function to save B-tree information to a text file
-function saveBTreeToFile(rootNode, levels) {
-    // Collect B-tree information using depth-first traversal
-    let treeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
-    treeInfo += collectBTreeInfo(rootNode, levels);
-
-    // Create a Blob containing the tree information
-    const blob = new Blob([treeInfo], { type: 'text/plain' });
-
-    // Create a link to download the Blob as a text file
-    const a = document.createElement('a');
-    a.href = window.URL.createObjectURL(blob);
-    a.download = 'btree.txt'; // Set the desired file name
-    a.style.display = 'none';
-
-    // Append the link to the document and trigger a click event to download the file
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-
-
-}
 
 
 function reconstructBTreeFromText(text) {
