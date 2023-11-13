@@ -638,7 +638,7 @@ saveButton.addEventListener('click', () => {
 loadButton.addEventListener('click', () => {
     if ((randomTreePresent || customTreePresent)) {
         errorMessageLabel.textContent = "Cancel the Tree before loading";
-        return;
+      //  return;
        
     }
     else {
