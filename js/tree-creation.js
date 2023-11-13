@@ -121,8 +121,8 @@ function generateRandomTree(numKeys, seed) {
         logicTree.traverse();
         userDrawingTree.traverse();
     }
-    console.log(logicTree);
-    console.log(userDrawingTree);
+    // console.log(logicTree);
+    // console.log(userDrawingTree);
     drawCreate();
 }
 
@@ -194,7 +194,7 @@ function generateRandomQuestion(seed) {
 
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(Math.random() * 2);
-    console.log(question);
+   // console.log(question);
 
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
@@ -217,9 +217,9 @@ function generateRandomQuestion(seed) {
         }
     
         
-        console.log('Key to insert');
-        console.log(key);
-        console.log(keysSelection);
+        // console.log('Key to insert');
+        // console.log(key);
+        // console.log(keysSelection);
         
         logicTree.insert(key);
         logicTree.traverse();
@@ -238,7 +238,7 @@ function generateRandomQuestion(seed) {
         questionDisplay.textContent = "Insert: " + key;
         questionDisplay.classList.toggle('scale-big');
     } else if (question == 1) {
-        console.log(logicTree);
+      //  console.log(logicTree);
         //delete
         // generate random key if null keep searching
         let keysSelection = [];
@@ -246,7 +246,7 @@ function generateRandomQuestion(seed) {
         userDrawingTree.levels.forEach((level) => {
             level.forEach((node) => {
                 node.keys.forEach((key) => {
-                    console.log(key.value);
+                  //  console.log(key.value);
                     if (key.value !== undefined) {
                         keysSelection.push(key);
                     }
@@ -260,11 +260,11 @@ function generateRandomQuestion(seed) {
         //     console.log('1');
         //     key = +Math.floor(Math.random() * 100);
         // }
-        console.log('Key to delete');
-        console.log(key);
-        console.log(keysSelection);
+        // console.log('Key to delete');
+        // console.log(key);
+        // console.log(keysSelection);
 
-        console.log('1');
+        // console.log('1');
         logicTree.remove(key);
         logicTree.traverse();
 
@@ -274,7 +274,7 @@ function generateRandomQuestion(seed) {
     } else if (question == 2) {
         //search
         key = Math.floor(Math.random() * 100); 
-        console.log("Search: ", key)
+      //  console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
 
@@ -349,14 +349,14 @@ function collectBTreeInfo(node, levels) {
 }
 
 export function saveTree(rootNode, levels) {
-    console.log('Saved tree info before function call:');
-    console.log(savedTreeInfo);
+    //console.log('Saved tree info before function call:');
+   // console.log(savedTreeInfo);
     // Collect B-tree information using depth-first traversal
     savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
     savedTreeInfo += collectBTreeInfo(rootNode, levels);
     
-    console.log('Saved tree info after function calls');
-    console.log(savedTreeInfo);
+  //  console.log('Saved tree info after function calls');
+  // console.log(savedTreeInfo);
 }
 
 export function loadSavedTree() {
@@ -372,17 +372,11 @@ export function loadSavedTree() {
     randomTreeButton.textContent = "Random Tree";
     errorMessageLabel.textContent = "";
     // console.log(savedTreeInfo);
-    userDrawingTree = reconstructBTreeFromText(savedTreeInfo);
-    console.log('User-drawing tree reconstructed from text: ');
-    console.log(userDrawingTree);
-    // userDrawingTree.levels[0][0].keys[0] = 3194;
-    logicTree = reconstructBTreeFromText(savedTreeInfo);
-    console.log('Logic tree reconstructed from text: ');
-    console.log(logicTree);
-    // Move your tree drawing and manipulation functions here
+    reconstructBTreeFromText(savedTreeInfo);
+    // // Move your tree drawing and manipulation functions here
     logicTree.traverse();
     userDrawingTree.traverse();
-    // drawCreate();
+    drawCreate();
     let treeDegreeLabel = document.getElementById('treeDegree');
     treeDegreeLabel.textContent = "";
 }
@@ -421,15 +415,17 @@ function reconstructBTreeFromText(text) {
     // Extract the B-tree parameters from the first line
     const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
 
-    // Create a new B-tree with the specified degree
-    const tree = new BTree(degree);
+    // Create a new B-tree with the specified degree for userDrawingTree and logicTree
+    userDrawingTree = new BTree(degree);
+    logicTree = new BTree(degree);
 
     // Initialize level coordinates
     let currentRow = 0;
     let currentCol = 0;
 
-    // Create an array to keep track of the nodes at each level
-    const levels = [[]];
+    // Create separate arrays to keep track of the nodes at each level for userDrawingTree and logicTree
+    const userDrawingLevels = [[]];
+    const logicLevels = [[]];
 
     // Loop through the lines starting from line 1
     for (let i = 1; i < lines.length; i++) {
@@ -451,43 +447,73 @@ function reconstructBTreeFromText(text) {
                 }
             });
 
-            // Create a new B-tree node
-            const newNode = new BTreeNode(degree, nodeType === 'L'); // Compare with 'L' to set as leaf
+            // Create a new B-tree node for userDrawingTree and logicTree
+            const newUserDrawingNode = new BTreeNode(degree, nodeType === 'L'); // Compare with 'L' to set as leaf
+            const newLogicNode = new BTreeNode(degree, nodeType === 'L');
 
-            // Set the parent node (null for the root node)
+            // Set the parent node (null for the root node) for both trees
+            let userDrawingParent = null;
+            let logicParent = null;
+
             if (parentRow >= 0 && parentCol >= 0) {
-                const parent = levels[parentRow][parentCol];
-                newNode.parent = parent;
+                userDrawingParent = userDrawingLevels[parentRow][parentCol];
+                logicParent = logicLevels[parentRow][parentCol];
+            }
 
-                // Initialize a counter to find the first empty slot
-                let emptySlotIndex = -1;
+            newUserDrawingNode.parent = userDrawingParent;
+            newLogicNode.parent = logicParent;
 
+            // Initialize a counter to find the first empty slot
+            let userDrawingEmptySlotIndex = -1;
+            let logicEmptySlotIndex = -1;
+
+            if (userDrawingParent && logicParent) {
                 for (let j = 0; j < 2 * degree; j++) {
-                    if (!parent.C[j]) {
-                        emptySlotIndex = j;
+                    if (!userDrawingParent.C[j]) {
+                        userDrawingEmptySlotIndex = j;
                         break;
                     }
                 }
 
-                if (emptySlotIndex !== -1) {
-                    // Assign newNode to the first empty slot
-                    parent.C[emptySlotIndex] = newNode;
+                for (let j = 0; j < 2 * degree; j++) {
+                    if (!logicParent.C[j]) {
+                        logicEmptySlotIndex = j;
+                        break;
+                    }
                 }
-            } else {
-                tree.root = newNode;
             }
 
+            if (userDrawingEmptySlotIndex !== -1) {
+                // Assign newUserDrawingNode to the first empty slot
+                userDrawingParent.C[userDrawingEmptySlotIndex] = newUserDrawingNode;
+            }
+
+            if (logicEmptySlotIndex !== -1) {
+                // Assign newLogicNode to the first empty slot
+                logicParent.C[logicEmptySlotIndex] = newLogicNode;
+            } else {
+                // For the root node, assign it to both userDrawingTree and logicTree
+                userDrawingTree.root = newUserDrawingNode;
+                logicTree.root = newLogicNode;
+            }
 
             for (let i = 0; i < keys.length; i++) {
-                newNode.keys[i].value = keys[i];
+                newUserDrawingNode.keys[i].value = keys[i];
+                newLogicNode.keys[i].value = keys[i];
+                newUserDrawingNode.n += 1;
+                newLogicNode.n += 1;
             }
 
-
-            // Add the node to the levels array
-            if (row >= levels.length) {
-                levels.push([]);
+            // Add the node to the levels array for userDrawingTree and logicTree
+            if (row >= userDrawingLevels.length) {
+                userDrawingLevels.push([]);
             }
-            levels[row][col] = newNode;
+            userDrawingLevels[row][col] = newUserDrawingNode;
+
+            if (row >= logicLevels.length) {
+                logicLevels.push([]);
+            }
+            logicLevels[row][col] = newLogicNode;
 
             // Update current coordinates
             currentRow = row;
@@ -495,13 +521,7 @@ function reconstructBTreeFromText(text) {
         }
     }
 
-    // Set the levels array in the BTree
-    tree.levels = levels;
-    console.log("Reconstructed general tree:");
-    console.log(tree);
-
-    // Now, userDrawingTree contains the reconstructed B-tree structure and levels array.
-    return tree;
+    // Set the levels array in userDrawingTree and logicTre
 }
 
 function uploadtxt() {
@@ -760,7 +780,7 @@ randomTreeButton.addEventListener('click', () => {
 });
 
 nextQuestionButton.addEventListener('click', function () {
-    generateRandomQuestion(seed);
+    generateRandomQuestion();
     if (!showCorrectTreeButton.classList.contains('invisible')) {
         showCorrectTreeButton.classList.toggle('invisible');
         showCorrectTreeButton.classList.toggle('visible');
@@ -778,7 +798,7 @@ validateButton.addEventListener('click', (e) => {
             validateButton.disabled = true;
             setTimeout(() => {
                 validationLabel.textContent = "";
-                generateRandomQuestion(seed);
+                generateRandomQuestion();
                 validateButton.disabled = false;
             }, 2000);
             // this function below wipes out the old message showing valid
@@ -1023,30 +1043,30 @@ document.addEventListener("keydown", function (event) {
 
 generateQuestionsSingleTreeButton.addEventListener('click', () => {
     if (logicTree && userDrawingTree) {
-        console.log("Logic tree just before saving: ")
-        console.log(logicTree);
+      //  console.log("Logic tree just before saving: ")
+      //  console.log(logicTree);
         saveTree(userDrawingTree.root, userDrawingTree.levels);
-        console.log('Back inside save function');
-        console.log(savedTreeInfo);
+     //   console.log('Back inside save function');
+      //  console.log(savedTreeInfo);
         let treeDegreeLabel = document.getElementById('treeDegree');
         //hide
         createTreeParametersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
-        console.log(savedTreeInfo);
+      //  console.log(savedTreeInfo);
         //show
         questionsParametersContainer.classList.toggle('invisible');
         questionsParametersContainer.classList.toggle('visible');
         showCorrectTreeButton.classList.toggle('visible');
-        console.log(savedTreeInfo);
+     //   console.log(savedTreeInfo);
         // hide showCorrectTreeButton on show of parameters container q
         if (showCorrectTreeButton.classList.contains('visible')) {
             showCorrectTreeButton.classList.toggle('invisible');
         }
-        console.log(savedTreeInfo);
+    //    console.log(savedTreeInfo);
         treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
         generateRandomQuestion(seed);
-        console.log(savedTreeInfo);
+     //   console.log(savedTreeInfo);
     } else {
         errorMessageLabel.textContent = "Please create a tree before saving";
     }
@@ -1057,6 +1077,7 @@ showCorrectTreeButton.addEventListener('click', () => {
 });
 
 backButton.addEventListener('click', () => {
+    loadSavedTree();
     // TODO: Cascade might conflict with too much class management, so need only one class visible or invisible else it is hard to keep track of
     if (questionsParametersContainer.classList.contains('visible')) {
         questionsParametersContainer.classList.toggle('invisible');
@@ -1069,7 +1090,7 @@ backButton.addEventListener('click', () => {
         createTreeParametersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
     }
-    loadSavedTree();
+  
 });
 
 /* TODO: You cannot generate questions on an invalid tree since they 
