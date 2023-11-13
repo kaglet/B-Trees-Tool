@@ -194,7 +194,7 @@ function zoomCanvas(zoom) {
 function generateRandomQuestion(seed) {
 
     // CHANGE TO 3 WHEN SEARCH IS A THING
-    const question = Math.floor(Math.random() * 2);
+    const question = Math.floor(seed * 2);
     // console.log(question);
 
     let questionDisplay = document.getElementById("question");
@@ -211,11 +211,11 @@ function generateRandomQuestion(seed) {
                 })
             });
         });
-        const keyToInsertIndex = Math.floor(Math.random() * keysSelection.length);
-        let key = Math.floor(Math.random() * 100);
+        const keyToInsertIndex = Math.floor(seed * keysSelection.length);
+        let key = Math.floor(seed * 100);
         while (key === keysSelection[keyToInsertIndex].value) {
-            key = Math.floor(Math.random() * 100);
-            keyToInsertIndex = Math.floor(Math.random() * keysSelection.length);
+            key = Math.floor(seed * 100);
+            keyToInsertIndex = Math.floor(seed * keysSelection.length);
         }
 
 
@@ -804,7 +804,11 @@ randomTreeButton.addEventListener('click', () => {
 });
 
 nextQuestionButton.addEventListener('click', function () {
-    generateRandomQuestion();
+    if (!customTreePresent) {
+        loadSavedTree();
+    }
+    seed = Math.random();
+    generateRandomQuestion(seed);
     if (!showCorrectTreeButton.classList.contains('invisible')) {
         showCorrectTreeButton.classList.toggle('invisible');
         showCorrectTreeButton.classList.toggle('visible');
@@ -822,7 +826,8 @@ validateButton.addEventListener('click', (e) => {
             validateButton.disabled = true;
             setTimeout(() => {
                 validationLabel.textContent = "";
-                generateRandomQuestion();
+                seed = Math.random();
+                generateRandomQuestion(seed);
                 validateButton.disabled = false;
             }, 2000);
             // this function below wipes out the old message showing valid
@@ -1092,7 +1097,7 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
         }
         //    console.log(savedTreeInfo);
         treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
-
+        seed = Math.random();
         generateRandomQuestion(seed);
         //   console.log(savedTreeInfo);
     } else {
@@ -1122,9 +1127,11 @@ backButton.addEventListener('click', () => {
 });
 
 resetIcon.addEventListener('click', () => {
+    
     if (!customTreePresent) {
         loadSavedTree();
     }
+    generateRandomQuestion(seed);
 
 });
 
