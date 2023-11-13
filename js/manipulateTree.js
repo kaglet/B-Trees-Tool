@@ -1,6 +1,6 @@
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { drawSplitFunction } from "./drawTree.js";
-
+import { offsetX } from "./answer-questions.js";
 //const hitBoxSize = 10;
 
 // HELPER FUNCTION
@@ -966,7 +966,7 @@ export function drawBinIcon(graphics){
     graphics.strokeStyle = "red";
     graphics.lineWidth = 3;
     const size = 30; // Size of the "X"
-    const x = canvas.width - size - 10; // Adjust the position as needed
+    const x = canvas.width - size - 10 - offsetX; // Adjust the position as needed
     const y = canvas.height - size - 10; // Adjust the position as needed
 
     // Draw the first line of the "X"
