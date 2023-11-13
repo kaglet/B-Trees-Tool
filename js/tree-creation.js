@@ -362,15 +362,15 @@ export function saveTree(rootNode, levels) {
 
 export function loadSavedTree() {
     // TODO: do whatever happens on cancel button click
-    insertDeleteSection.classList.toggle('invisible');
+  //  insertDeleteSection.classList.toggle('invisible');
     graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     clear();
     userDrawingTree = null;
     logicTree = null;
-    customTreePresent = false;
-    randomTreePresent = false;
-    customTreeButton.textContent = "Custom Tree";
-    randomTreeButton.textContent = "Random Tree";
+  //  customTreePresent = false;
+  //  randomTreePresent = false;
+    // customTreeButton.textContent = "Custom Tree";
+    // randomTreeButton.textContent = "Random Tree";
     errorMessageLabel.textContent = "";
     // console.log(savedTreeInfo);
     reconstructBTreeFromText(savedTreeInfo);
@@ -543,9 +543,11 @@ function uploadtxt() {
                 // File content is available in e.target.result
                 const fileContent = e.target.result;
                 reconstructBTreeFromText(fileContent);
+                //randomTreePresent = true;
                 // Move your tree drawing and manipulation functions here
                 logicTree.traverse();
                 userDrawingTree.traverse();
+                saveTree(userDrawingTree.root, userDrawingTree.levels);
                 drawCreate();
 
                 fileInput.blur(); // Blur the input element
@@ -634,6 +636,7 @@ saveButton.addEventListener('click', () => {
 });
 
 loadButton.addEventListener('click', () => {
+    customTreePresent = false;
     uploadtxt();
 });
 
@@ -1103,7 +1106,7 @@ backButton.addEventListener('click', () => {
 });
 
 resetIcon.addEventListener('click', () => {
-    if (randomTreePresent){
+    if (!customTreePresent){
     loadSavedTree();
     }
     
