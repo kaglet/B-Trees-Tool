@@ -199,6 +199,7 @@ function generateRandomQuestion(seed) {
 
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
+        // userDrawingTree.freeNodes = [];
         let keysSelection = [];
         //insert
         userDrawingTree.levels.forEach((level) => {
@@ -239,6 +240,7 @@ function generateRandomQuestion(seed) {
         questionDisplay.textContent = "Insert: " + key;
         questionDisplay.classList.toggle('scale-big');
     } else if (question == 1) {
+        // userDrawingTree.freeNodes = [];
       //  console.log(logicTree);
         //delete
         // generate random key if null keep searching
@@ -368,7 +370,6 @@ export function loadSavedTree() {
     userDrawingTree = null;
     logicTree = null;
     customTreePresent = false;
-    randomTreePresent = false;
     customTreeButton.textContent = "Custom Tree";
     randomTreeButton.textContent = "Random Tree";
     errorMessageLabel.textContent = "";
@@ -1105,7 +1106,7 @@ backButton.addEventListener('click', () => {
 
 resetIcon.addEventListener('click', () => {
     if (randomTreePresent){
-    loadSavedTree();
+        loadSavedTree();
     }
     
 });
