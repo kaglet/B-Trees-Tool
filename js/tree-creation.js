@@ -198,6 +198,7 @@ function generateRandomQuestion(seed) {
     // console.log(question);
 
     let questionDisplay = document.getElementById("question");
+    userDrawingTree.freeNodes.length = 0;
     if (question == 0) {
         // userDrawingTree.freeNodes = [];
         let keysSelection = [];
@@ -1067,6 +1068,10 @@ document.addEventListener("keydown", function (event) {
 });
 
 generateQuestionsSingleTreeButton.addEventListener('click', () => {
+    if (insertDeleteSection.classList.contains('visible')){
+    insertDeleteSection.classList.toggle('invisible');
+    }
+    
     if (logicTree && userDrawingTree) {
         //  console.log("Logic tree just before saving: ")
         //  console.log(logicTree);

@@ -195,6 +195,7 @@ function generateRandomQuestion(seed) {
     let questionDisplay = document.getElementById("question");
     let questionDisplayContainer = document.querySelector('.question');
     questionDisplayContainer.classList.add('scale-small');
+
     if (question == 0) {
         //insert
         while (logicTree.root.search(key) != null) {
