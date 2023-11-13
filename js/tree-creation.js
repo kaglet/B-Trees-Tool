@@ -115,8 +115,8 @@ function generateRandomTree(numKeys, seed) {
         userDrawingTree.insert(key);
         userDrawingTree.traverse();
     }
-    console.log(logicTree);
-    console.log(userDrawingTree);
+    // console.log(logicTree);
+    // console.log(userDrawingTree);
     drawCreate();
 }
 
@@ -188,7 +188,7 @@ function generateRandomQuestion(seed) {
 
     // CHANGE TO 3 WHEN SEARCH IS A THING
     const question = Math.floor(Math.random() * 2);
-    console.log(question);
+   // console.log(question);
 
     let questionDisplay = document.getElementById("question");
     if (question == 0) {
@@ -206,9 +206,9 @@ function generateRandomQuestion(seed) {
         const keyToInsertIndex = Math.floor(Math.random() * keysSelection.length) ;
         let key = keysSelection[keyToInsertIndex].value;
         
-        console.log('Key to insert');
-        console.log(key);
-        console.log(keysSelection);
+        // console.log('Key to insert');
+        // console.log(key);
+        // console.log(keysSelection);
         
         logicTree.insert(key);
         logicTree.traverse();
@@ -227,7 +227,7 @@ function generateRandomQuestion(seed) {
         questionDisplay.textContent = "Insert: " + key;
         questionDisplay.classList.toggle('scale-big');
     } else if (question == 1) {
-        console.log(logicTree);
+      //  console.log(logicTree);
         //delete
         // generate random key if null keep searching
         let keysSelection = [];
@@ -235,7 +235,7 @@ function generateRandomQuestion(seed) {
         userDrawingTree.levels.forEach((level) => {
             level.forEach((node) => {
                 node.keys.forEach((key) => {
-                    console.log(key.value);
+                  //  console.log(key.value);
                     if (key.value !== undefined) {
                         keysSelection.push(key);
                     }
@@ -249,11 +249,11 @@ function generateRandomQuestion(seed) {
         //     console.log('1');
         //     key = +Math.floor(Math.random() * 100);
         // }
-        console.log('Key to delete');
-        console.log(key);
-        console.log(keysSelection);
+        // console.log('Key to delete');
+        // console.log(key);
+        // console.log(keysSelection);
 
-        console.log('1');
+        // console.log('1');
         logicTree.remove(key);
         logicTree.traverse();
 
@@ -263,7 +263,7 @@ function generateRandomQuestion(seed) {
     } else if (question == 2) {
         //search
         key = Math.floor(Math.random() * 100); 
-        console.log("Search: ", key)
+      //  console.log("Search: ", key)
         document.getElementById("question").innerHTML  = "Search: "+ key;
     }
 
@@ -338,14 +338,14 @@ function collectBTreeInfo(node, levels) {
 }
 
 export function saveTree(rootNode, levels) {
-    console.log('Saved tree info before function call:');
-    console.log(savedTreeInfo);
+    //console.log('Saved tree info before function call:');
+   // console.log(savedTreeInfo);
     // Collect B-tree information using depth-first traversal
     savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
     savedTreeInfo += collectBTreeInfo(rootNode, levels);
     
-    console.log('Saved tree info after function calls');
-    console.log(savedTreeInfo);
+  //  console.log('Saved tree info after function calls');
+  // console.log(savedTreeInfo);
 }
 
 export function loadSavedTree() {
@@ -1030,30 +1030,30 @@ document.addEventListener("keydown", function (event) {
 
 generateQuestionsSingleTreeButton.addEventListener('click', () => {
     if (logicTree && userDrawingTree) {
-        console.log("Logic tree just before saving: ")
-        console.log(logicTree);
+      //  console.log("Logic tree just before saving: ")
+      //  console.log(logicTree);
         saveTree(userDrawingTree.root, userDrawingTree.levels);
-        console.log('Back inside save function');
-        console.log(savedTreeInfo);
+     //   console.log('Back inside save function');
+      //  console.log(savedTreeInfo);
         let treeDegreeLabel = document.getElementById('treeDegree');
         //hide
         createTreeParametersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
-        console.log(savedTreeInfo);
+      //  console.log(savedTreeInfo);
         //show
         questionsParametersContainer.classList.toggle('invisible');
         questionsParametersContainer.classList.toggle('visible');
         showCorrectTreeButton.classList.toggle('visible');
-        console.log(savedTreeInfo);
+     //   console.log(savedTreeInfo);
         // hide showCorrectTreeButton on show of parameters container q
         if (showCorrectTreeButton.classList.contains('visible')) {
             showCorrectTreeButton.classList.toggle('invisible');
         }
-        console.log(savedTreeInfo);
+    //    console.log(savedTreeInfo);
         treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
         generateRandomQuestion(seed);
-        console.log(savedTreeInfo);
+     //   console.log(savedTreeInfo);
     } else {
         errorMessageLabel.textContent = "Please create a tree before saving";
     }
