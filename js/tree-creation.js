@@ -847,7 +847,7 @@ validateButton.addEventListener('click', (e) => {
 
 canvas.addEventListener('mousedown', (e) => {
     if (userDrawingTree && logicTree) {
-        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseX = (e.clientX - canvas.getBoundingClientRect().left) - offsetX;
         const mouseY = e.clientY - canvas.getBoundingClientRect().top;
         // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
         // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
@@ -923,7 +923,7 @@ canvas.addEventListener('mousedown', (e) => {
 canvas.addEventListener('mousemove', (e) => {
     if (userDrawingTree && logicTree) {
 
-        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseX = (e.clientX - canvas.getBoundingClientRect().left) - offsetX;
         const mouseY = e.clientY - canvas.getBoundingClientRect().top;
         if (isDragMode) {
             if (moveFullNodeMode) {
