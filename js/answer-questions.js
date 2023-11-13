@@ -642,7 +642,7 @@ function collectBTreeInfo(node, levels) {
 
 function saveTree(rootNode, levels) {
     console.log('Saved tree info before function call:');
-   console.log(savedTreeInfo);
+    console.log(savedTreeInfo);
     // Collect B-tree information using depth-first traversal
     savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
     savedTreeInfo += collectBTreeInfo(rootNode, levels);
