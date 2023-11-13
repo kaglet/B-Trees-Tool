@@ -497,7 +497,7 @@ canvas.addEventListener('mousemove', (e) => {
 window.addEventListener('mouseup', (e) => {
     if (userDrawingTree && logicTree) {
 
-        const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+        const mouseX = (e.clientX - canvas.getBoundingClientRect().left) - offsetX;
         const mouseY = e.clientY - canvas.getBoundingClientRect().top;
 
         if (userDrawingTree !== undefined) {
