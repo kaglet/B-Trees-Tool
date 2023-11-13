@@ -372,10 +372,16 @@ export function loadSavedTree() {
     randomTreeButton.textContent = "Random Tree";
     errorMessageLabel.textContent = "";
     // console.log(savedTreeInfo);
-    // reconstructBTreeFromText(savedTreeInfo);
-    // // Move your tree drawing and manipulation functions here
-    // logicTree.traverse();
-    // userDrawingTree.traverse();
+    userDrawingTree = reconstructBTreeFromText(savedTreeInfo);
+    console.log('User-drawing tree reconstructed from text: ');
+    console.log(userDrawingTree);
+    // userDrawingTree.levels[0][0].keys[0] = 3194;
+    logicTree = reconstructBTreeFromText(savedTreeInfo);
+    console.log('Logic tree reconstructed from text: ');
+    console.log(logicTree);
+    // Move your tree drawing and manipulation functions here
+    logicTree.traverse();
+    userDrawingTree.traverse();
     // drawCreate();
     let treeDegreeLabel = document.getElementById('treeDegree');
     treeDegreeLabel.textContent = "";
@@ -410,14 +416,13 @@ function saveBTreeToFile(rootNode, levels) {
 function reconstructBTreeFromText(text) {
     // Split the text into lines
     const lines = text.split('\n');
+    console.log(lines);
 
     // Extract the B-tree parameters from the first line
     const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
 
     // Create a new B-tree with the specified degree
-    userDrawingTree = new BTree(degree);
-    logicTree = new BTree(degree);
-
+    const tree = new BTree(degree);
 
     // Initialize level coordinates
     let currentRow = 0;
@@ -450,7 +455,6 @@ function reconstructBTreeFromText(text) {
             const newNode = new BTreeNode(degree, nodeType === 'L'); // Compare with 'L' to set as leaf
 
             // Set the parent node (null for the root node)
-            // Set the parent node (null for the root node)
             if (parentRow >= 0 && parentCol >= 0) {
                 const parent = levels[parentRow][parentCol];
                 newNode.parent = parent;
@@ -467,17 +471,15 @@ function reconstructBTreeFromText(text) {
 
                 if (emptySlotIndex !== -1) {
                     // Assign newNode to the first empty slot
-                    parent.C[emptySlotIndex] = Object.assign(newNode);
+                    parent.C[emptySlotIndex] = newNode;
                 }
             } else {
-                userDrawingTree.root = Object.assign(newNode);
-                logicTree.root = Object.assign(newNode);
+                tree.root = newNode;
             }
 
 
             for (let i = 0; i < keys.length; i++) {
                 newNode.keys[i].value = keys[i];
-                newNode.n += 1;
             }
 
 
@@ -494,34 +496,12 @@ function reconstructBTreeFromText(text) {
     }
 
     // Set the levels array in the BTree
-    userDrawingTree.levels = levels;
-    let levelsCopy = Object.assign(levels);
-    levels.forEach((level, i) => {
-        level.forEach((node, j) => {
-            node.keys.forEach((key, k) => {
-                levelsCopy[i][j].keys[k] = Object.create(key);
-                let calculateArrowHitbox = function(keySize) {
-                    // Calculate the center of the key
-                    this.arrowHitbox.centerX = this.x;
-                    this.arrowHitbox.leftX = this.x  - keySize;
-                    this.arrowHitbox.rightX = this.x + keySize;
-                    this.arrowHitbox.centerY = this.y + keySize;
-            
-                    // Calculate the radius of the arrow hitbox (1/4 of the key width)
-                    this.arrowHitbox.radius = keySize / 10;
-                }
-                levelsCopy[i][j].keys[k].calculateArrowHitbox = calculateArrowHitbox;
-            })
-        });
-    });
+    tree.levels = levels;
+    console.log("Reconstructed general tree: ")
+    console.log(tree);
 
-    // userDrawingTree.levels[0][0].keys[0].value = 2000;
-    // console.log('User drawing tree root');
-    // console.log(userDrawingTree.levels[0][0].keys[0].value);
-
-    // logicTree.levels = levelsCopy;
-    // console.log('Logic tree root');
-    // console.log(logicTree.levels[0][0].keys[0].value);
+    // Now, userDrawingTree contains the reconstructed B-tree structure and levels array.
+    return tree;
 }
 
 function uploadtxt() {
