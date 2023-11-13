@@ -372,11 +372,11 @@ export function loadSavedTree() {
     randomTreeButton.textContent = "Random Tree";
     errorMessageLabel.textContent = "";
     // console.log(savedTreeInfo);
-    // reconstructBTreeFromText(savedTreeInfo);
+    reconstructBTreeFromText(savedTreeInfo);
     // // Move your tree drawing and manipulation functions here
-    // logicTree.traverse();
-    // userDrawingTree.traverse();
-    // drawCreate();
+    logicTree.traverse();
+    userDrawingTree.traverse();
+    drawCreate();
     let treeDegreeLabel = document.getElementById('treeDegree');
     treeDegreeLabel.textContent = "";
 }
