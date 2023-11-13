@@ -497,7 +497,7 @@ function reconstructBTreeFromText(text) {
 
     // Set the levels array in the BTree
     tree.levels = levels;
-    console.log("Reconstructed general tree: ")
+    console.log("Reconstructed general tree:");
     console.log(tree);
 
     // Now, userDrawingTree contains the reconstructed B-tree structure and levels array.
