@@ -112,6 +112,7 @@ function generateRandomTree(numKeys, seed) {
     console.log(logicTree);
     console.log(logicTree.t);
     console.log(userDrawingTree);
+    saveTree(userDrawingTree.root, userDrawingTree.levels);
     drawCreate();
 }
 
@@ -263,6 +264,7 @@ const darkModeIcon = document.querySelector('.dark-mode-toggle');
 const body = document.body;
 
 let showCorrectTreeButton = document.querySelector('.show-correct-tree');
+let resetIcon = document.querySelector('.reset-icon');
 
 canvas = document.getElementById("canvas");
 
@@ -560,3 +562,246 @@ document.addEventListener("keydown", function (event) {
 showCorrectTreeButton.addEventListener('click', () => {
     // Place button that shows correct tree here
 });
+
+resetIcon.addEventListener('click', () => {
+    if (randomTreePresent){
+    loadSavedTree();
+    }
+    
+});
+
+
+
+
+// will be imported later
+
+function collectBTreeInfo(node, levels) {
+    if (!node) {
+        return '';
+    }
+
+    let info = '';
+
+    // Node Type (L for leaf, I for internal)
+    info += node.leaf ? 'L' : 'I';
+
+    // Get current node coordinates
+    const currentCoordinates = getCoordinates(node, levels);
+
+    if (currentCoordinates) {
+        // Current Node Row and Column
+        info += `|${currentCoordinates.row}|${currentCoordinates.col}`;
+    } else {
+        // Node not found in levels
+        info += '|-1|-1';
+    }
+
+    // Node Keys (comma-separated values)
+    if (node.keys && node.keys.length > 0) {
+        info += `|${node.keys.map(key => key.value).join(',')}`;
+    }
+
+    // Find parent coordinates
+    const parentCoordinates = getCoordinates(node.parent, levels);
+
+    if (parentCoordinates) {
+        // Parent Row and Column
+        info += `|${parentCoordinates.row}|${parentCoordinates.col}`;
+    } else {
+        // Root node (no parent)
+        info += '|-1|-1';
+    }
+
+    // Additional Node Properties (customize this as needed)
+    // info += `|${node.someProperty}`;
+
+    info += '\n';
+
+    // Recursively traverse all children
+    if (!node.leaf) {
+        node.C.forEach((child) => {
+            info += collectBTreeInfo(child, levels);
+        });
+    }
+
+    return info;
+}
+
+export function saveTree(rootNode, levels) {
+    //console.log('Saved tree info before function call:');
+   // console.log(savedTreeInfo);
+    // Collect B-tree information using depth-first traversal
+    savedTreeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
+    savedTreeInfo += collectBTreeInfo(rootNode, levels);
+    
+  //  console.log('Saved tree info after function calls');
+  // console.log(savedTreeInfo);
+}
+
+export function loadSavedTree() {
+    // TODO: do whatever happens on cancel button click
+    insertDeleteSection.classList.toggle('invisible');
+    graphics.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    clear();
+    userDrawingTree = null;
+    logicTree = null;
+    customTreePresent = false;
+    randomTreePresent = false;
+    customTreeButton.textContent = "Custom Tree";
+    randomTreeButton.textContent = "Random Tree";
+    errorMessageLabel.textContent = "";
+    // console.log(savedTreeInfo);
+    reconstructBTreeFromText(savedTreeInfo);
+    // // Move your tree drawing and manipulation functions here
+    logicTree.traverse();
+    userDrawingTree.traverse();
+    drawCreate();
+    let treeDegreeLabel = document.getElementById('treeDegree');
+    treeDegreeLabel.textContent = "";
+}
+
+
+// Function to save B-tree information to a text file
+function saveBTreeToFile(rootNode, levels) {
+    // Collect B-tree information using depth-first traversal
+    let treeInfo = `|${rootNode.t}|${+numKeysInput.value}\n`;
+    treeInfo += collectBTreeInfo(rootNode, levels);
+
+    // Create a Blob containing the tree information
+    const blob = new Blob([treeInfo], { type: 'text/plain' });
+
+    // Create a link to download the Blob as a text file
+    const a = document.createElement('a');
+    a.href = window.URL.createObjectURL(blob);
+    a.download = 'btree.txt'; // Set the desired file name
+    a.style.display = 'none';
+
+    // Append the link to the document and trigger a click event to download the file
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+
+
+}
+
+
+function reconstructBTreeFromText(text) {
+    // Split the text into lines
+    const lines = text.split('\n');
+
+    // Extract the B-tree parameters from the first line
+    const [degree, numKeys] = lines[0].match(/\d+/g).map(Number);
+
+    // Create a new B-tree with the specified degree for userDrawingTree and logicTree
+    userDrawingTree = new BTree(degree);
+    logicTree = new BTree(degree);
+
+    // Initialize level coordinates
+    let currentRow = 0;
+    let currentCol = 0;
+
+    // Create separate arrays to keep track of the nodes at each level for userDrawingTree and logicTree
+    const userDrawingLevels = [[]];
+    const logicLevels = [[]];
+
+    // Loop through the lines starting from line 1
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (line) {
+            const parts = line.split('|');
+            // console.log(parts);
+            const [nodeType, row, col, keys, parentRow, parentCol] = parts.map((part, index) => {
+                if (index === 3) {
+                    // Split the keys part into an array of strings
+                    return part.split(',').filter(value => value !== '');
+                } else if (index === 0) {
+                    // Keep nodeType as a string
+                    return part;
+                } else {
+                    // Parse other parts as integers
+                    return parseInt(part);
+                }
+            });
+
+            // Create a new B-tree node for userDrawingTree and logicTree
+            const newUserDrawingNode = new BTreeNode(degree, nodeType === 'L'); // Compare with 'L' to set as leaf
+            const newLogicNode = new BTreeNode(degree, nodeType === 'L');
+
+            // Set the parent node (null for the root node) for both trees
+            let userDrawingParent = null;
+            let logicParent = null;
+
+            if (parentRow >= 0 && parentCol >= 0) {
+                userDrawingParent = userDrawingLevels[parentRow][parentCol];
+                logicParent = logicLevels[parentRow][parentCol];
+            }
+
+            newUserDrawingNode.parent = userDrawingParent;
+            newLogicNode.parent = logicParent;
+
+            // Initialize a counter to find the first empty slot
+            let userDrawingEmptySlotIndex = -1;
+            let logicEmptySlotIndex = -1;
+
+            if (userDrawingParent && logicParent) {
+                for (let j = 0; j < 2 * degree; j++) {
+                    if (!userDrawingParent.C[j]) {
+                        userDrawingEmptySlotIndex = j;
+                        break;
+                    }
+                }
+
+                for (let j = 0; j < 2 * degree; j++) {
+                    if (!logicParent.C[j]) {
+                        logicEmptySlotIndex = j;
+                        break;
+                    }
+                }
+            }
+
+            if (userDrawingEmptySlotIndex !== -1) {
+                // Assign newUserDrawingNode to the first empty slot
+                userDrawingParent.C[userDrawingEmptySlotIndex] = newUserDrawingNode;
+            }
+            else{
+                userDrawingTree.root = newUserDrawingNode;
+
+            }
+
+            if (logicEmptySlotIndex !== -1) {
+                // Assign newLogicNode to the first empty slot
+                logicParent.C[logicEmptySlotIndex] = newLogicNode;
+            } else {
+                // For the root node, assign it to both userDrawingTree and logicTree
+              
+                logicTree.root = newLogicNode;
+            }
+
+            for (let i = 0; i < keys.length; i++) {
+                newUserDrawingNode.keys[i].value = keys[i];
+                newLogicNode.keys[i].value = keys[i];
+                newUserDrawingNode.n += 1;
+                newLogicNode.n += 1;
+            }
+
+            // Add the node to the levels array for userDrawingTree and logicTree
+            if (row >= userDrawingLevels.length) {
+                userDrawingLevels.push([]);
+            }
+            userDrawingLevels[row][col] = newUserDrawingNode;
+
+            if (row >= logicLevels.length) {
+                logicLevels.push([]);
+            }
+            logicLevels[row][col] = newLogicNode;
+
+            // Update current coordinates
+            currentRow = row;
+            currentCol = col;
+        }
+    }
+
+    // Set the levels array in userDrawingTree and logicTre
+}

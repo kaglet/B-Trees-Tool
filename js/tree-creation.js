@@ -123,6 +123,7 @@ function generateRandomTree(numKeys, seed) {
     }
     // console.log(logicTree);
     // console.log(userDrawingTree);
+    saveTree(userDrawingTree.root, userDrawingTree.levels);
     drawCreate();
 }
 
@@ -486,13 +487,17 @@ function reconstructBTreeFromText(text) {
                 // Assign newUserDrawingNode to the first empty slot
                 userDrawingParent.C[userDrawingEmptySlotIndex] = newUserDrawingNode;
             }
+            else{
+                userDrawingTree.root = newUserDrawingNode;
+
+            }
 
             if (logicEmptySlotIndex !== -1) {
                 // Assign newLogicNode to the first empty slot
                 logicParent.C[logicEmptySlotIndex] = newLogicNode;
             } else {
                 // For the root node, assign it to both userDrawingTree and logicTree
-                userDrawingTree.root = newUserDrawingNode;
+              
                 logicTree.root = newLogicNode;
             }
 
@@ -588,6 +593,7 @@ let questionsParametersContainer = document.getElementById('parameters-container
 let showCorrectTreeButton = document.querySelector('.show-correct-tree');
 
 let backButton = document.querySelector('.back');
+let resetIcon = document.querySelector('.reset-icon');
 
 canvas = document.getElementById("canvas");
 
@@ -644,6 +650,8 @@ insertButton.addEventListener('click', () => {
         insertInput.value = "";
         errorMessageLabel.textContent = "";
         return;
+
+      
     }
 
     errorMessageLabel.textContent = "Please enter a key to insert";
@@ -662,6 +670,8 @@ deleteButton.addEventListener('click', () => {
 
         errorMessageLabel.textContent = "";
         return;
+
+        
     }
 
     errorMessageLabel.textContent = "Please enter a key to delete";
@@ -1090,6 +1100,13 @@ backButton.addEventListener('click', () => {
         insertDeleteSection.classList.toggle('invisible');
     }
   
+});
+
+resetIcon.addEventListener('click', () => {
+    if (randomTreePresent){
+    loadSavedTree();
+    }
+    
 });
 
 /* TODO: You cannot generate questions on an invalid tree since they 
