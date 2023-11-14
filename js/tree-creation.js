@@ -1164,6 +1164,8 @@ resetIcon.addEventListener('click', () => {
         loadSavedTree();
     }
     generateRandomQuestion(seed);
+    let treeDegreeLabel = document.getElementById('treeDegree');
+    treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
 
 });
 
