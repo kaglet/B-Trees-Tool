@@ -1,20 +1,17 @@
 const navLinks = document.querySelectorAll('nav ul li a');
-
 const contentSections = document.querySelectorAll('section');
 
 function handleNavClick(event) {
     event.preventDefault();
+    const sectionId = event.target.getAttribute('data-section-id');
     
     contentSections.forEach(section => {
-        section.classList.remove('active');
+        if (section.id === sectionId) {
+            section.classList.add('active');
+        } else {
+            section.classList.remove('active');
+        }
     });
-
-    const sectionId = event.target.getAttribute('data-section-id');
-    const sectionToShow = document.getElementById(sectionId);
-    
-    if (sectionToShow) {
-        sectionToShow.classList.add('active');
-    }
 }
 
 navLinks.forEach(link => {

@@ -3,7 +3,7 @@ body, div, h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, img, form, fieldse
   }
   
   body {
-    background: #909eab url(bg.png);
+    background: #909eab;
     font-family: Helvetica, sans-serif; font-size: 18px; line-height: 24px;
   }
   
@@ -52,7 +52,7 @@ body, div, h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, img, form, fieldse
       
       nav ul li a {
         display: block; padding: 25px 40px;
-        color: #757575; text-decoration: none;
+        color: black; text-decoration: none;
       }
         
       
@@ -75,4 +75,23 @@ body, div, h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, img, form, fieldse
       
     nav ul ul ul {
       position: absolute; left: 100%; top:0;
+    }
+
+    section:not(:first-of-type)  {
+        display: none;
+    }
+    
+    section.active {
+        display: block;
+    }
+
+    .coloured-section {
+        background: #efefef; 
+        background: linear-gradient(top, #efefef 0%, #bbbbbb 100%);  
+        background: -moz-linear-gradient(top, #efefef 0%, #bbbbbb 100%); 
+        background: -webkit-linear-gradient(top, #efefef 0%,#bbbbbb 100%); 
+        box-shadow: 0px 0px 9px rgba(0,0,0,0.15);
+        /* background-color: #efefef; */
+        padding: 20px; 
+        margin: 20px;
     }
