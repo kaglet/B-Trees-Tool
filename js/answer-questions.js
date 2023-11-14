@@ -17,7 +17,6 @@ let graphics;
 let logicTree;
 let userDrawingTree;
 let offsetX = 0;
-export { offsetX };
 let scaleFactor = 1;
 let customTreePresent = false;
 let randomTreePresent = false;
@@ -192,7 +191,6 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(-canvas.width, 0, 3*canvas.width, canvas.height);
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
@@ -467,21 +465,21 @@ canvas.addEventListener('mousemove', (e) => {
                 }
                 // Call drawTree because tree has not changed
                 let isInPlace = findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes, selectedKeyObject, selectedNodeObject, mouseX, mouseY, moveFullNodeMode)
-                let binPositions = drawBinIcon(graphics);
+                let binPositions = drawBinIcon(graphics, offsetX);
                 const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
                 if (isInsideBoundsBin) {
                     graphics.clearRect(-canvas.width , 0, 3*canvas.width, canvas.height);
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, true, true);
-                    drawBinIcon(graphics);
+                    drawBinIcon(graphics,offsetX);
                 } else {
                     if (isInPlace[0].length > 0) {
                         graphics.clearRect(-canvas.width , 0, 3*canvas.width, canvas.height);
                         drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, true, false);
-                        drawBinIcon(graphics);
+                        drawBinIcon(graphics,offsetX);
                     } else {
                         graphics.clearRect(-canvas.width, 0, 3*canvas.width, canvas.height);
                         drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, false, false);
-                        drawBinIcon(graphics);
+                        drawBinIcon(graphics,offsetX);
                     }
                 }
             }
@@ -529,7 +527,7 @@ window.addEventListener('mouseup', (e) => {
             if (isDragMode) {
                 isDragMode = false;
                 if (rootNodeSelcted === false) {
-                    let binPositions = drawBinIcon(graphics);
+                    let binPositions = drawBinIcon(graphics,offsetX);
                     const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
                     if (isInsideBoundsBin && userDrawingTree.freeNodes.indexOf(selectedNodeObject) !== -1) {
                         userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(selectedNodeObject), 1);

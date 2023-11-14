@@ -1,6 +1,6 @@
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { drawSplitFunction } from "./drawTree.js";
-import { offsetX } from "./answer-questions.js";
+//import { offsetX } from "./answer-questions.js";
 //const hitBoxSize = 10;
 
 // HELPER FUNCTION
@@ -978,7 +978,7 @@ export function recieveNodesRedCircles(levels, freeNodes, selectedNode, graphics
     });
 }
 
-export function drawBinIcon(graphics){
+export function drawBinIcon(graphics, offsetX){
     graphics.strokeStyle = "red";
     graphics.lineWidth = 3;
     const size = 30; // Size of the "X"
