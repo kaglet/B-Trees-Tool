@@ -277,6 +277,32 @@ label#question {
 
 /* END---getting started guide pop-up */
 
+/* Solution pop-up */
+.solbutton {
+    display: none;
+}
+
+.solution {
+    background-color: #f4f4f4;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    width: 70%;
+}
+
+#solution-heading {
+    text-decoration: underline;
+}
+  
+  #solution-canvas {
+    width: 100%; 
+    height: 60%;
+    top: 0;
+    left: 0;
+    border: 1px solid #000;
+  }
+
 /* dark mode toggle icon styles*/
 i.dark-mode-toggle {
     display: block;
@@ -320,6 +346,10 @@ body.dark-mode {
     color: white !important;
 
     .guide-content {
+        background-color: #111;
+    }
+
+    .solution {
         background-color: #111;
     }
 
@@ -378,39 +408,6 @@ input[type="checkbox"]:checked::before {
     height: 60%;
     z-index: 1;
 }
-
-.solbutton {
-    display: none;
-}
-
-.solution {
-    background-color: #f4f4f4;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 5px;
-    width: 70%;
-}
-
-#solution-heading {
-    text-decoration: underline;
-}
-  
-  /* .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-  } */
-  
-  #solution-canvas {
-    width: 100%; 
-    height: 60%;
-    top: 0;
-    left: 0;
-    border: 1px solid #000;
-  }
   
 /* Small to big and big to small transition */
 
