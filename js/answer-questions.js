@@ -38,6 +38,8 @@ let moveFullNodeMode = false;
 let rootNodeSelcted = false;
 let selectedKeyObject;
 let selectedNodeObject;
+let solutionCanvas;
+let solutionGraphics;
 
 let seed;
 
@@ -49,6 +51,8 @@ function init(showCorrectTreeButton) {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
         // hide showCorrectTreeButton on show of parameters container q
+        solutionCanvas = document.getElementById("solution-canvas");
+        solutionGraphics = solutionCanvas.getContext("2d");
         showCorrectTreeButton.classList.toggle('invisible');
         showRandomTreeAndQuestion();
     } catch (e) {
@@ -170,7 +174,28 @@ function moveCanvas(direction) {
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
    
 }
+function drawCreateSolution() {
+    solutionGraphics.clearRect(0, 0, solutionCanvas.width, solutionCanvas.height);
+    solutionGraphics.scale(0.8, 0.8);
+    logicTree.assignNodePositions(1);
+    drawTree(logicTree.root, solutionCanvas, logicTree.freeNodes, false, 1, null, null, null);
+    solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
 
+}
+//Solution
+const solutionButton = document.getElementById("solution-button");
+const closeSolution = document.getElementById("close-solution");
+const solutionPanel = document.getElementById("solution-popup");
+
+
+solutionButton.addEventListener("click", () =>{
+    solutionPanel.style.display = "block";
+    drawCreateSolution();
+});
+
+closeSolution.addEventListener("click", () => {
+    solutionPanel.style.display = "none";
+});
 function zoomCanvas(zoom) {
     if (zoom == 'zoom-out') {
         scaleFactor *= 0.9;
