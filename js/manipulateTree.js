@@ -978,12 +978,12 @@ export function recieveNodesRedCircles(levels, freeNodes, selectedNode, graphics
     });
 }
 
-export function drawBinIcon(graphics, offsetX){
+export function drawBinIcon(graphics, offsetX, offsetY){
     graphics.strokeStyle = "red";
     graphics.lineWidth = 3;
     const size = 30; // Size of the "X"
     const x = canvas.width - size - 10 - offsetX; // Adjust the position as needed
-    const y = canvas.height - size - 10; // Adjust the position as needed
+    const y = canvas.height - size - 10 - offsetY; // Adjust the position as needed
 
     // Draw the first line of the "X"
     graphics.beginPath();
