@@ -272,12 +272,12 @@ function generateRandomQuestion(seed) {
 
 function showRandomTreeAndQuestion() {
     let min = 2;
-    let max = 2;
+    let max = 3;
     randomDegree = Math.floor(Math.random() * (max - min + 1)) + min;
     min = 1;
     max = Number.MAX_VALUE;
     randomSeed = Math.floor(Math.random() * (max - min + 1)) + min;
-    min = 20;
+    min = 5;
     max = 20;
     randomNodeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     logicTree = new BTree(randomDegree);
