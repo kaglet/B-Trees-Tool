@@ -844,6 +844,7 @@ validateButton.addEventListener('click', (e) => {
             validateButton.disabled = true;
             setTimeout(() => {
                 validationLabel.textContent = "";
+                loadSavedTree();
                 seed = Math.random();
                 generateRandomQuestion(seed);
                 validateButton.disabled = false;
