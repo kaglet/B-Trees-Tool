@@ -830,6 +830,9 @@ randomTreeButton.addEventListener('click', () => {
 });
 
 nextQuestionButton.addEventListener('click', function () {
+    let treeDegreeLabel = document.getElementById('treeDegree');
+    treeDegreeLabel.textContent = "Tree Degree: " + logicTree.t;
+
     if (!customTreePresent) {
         loadSavedTree();
     }
