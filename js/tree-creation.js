@@ -864,8 +864,10 @@ validateButton.addEventListener('click', (e) => {
 
 canvas.addEventListener('mousedown', (e) => {
     if (userDrawingTree && logicTree) {
-        const mouseX = (e.clientX - canvas.getBoundingClientRect().left) - offsetX;
-        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+        const mouseX = ((e.clientX - canvas.getBoundingClientRect().left)) + offsetX * scaleFactor;
+        const mouseY = (e.clientY - canvas.getBoundingClientRect().top)  ;
+        console.log("x-coordinate: " + mouseX);
+        console.log("y-coordinate: "+ mouseY);
         // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
         // If you try access properties of an undefined tree errors are thrown so wait until a new btree is created whose properties can be iterated over
         if (userDrawingTree !== undefined && isDragMode == false) {
@@ -940,8 +942,8 @@ canvas.addEventListener('mousedown', (e) => {
 canvas.addEventListener('mousemove', (e) => {
     if (userDrawingTree && logicTree) {
 
-        const mouseX = (e.clientX - canvas.getBoundingClientRect().left) - offsetX;
-        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+        const mouseX = ((e.clientX - canvas.getBoundingClientRect().left) ) +  offsetX*scaleFactor;
+        const mouseY = (e.clientY - canvas.getBoundingClientRect().top)  ;
         if (isDragMode) {
             if (moveFullNodeMode) {
                 if (draggedKeyIndex == 0) {
@@ -1019,8 +1021,8 @@ canvas.addEventListener('mousemove', (e) => {
 window.addEventListener('mouseup', (e) => {
     if (userDrawingTree && logicTree) {
 
-        const mouseX = (e.clientX - canvas.getBoundingClientRect().left) - offsetX;
-        const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+        const mouseX = ((e.clientX - canvas.getBoundingClientRect().left) ) + offsetX*scaleFactor;
+        const mouseY = (e.clientY - canvas.getBoundingClientRect().top) ;
 
         if (userDrawingTree !== undefined) {
             if (isDragMode) {
