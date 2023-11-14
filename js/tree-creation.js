@@ -42,6 +42,7 @@ let graphics;
 let logicTree;
 let userDrawingTree;
 let offsetX = 0;
+let offsetY = 0;
 let scaleFactor = 1;
 let customTreePresent = false;
 let randomTreePresent = false;
@@ -162,16 +163,23 @@ function moveCanvas(direction) {
     } else if (direction == 'r') {
         // Move canvas's graphics to the right
         offsetX += 30;
+    } else if (direction == 'up') {
+        // Move canvas's graphics upward
+        offsetY -= 30;
+    } else if (direction == 'down') {
+        // Move canvas's graphics downward
+        offsetY += 30;
     } else {
         // Reset canvas's graphics
         offsetX = 0;
+        offsetY = 0;
         scaleFactor = 1;
     }
 
     clear();
     graphics.clearRect(-canvas.width, 0, 3*canvas.width, canvas.height);
     // Apply the transformation
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, offsetY);
 
     // TODO: logic to be handled between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
@@ -186,7 +194,6 @@ function drawCreateSolution() {
     solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
 
 }
-
 
 function zoomCanvas(zoom) {
     if (zoom == 'zoom-out') {
@@ -596,7 +603,7 @@ let numKeysInput = document.getElementById('num-keys');
 
 let directionalButtons = document.querySelectorAll('.panning-controls button');
 
-let zoomButtons = document.querySelectorAll('.zoom-controls button');
+// let zoomButtons = document.querySelectorAll('.zoom-controls button');
 
 const darkModeIcon = document.querySelector('.dark-mode-toggle');
 const body = document.body;
@@ -628,9 +635,9 @@ directionalButtons.forEach((button) => button.addEventListener('click', () => {
     moveCanvas(button.className);
 }));
 
-zoomButtons.forEach((button) => button.addEventListener('click', () => {
-    zoomCanvas(button.className);
-}));
+// zoomButtons.forEach((button) => button.addEventListener('click', () => {
+//     zoomCanvas(button.className);
+// }));
 
 const helpButton = document.getElementById("help-button");
 const helpGuide = document.getElementById("help-guide");
@@ -864,8 +871,9 @@ validateButton.addEventListener('click', (e) => {
 
 canvas.addEventListener('mousedown', (e) => {
     if (userDrawingTree && logicTree) {
-        const mouseX = ((e.clientX - canvas.getBoundingClientRect().left)) - offsetX * scaleFactor;
-        const mouseY = (e.clientY - canvas.getBoundingClientRect().top)  ;
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left - offsetX;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top - offsetY;
+
         console.log("x-coordinate: " + mouseX);
         console.log("y-coordinate: "+ mouseY);
         // TODO: Optionally check tree exists in canvas before bothering to try find any selected keys
@@ -942,8 +950,8 @@ canvas.addEventListener('mousedown', (e) => {
 canvas.addEventListener('mousemove', (e) => {
     if (userDrawingTree && logicTree) {
 
-        const mouseX = ((e.clientX - canvas.getBoundingClientRect().left) ) -  offsetX*scaleFactor;
-        const mouseY = (e.clientY - canvas.getBoundingClientRect().top)  ;
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left - offsetX;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top - offsetY;
         if (isDragMode) {
             if (moveFullNodeMode) {
                 if (draggedKeyIndex == 0) {
@@ -1021,8 +1029,8 @@ canvas.addEventListener('mousemove', (e) => {
 window.addEventListener('mouseup', (e) => {
     if (userDrawingTree && logicTree) {
 
-        const mouseX = ((e.clientX - canvas.getBoundingClientRect().left) ) - offsetX*scaleFactor;
-        const mouseY = (e.clientY - canvas.getBoundingClientRect().top) ;
+        const mouseX = e.clientX - canvas.getBoundingClientRect().left - offsetX;
+        const mouseY = e.clientY - canvas.getBoundingClientRect().top - offsetY;
 
         if (userDrawingTree !== undefined) {
             if (isDragMode) {

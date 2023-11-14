@@ -451,6 +451,7 @@ body.dark-mode .holder ul {
 
 .panning-controls {
     display: flex;
+    gap: 0.3rem;
 }
 
 .panning-controls > section {
@@ -459,4 +460,8 @@ body.dark-mode .holder ul {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.panning-controls > .mid-section button {
+    margin-bottom: 0.3rem;
 }
