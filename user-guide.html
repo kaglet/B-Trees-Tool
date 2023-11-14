@@ -1,237 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>User Guide</title>
-    <style>
-        /* Hide the content initially */
-        .content-section {
-            display: none;
-        }
+    <meta charset="utf-8" />
+    <title>CSS Dropdown Menu</title>
 
-        /* Style the drop-down arrow */
-        .toggle {
-            cursor: pointer;
-        }
-        h1 {
-            text-align: center;
-        }
-        .toggle-label {
-            font-size: 24px; /* You can adjust the size as needed */
-            display: block;
-            padding-bottom: 10px;
-        }
-        .content-section + .content-section {
-            margin-top: 20px;
-        }
-    </style>
+    <link href="css/user-guide.css" rel="stylesheet" />
+    <link href="css/main-menu.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
 </head>
-   
+
 <body>
-    <h1>User Guide</h1>
+    <section>
+        <nav>
+            <ul>
+                <li><a href="./index.html" data-section-id="home-section"><i class="fa fa-home"></i></a></li>
 
-    <!--Tree Manipulation Guide-->
-    <label for="B-Tree Manipulation Guide Toggle" class="toggle-label">B-Tree Manipulation Guide &#9660;</label>
-    <div class="content-section" id="B-Tree Manipulation Guide Content">
-        <h2>Manipulations:</h2>
-        <ul>
-            <li>Add a key to a node</li>
-            <li>Remove a key from a node</li>
-            <li>Move an entire node</li>
-            <li>Draw an arrow from a node to a child node</li>
-            <li>Overwrite a child node</li>
-            <li>Delete a key</li>
-            <li>Move a key</li>
-        </ul>
-        
-        <h2>1.1) Moving a key:</h2>
-        <p>To move a key, follow these steps:</p>
-        <ol>
-            <li>Hover your mouse pointer over the key you want to move.</li>
-            <li>Left-click and hold the mouse button to select the key.</li>
-            <li>The color of the key will change from light blue to a slightly darker blue to indicate that it has been selected.</li>
-            <li>While keeping the left mouse button pressed, drag your mouse to the desired location on the canvas.</li>
-            <li>Once you've reached the desired position for the key on the canvas, release the left mouse button to place it.</li>
-        </ol>
-        
-        <h2>1.2) Inserting a Key into a Node:</h2>
-        <p>To insert a key into a node, follow the instructions in 1.1 for selecting and moving a key. When positioning the key within the node, observe the color change from light blue to green, signifying the key's correct placement. There are three key attachment positions within a node:</p>
-        <ol>
-            <li><strong>1.2.1. Adding to the Front of the Node:</strong><br>
-                To attach a key to the front of the node, hover the selected key so that the right half of the key overlaps with the left edge of the node.
-                The key will turn green when it's in the correct position for placement within the node.
-                Release the left mouse button to place the key at the front of the node.
-            </li>
-            <li><strong>1.2.2. Adding to the End of the Node:</strong><br>
-                To attach a key to the end of the node, hover the selected key so that the right half of the key overlaps with the left edge of the node.
-                The key will change from light blue to green to indicate it's ready for placement at the end.
-                Release the left mouse button to insert the key at the node's end.
-            </li>
-            <li><strong>1.2.3. Adding Between Other Keys Within the Node:</strong><br>
-                To attach a key between two existing keys within the node, hover your mouse over the desired location between the keys.
-                The selected key that you are dragging should be in between the keys that you want to place the selected key between.
-                As you drag the key to the space between the keys, it will change color to green, indicating the correct position.
-                Release the left mouse button to insert the key in the desired location between the existing keys within the node.
-            </li>
-        </ol>
-        
-        <h2>1.3) Removing a Key from a Node:</h2>
-        <p>To remove a key from a node, follow these steps:</p>
-        <ol>
-            <li>Locate the node containing the key you want to remove.</li>
-            <li>Left-click on the key you wish to remove and hold down the left mouse button.</li>
-            <li>While holding the left mouse button, drag the key away from the tree or node.</li>
-            <li>Release the left mouse button to detach the key from the node.</li>
-        </ol>
-        
-        <h2>1.4) Deleting a Key:</h2>
-        <p>To delete a key from the tree, follow these steps:</p>
-        <ol>
-            <li>Locate the key you want to delete within the tree.</li>
-            <li>Left-click on the key you wish to delete and hold down the left mouse button.</li>
-            <li>While holding the left mouse button, drag the key to the bottom right of the canvas.</li>
-            <li>As you move the key to this area, an "X" symbol will appear in the bottom right corner of the canvas.</li>
-            <li>Release the left mouse button while the key is over the "X" symbol.</li>
-            <li>The key will be deleted from the tree entirely.</li>
-        </ol>
-        
-        <h2>1.5) Move an Entire Node:</h2>
-        <p>Left clicking and dragging moves individual keys, however there may be situations where we would like to move an entire node instead of just moving individual keys.</p>
-        <p>To move an entire node, follow these steps:</p>
-        <ol>
-            <li>Press the spacebar to enter “move entire node” mode.</li>
-            <li>You will be able to determine if you are within this mode if all of the first keys within every node, including free nodes, are colored green.</li>
-            <li>Select the first key within the node that you would like to move, by left-clicking the first key within the node and holding down the left mouse button.</li>
-            <li>Note that the only key that you can select to move an entire node is the first key within the node, and this is indicated by the green color of the first key.</li>
-            <li>While keeping the left mouse button pressed, drag your mouse to the desired location on the canvas.</li>
-            <li>Once you've reached the desired position for the node on the canvas, release the left mouse button to place it.</li>
-        </ol>
-        
-        <h2>1.6) Establishing a Child Node Link:</h2>
-        <p>To create a link between a child node and the tree, follow these detailed steps:</p>
-        <ol>
-            <li>Identify the node to which you want to attach a child node.</li>
-            <li>Determine the keys between which you intend to establish a connection. The connection's nature is influenced by its placement in relation to these keys.</li>
-            <li>Hover your mouse over the lower right or lower left corner of the key from which you wish to initiate the connection.</li>
-            <li>When positioned correctly, a small red circle will appear, signaling that you can initiate a connection from this point.</li>
-            <li>Left-click and hold down the mouse button to initiate the connection when you see the small red circle.</li>
-            <li>Drag your mouse in the direction of the node you want to connect as a child to the tree.</li>
-            <li>While dragging, you'll notice a yellow arrow extending from the original key location where you clicked; this arrow represents the ongoing connection process, often referred to as "connection mode."</li>
-            <li>Additionally, during connection mode, a small red circle will appear at the middle-top of every node that can potentially serve as a child to the original node where you initiated the connection.</li>
-            <li>To finalize the connection, while in connection mode, drag your mouse to the small red circle positioned at the top of the node you want to connect to.</li>
-            <li>Upon hovering over the small red circle, release your mouse click to establish the connection.</li>
-            <li>If the connection is successful, a yellow arrow will be drawn between the two nodes.</li>
-        </ol>
-    
-        <h2>1.7) Overwriting a Child Node:</h2>
-        <p>There may be cases where a connection between a parent node and child node already exists, however, you would like to overwrite this already established connection to make a new connection between the parent node and a new child node. To overwrite a child node, follow these steps:</p>
-        <ol>
-            <li>Identify the parent node with the existing child node connection you want to replace.</li>
-            <li>Determine the keys between which you intend to create the new connection, taking into account the adjusted relationship.</li>
-            <li>Hover your mouse over the bottom right or bottom left corner of the key from which you wish to initiate the new connection.</li>
-            <li>Once correctly positioned, a small red circle will indicate that you can initiate the connection from this location.</li>
-            <li>Left-click and hold down the mouse button when the small red circle is visible to start the new connection.</li>
-            <li>Drag your mouse towards the desired node you wish to connect as the new child node.</li>
-            <li>During this process, you'll observe a yellow arrow extending from the original key location where you initiated the connection, representing the ongoing "connection mode."</li>
-            <li>Additionally, within connection mode, a small red circle will appear at the middle-top of every node that can potentially become the new child node.</li>
-            <li>To complete the process, while in connection mode, guide your mouse to the small red circle positioned at the top of the node you want to connect as the new child node.</li>
-            <li>Upon hovering over the small red circle, release your mouse click to establish the new connection.</li>
-            <li>If successful, a yellow arrow will be drawn between the parent node and the new child node, effectively overwriting the previous connection.</li>
-        </ol>
-    
-        <h2>1.8) Splitting the root node:</h2>
-        <p>There may be cases where you need to split the root node of the tree so that the median key of the original root becomes the single key of the new root and the keys contained in the left half of the original root become the new root's left child and the keys contained in the right half of the original root become the new root's right node. Please note that functionality of splitting the node will only be available to the user if the root node has the maximum amount of keys (i.e., 2t-1 keys).</p>
-        <p>To split the root node, follow these steps:</p>
-        <ol>
-            <li>Hover your mouse to the area slightly above the median key of the root node.</li>
-            <li>If the root is available to be split, then a split node symbol will appear. The symbol looks like a diverging path of three yellow arrows.</li>
-            <li>Left-click the mouse button to perform the split root function.</li>
-        </ol>
-    </div>
+                <li><a href="#" data-section-id="menu-section">Menu</a></li>
 
-    <!--B-Tree Insertion Guide-->
-    <label for="B-Tree Insertion Guide Toggle" class="toggle-label">B-Tree Insertion Guide &#9660;</label>
-    <div class="content-section" id="B-Tree Insertion Guide Content">
-        <h2>What is Preemptive Splitting?</h2>
-        <p>Preemptive splitting is a type of insertion method used in B-trees. This method ensures that insertions within a B-Tree can be done within a single traversal to the insertion point. The process involves:</p>
-        <ul>
-            <li>While traversing the tree to the insertion point, check every node you traverse to see if it needs preemptive splitting, regardless of whether the insertion occurs at that node.</li>
-            <li>To determine if a node needs to be split, examine the number of keys within that node. If it contains the maximum allowable keys, it needs to undergo splitting.</li>
-            <li>Perform the split by taking the median key of that node and placing it into its parent node. Update the parent's node child pointers to point to the left half and the right half of the split node in the appropriate locations.</li>
-        </ul>
+                <li><a href="#" data-section-id="custom-creation-section">Custom Creation</a>
+                    <ul>
+                        <li><a href="#">Custom B-Tree Creation</a></li>
+                        <li><a href="#">Random B-Tree Creation</a></li>
+                        <li><a href="#">Save and Load</a></li>
+                        <li><a href="#">Questions on Created B-Tree</a></li>
+                    </ul>
+                </li>
 
-        <h2>Inserting into a B-Tree with Preemptive Splitting</h2>
-        <p>Let's go through the steps of inserting a new key into a B-tree with preemptive splitting:</p>
-        <ol>
-            <li>Start at the Root Node: Begin the insertion process at the root node of the B-tree.</li>
-            <li>Set the root node as the node you are currently inspecting, referred to as the "Current Node."</li>
-            <li>Check the Current Node for preemptive splitting:
-                <ul>
-                    <li>If the current node contains (2*t-1) keys, split the node. Take the median key and move it to the appropriate position within the parent node. If the current node is the root node, make the median key of the root node the new root node.</li>
-                    <li>Update the connections within the relationship between the parent node and the current node to properly represent the correct child relationships.</li>
-                </ul>
-            </li>
-            <li>Check if the current node is a leaf node or an internal node:
-                <ul>
-                    <li>If the current node is an internal node, proceed to step 5.</li>
-                    <li>If the current node is a leaf node, proceed to step 6.</li>
-                </ul>
-            </li>
-            <li>Traverse the node to determine the next node:
-                <ul>
-                    <li>Set the first key as the key you are currently inspecting, referred to as the "Current Key."</li>
-                    <li>If the key to insert into the B-Tree is less than the current key, follow the pointer to the left of the current key. Assign the new node to be the "Current Node" and go back to step 3.</li>
-                    <li>If the key to insert is greater than the current key, check if the current key is the last key in the node:
-                        <ul>
-                            <li>If it is the last key, follow the pointer to the right of the current key. Assign the new node to be the "Current Node" and return to step 3.</li>
-                            <li>If it is not the last key, set the next key in the node to be the "Current Key" and repeat step 5.</li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>Insert the Key: Once you reach the appropriate leaf node, insert the new key into the node:
-                <ul>
-                    <li>If the node is not full (has fewer than 2*t-1 keys), insert the key directly.</li>
-                    <li>If the node is full, split the leaf node by moving the median key to its parent node. Now insert the key into the newly created child nodes where appropriate.</li>
-                </ul>
-            </li>
-            <li>Finished: Your B-tree is now updated with the new key, and it remains balanced.</li>
-        </ol>
+                <li><a href="#" data-section-id="practice-questions-section">Practice Questions</a></li>
 
-        <h2>Case Scenarios:</h2>
-        <h3>Case 1: Inserting a key into a leaf node where the leaf node has less than the maximum amount of keys (2t-1 keys).</h3>
-        <p><strong>Without preemptive splitting:</strong> Describe the process for inserting a key into a non-full leaf node.</p>
-        <p><strong>With preemptive splitting:</strong> Describe the process for inserting a key into a non-full leaf node using preemptive splitting.</p>
+                <li><a href="#" data-section-id="manipulation-guide-section">Manipulation Guide</a>
+                    <ul>
+                        <li><a href="#">Moving a Key</a></li>
+                        <li><a href="#">Inserting a Key into a Node</a></li>
+                        <li><a href="#">Removing a Key into a Node</a></li>
+                        <li><a href="#">Delete a Key</a></li>
+                        <li><a href="#">Move an Entire Node</a></li>
+                        <li><a href="#">Establishing a Child Node Link</a></li>
+                        <li><a href="#">Overwriting a Child Node</a></li>
+                        <li><a href="#">Splitting the Root Node</a></li>
+                    </ul>
+                </li>
 
-        <h3>Case 2: Inserting a key into a leaf node where the leaf node has the maximum amount of keys (2t-1 keys).</h3>
-        <p><strong>Without preemptive splitting:</strong> Describe the process for inserting a key into a full leaf node.</p>
-        <p><strong>With preemptive splitting:</strong> Describe the process for inserting a key into a full leaf node using preemptive splitting.</p>
+                <li><a href="#" data-section-id="tutorials-section">Tutorials</a>
+                    <ul>
+                        <li><a href="#">B-Tree Insertion Guide </a></li>
+                        <li><a href="#">B-Tree Deletion Guide</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </section>
 
-        <p>Note: In many scenarios, there is typically one split per insert, but these cases cover the situations where splitting may or may not be needed depending on the node's capacity.</p>
-    </div>
+    <section id="custom-creation-section" class="coloured-section">
+        <h2>Custom Creation</h2>
+        <p>Hello</p>
+    </section>
 
-    <!--B-Tree Deletion Guide-->
-    <label for="B-Tree Deletion Guide Toggle" class="toggle-label">B-Tree Deletion Guide &#9660;</label>
-    <div class="content-section" id="B-Tree Deletion Guide Content">
-        <h2>What is Preemptive Merging?</h2>
-    </div>
+    <section id="practice-questions-section" class="coloured-section">
+        <h2>Practice Questions</h2>
+        <img src="DSA/assets/MainMenu.JPG" alt="B Tree Practice Tool Image">
+    </section>
 
-<script>
-    // JavaScript to handle click and show/hide content
-    const toggleLabels = document.querySelectorAll('.toggle-label');
+    <section id="manipulation-guide-section" class="coloured-section">
+        <h2>Manipulation Guide</h2>
+        <img src="DSA/assets/MainMenu.JPG" alt="B Tree Practice Tool Image">
+    </section>
 
-    toggleLabels.forEach(function(toggleLabel) {
-        toggleLabel.addEventListener('click', function () {
-            const content = this.nextElementSibling;
-            if (content.style.display === 'none' || content.style.display === '') {
-                content.style.display = 'block';
-            } else {
-                content.style.display = 'none';
-            }
-        });
-    });
-</script>
+    <section id="tutorials-section" class="coloured-section">
+        <h2>Tutorials</h2>
+        <img src="DSA/assets/MainMenu.JPG" alt="B Tree Practice Tool Image">
+    </section>
 
-
-    
+    <script src="js/user-guide.js"></script>
 </body>
+
 </html>

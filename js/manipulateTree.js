@@ -1,6 +1,6 @@
 import { BTree, BTreeNode, BTreeKey } from "./balancedTree.js";
 import { drawSplitFunction } from "./drawTree.js";
-
+import { offsetX } from "./answer-questions.js";
 //const hitBoxSize = 10;
 
 // HELPER FUNCTION
@@ -105,13 +105,17 @@ function addChildrenToFreeNode(levels, freeNodes, node, nodePlacement){
         let lastIndex = node.C.length-1;
         for (let i = node.C.length-1; i >=0 ; i--) {
             if (node.C[i] === undefined || node.C[i] === null) {
-                lastIndex = i-1; // Update the lastIndex when a non-undefined item is found
+                lastIndex = i-1;
+                break; // Update the lastIndex when a non-undefined item is found
             }
         }
         for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
             for (let nodeIndex = 0; nodeIndex < levels[levelIndex].length; nodeIndex++) {
                 let index = node.C.indexOf(levels[levelIndex][nodeIndex]);
-                if (index === lastIndex && index !== -1){      
+                
+                if (index === lastIndex && index !== -1){    
+                    console.log('index',index);
+                    console.log('num keys', node.keys.filter((key) => key.value != undefined).length);  
                     console.log("BEFORE SPLICE:",node.C);              
 
                     if (index === node.keys.filter((key) => key.value != undefined).length) {
@@ -141,6 +145,7 @@ function addChildrenToFreeNode(levels, freeNodes, node, nodePlacement){
         for (let i = node.C.length-1; i >=0 ; i--) {
             if (node.C[i] === undefined && node.C[i] === null) {
                 lastIndex = i-1; // Update the lastIndex when a non-undefined item is found
+                break;
             }
         }
         for (let levelIndex = 0; levelIndex < levels.length; levelIndex++) {
@@ -532,6 +537,8 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
         let freeNodeKeyLength = node.keys.filter((key) => key.value != undefined).length;
         let receiveArrowY = node.keys[0].y -30;
         let receiveArrowX = (node.keys[freeNodeKeyLength-1].x + node.keys[0].x)/2;
+        console.log("SOME NODE??????????",node)    
+
 
         if (isMouseWithinHitboxBounds(mouseX,mouseY,receiveArrowX,receiveArrowY)){
             // if the a new level need to be created, do it here and push the new lowest node to that newly created level
@@ -560,26 +567,31 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                     console.log("F CHILD SELECTED NODE",selectedNode.C[selectedChild]);
                     console.log("F PARENT SELECTE NODE",selectedNode)
 
+                    if (node!==selectedNode.C[selectedChild] && selectedNode.C[selectedChild]!==undefined && selectedNode.C[selectedChild]!== null){
+ 
+                        levels[selectedLevel+1].splice(levels[selectedLevel+1].indexOf(selectedNode.C[selectedChild]),1)
+                        freeNodes.push(selectedNode.C[selectedChild]);
+                        selectedNode.C[selectedChild].parent = null;
+                        addChildrenToFreeNode(levels,freeNodes,selectedNode.C[selectedChild],3);
+                    }
+
                     let parentNodeIndex = levels[selectedLevel].indexOf(selectedNode);
                     let numChildrenInLevel = 0;
                     for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
-                        let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
+                        let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined && child !== null).length;
+                        console.log('num children ',numChildrenInNode, 'in node ',nodeIndex)
                         if (nodeIndex!==0 && numChildrenInNode>0){
-                            numChildrenInLevel+=1;
+                            // numChildrenInLevel+=1;
                         }
                         numChildrenInLevel += numChildrenInNode;
                     }
                     numChildrenInLevel += selectedChild;
                     
-                    if (node!==selectedNode.C[selectedChild] && selectedNode.C[selectedChild]!==undefined && selectedNode.C[selectedChild]!== null){
-                        levels[selectedLevel+1].splice(levels[selectedLevel+1].indexOf(selectedNode.C[selectedChild]),1)
-                        freeNodes.push(selectedNode.C[selectedChild]);
-                        selectedNode.C[selectedChild].parent = null;
-                    }
+                    
 
                     // adds the node to the designated spot in levels
                     console.log("LEVEL INDEX",numChildrenInLevel)
-                    console.log("LEVEL SELECTED",selectedLevel)
+                    console.log("LEVEL SELECTED",selectedLevel+1)
 
                     levels[selectedLevel +1].splice(numChildrenInLevel,0,node);
                     // removes newly add node from free nodes
@@ -641,9 +653,11 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                                 let parentNodeIndex = levels[selectedLevel].indexOf(selectedNode);
                                 let numChildrenInLevel = 0;
                                 for (let nodeIndex = 0; nodeIndex < parentNodeIndex; nodeIndex++) {
-                                    let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined || child !== null).length;
+                                    let numChildrenInNode = levels[selectedLevel][nodeIndex].C.filter(child => child !== undefined && child !== null).length;
+                                    console.log('num children ',numChildrenInNode, 'in node ',nodeIndex)
+
                                     if (nodeIndex!==0 && numChildrenInNode>0){
-                                        numChildrenInLevel+=1;
+                                        // numChildrenInLevel+=1;
                                         console.log("YAAAAAS",node);
 
                                     }
@@ -652,7 +666,8 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                                 
                                 numChildrenInLevel += selectedChild;
     
-                                
+                                console.log("LEVEL INDEX",numChildrenInLevel)
+                                console.log("LEVEL SELECTED",selectedLevel+1)
                                 // adds the node to the designated spot in levels
                                 levels[selectedLevel +1].splice(numChildrenInLevel,0,node);
                                 
@@ -667,9 +682,10 @@ export function makeNodeHaveChild(levels, freeNodes, mouseX, mouseY, isLevelSele
                 }
             });
         });
-        removeFreeNodesFromLevel(levels, freeNodes);
 
     }
+    removeFreeNodesFromLevel(levels, freeNodes);
+
    
 }
 
@@ -966,7 +982,7 @@ export function drawBinIcon(graphics){
     graphics.strokeStyle = "red";
     graphics.lineWidth = 3;
     const size = 30; // Size of the "X"
-    const x = canvas.width - size - 10; // Adjust the position as needed
+    const x = canvas.width - size - 10 - offsetX; // Adjust the position as needed
     const y = canvas.height - size - 10; // Adjust the position as needed
 
     // Draw the first line of the "X"
