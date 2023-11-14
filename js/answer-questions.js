@@ -191,7 +191,6 @@ function zoomCanvas(zoom) {
 
     clear();
     graphics.clearRect(-canvas.width, 0, 3*canvas.width, canvas.height);
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
