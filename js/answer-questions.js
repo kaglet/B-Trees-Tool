@@ -182,20 +182,7 @@ function drawCreateSolution() {
     solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
 
 }
-//Solution
-const solutionButton = document.getElementById("solution-button");
-const closeSolution = document.getElementById("close-solution");
-const solutionPanel = document.getElementById("solution-popup");
 
-
-solutionButton.addEventListener("click", () =>{
-    solutionPanel.style.display = "block";
-    drawCreateSolution();
-});
-
-closeSolution.addEventListener("click", () => {
-    solutionPanel.style.display = "none";
-});
 function zoomCanvas(zoom) {
     if (zoom == 'zoom-out') {
         scaleFactor *= 0.9;
@@ -303,6 +290,15 @@ canvas = document.getElementById("canvas");
 
 window.addEventListener('load', () => init(showCorrectTreeButton));
 
+
+let closeSolution = document.getElementById("close-solution");
+let solutionPanel = document.getElementById("solution-popup");
+
+
+closeSolution.addEventListener("click", () => {
+    solutionPanel.style.display = "none";
+});
+
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
     moveCanvas(button.className);
@@ -330,6 +326,7 @@ darkModeIcon.addEventListener('click', () => {
 
 randomQuestionButton.addEventListener('click', function () {
     showRandomTreeAndQuestion();
+    offsetX = 0;
     // hide showCorrectTreeButton on show of parameters container q;
     if (showCorrectTreeButton.classList.contains('visible')) {
         showCorrectTreeButton.classList.toggle('invisible');
@@ -351,6 +348,7 @@ validateButton.addEventListener('click', (e) => {
                 showRandomTreeAndQuestion();
                 validateButton.disabled = false;
             }, 2000);
+            offsetX = 0;
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
@@ -594,6 +592,8 @@ document.addEventListener("keydown", function (event) {
 
 showCorrectTreeButton.addEventListener('click', () => {
     // Place button that shows correct tree here
+    solutionPanel.style.display = "block";
+    drawCreateSolution();
 });
 
 resetIcon.addEventListener('click', () => {

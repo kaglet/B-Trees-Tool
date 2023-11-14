@@ -63,6 +63,8 @@ let moveFullNodeMode = false;
 let rootNodeSelcted = false;
 let selectedKeyObject;
 let selectedNodeObject;
+let solutionCanvas;
+let solutionGraphics;
 
 let seed;
 
@@ -73,10 +75,11 @@ function init(insertDeleteSection, validateButton, questionsParamtersContainer) 
     try {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
-
         //hide
         questionsParamtersContainer.classList.toggle('invisible');
         insertDeleteSection.classList.toggle('invisible');
+        solutionCanvas = document.getElementById("solution-canvas");
+        solutionGraphics = solutionCanvas.getContext("2d");
     } catch (e) {
         document.getElementById("canvas").innerHTML = "An error occurred while initializing graphics.";
     }
@@ -149,6 +152,7 @@ function clear() {
 
     // Clear the canvas based on the rightmost and bottommost node coordinates
     graphics.clearRect(-10, 0, maxX + 60, maxY + 60);
+    
 }
 
 function moveCanvas(direction) {
@@ -173,6 +177,16 @@ function moveCanvas(direction) {
     userDrawingTree.assignNodePositions(scaleFactor);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
 }
+
+function drawCreateSolution() {
+    solutionGraphics.clearRect(0, 0, solutionCanvas.width, solutionCanvas.height);
+    solutionGraphics.scale(0.8, 0.8);
+    logicTree.assignNodePositions(1);
+    drawTree(logicTree.root, solutionCanvas, logicTree.freeNodes, false, 1, null, null, null);
+    solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
+
+}
+
 
 function zoomCanvas(zoom) {
     if (zoom == 'zoom-out') {
@@ -600,6 +614,14 @@ let resetIcon = document.querySelector('.reset-icon');
 canvas = document.getElementById("canvas");
 
 window.addEventListener('load', () => init(insertDeleteSection, validateButton, questionsParametersContainer));
+
+
+let closeSolution = document.getElementById("close-solution");
+let solutionPanel = document.getElementById("solution-popup");
+
+closeSolution.addEventListener("click", () => {
+    solutionPanel.style.display = "none";
+});
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -1106,6 +1128,8 @@ generateQuestionsSingleTreeButton.addEventListener('click', () => {
 
 showCorrectTreeButton.addEventListener('click', () => {
     // Place button that shows correct tree here
+    solutionPanel.style.display = "block";
+    drawCreateSolution();
 });
 
 backButton.addEventListener('click', () => {
