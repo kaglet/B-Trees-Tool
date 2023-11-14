@@ -41,7 +41,7 @@
             </section>
 
             <div class="holder">
-                <ul>  
+                <ul>
                     <li>
                         <label id="treeDegree" value=""></label>
                     </li>
@@ -52,29 +52,38 @@
 
             <section class="controls">
                 <section class="zoom-controls">
-                    <button type="button" class="zoom-in">
-                        + </button>
-                    <button type="button" class="zoom-out">
-                        - </button>
+
                 </section>
 
                 <section class="panning-controls">
-                    <button type="button" class="l">
-                        &larr; </button>
-                            <button type="button" class="m">
-                                &middot;
-                            </button>
-                            <button type="button" class="r">
-                                &rarr;
-                            </button>
+                    <section class="left-section">
+                        <button type="button" class="l">
+                            &larr;
+                        </button>
+                    </section>
+                    <section class="mid-section">
+                        <button type="button" class="zoom-in">
+                            + </button>
+                        <button type="button" class="m">
+                            &middot;
+                        </button>
+                        <button type="button" class="zoom-out">
+                            - </button>
+                    </section>
+
+                    <section class="right-section">
+                        <button type="button" class="r">
+                            &rarr;
+                        </button>
+                    </section>
                 </section>
             </section>
 
-            <div id ="solution-popup" class = "popup">
-                <div id="solution-panel" class ="solution">
-                <span class= "close" id="close-solution">&times;</span>
-                <h2 id="solution-heading">Correct Tree</h2>
-                <canvas id="solution-canvas" width="900px" height="450px"></canvas>
+            <div id="solution-popup" class="popup">
+                <div id="solution-panel" class="solution">
+                    <span class="close" id="close-solution">&times;</span>
+                    <h2 id="solution-heading">Correct Tree</h2>
+                    <canvas id="solution-canvas" width="900px" height="450px"></canvas>
                 </div>
             </div>
 

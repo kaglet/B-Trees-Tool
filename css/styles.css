@@ -449,3 +449,14 @@ body.dark-mode .holder ul {
     margin-bottom: 1rem;
 }
 
+.panning-controls {
+    display: flex;
+}
+
+.panning-controls > section {
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
