@@ -852,6 +852,7 @@ validateButton.addEventListener('click', (e) => {
             validateButton.disabled = true;
             setTimeout(() => {
                 validationLabel.textContent = "";
+                loadSavedTree();
                 seed = Math.random();
                 generateRandomQuestion(seed);
                 validateButton.disabled = false;
@@ -1011,7 +1012,7 @@ canvas.addEventListener('mousemove', (e) => {
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
                     if (selectedNodeForDrawArrow.keys.indexOf(selectedKeyForDrawArrow) === 0) {
                         if (SelectedChildDrawArrowLevel === 1) {
-                            drawArrow(graphics, [selectedKeyForDrawArrow.arrowHitbox.rightX , selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY], 10, 5);
+                            drawArrow(graphics, [selectedKeyForDrawArrow.arrowHitbox.rightX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY], 10, 5);
                         } else {
                             drawArrow(graphics, [selectedKeyForDrawArrow.arrowHitbox.leftX, selectedKeyForDrawArrow.arrowHitbox.centerY, mouseX, mouseY], 10, 5);
                         }

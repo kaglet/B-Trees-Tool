@@ -38,8 +38,6 @@ let moveFullNodeMode = false;
 let rootNodeSelcted = false;
 let selectedKeyObject;
 let selectedNodeObject;
-let solutionCanvas;
-let solutionGraphics;
 
 let seed;
 
@@ -51,8 +49,6 @@ function init(showCorrectTreeButton) {
         canvas = document.getElementById("canvas");
         graphics = canvas.getContext("2d");
         // hide showCorrectTreeButton on show of parameters container q
-        solutionCanvas = document.getElementById("solution-canvas");
-        solutionGraphics = solutionCanvas.getContext("2d");
         showCorrectTreeButton.classList.toggle('invisible');
         showRandomTreeAndQuestion();
     } catch (e) {
