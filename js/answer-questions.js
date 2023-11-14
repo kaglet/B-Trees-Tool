@@ -167,6 +167,15 @@ function moveCanvas(direction) {
     // TODO: logic to be handled between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
+   
+}
+function drawCreateSolution() {
+    solutionGraphics.clearRect(0, 0, solutionCanvas.width, solutionCanvas.height);
+    solutionGraphics.scale(0.8, 0.8);
+    logicTree.assignNodePositions(1);
+    drawTree(logicTree.root, solutionCanvas, logicTree.freeNodes, false, 1, null, null, null);
+    solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
+
 }
 
 function zoomCanvas(zoom) {
@@ -177,8 +186,7 @@ function zoomCanvas(zoom) {
     }
 
     clear();
-    graphics.clearRect(0, 0, canvas.width, canvas.height);
-    graphics.setTransform(scaleFactor, 0, 0, scaleFactor, offsetX, 0);
+    graphics.clearRect(-canvas.width, 0, 3*canvas.width, canvas.height);
     // TODO: logic to be handeld between create and question
     userDrawingTree.assignNodePositions(scaleFactor);
     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, null, null, null);
@@ -250,7 +258,7 @@ function showRandomTreeAndQuestion() {
     min = 1;
     max = Number.MAX_VALUE;
     randomSeed = Math.floor(Math.random() * (max - min + 1)) + min;
-    min = 2;
+    min = 5;
     max = 20;
     randomNodeNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     logicTree = new BTree(randomDegree);
@@ -275,6 +283,15 @@ let resetIcon = document.querySelector('.reset-icon');
 canvas = document.getElementById("canvas");
 
 window.addEventListener('load', () => init(showCorrectTreeButton));
+
+
+let closeSolution = document.getElementById("close-solution");
+let solutionPanel = document.getElementById("solution-popup");
+
+
+closeSolution.addEventListener("click", () => {
+    solutionPanel.style.display = "none";
+});
 
 // Add event listeners to all GUI components that execute code (i.e. anonymous functions) bound to the listener
 directionalButtons.forEach((button) => button.addEventListener('click', () => {
@@ -303,6 +320,7 @@ darkModeIcon.addEventListener('click', () => {
 
 randomQuestionButton.addEventListener('click', function () {
     showRandomTreeAndQuestion();
+    offsetX = 0;
     // hide showCorrectTreeButton on show of parameters container q;
     if (showCorrectTreeButton.classList.contains('visible')) {
         showCorrectTreeButton.classList.toggle('invisible');
@@ -324,6 +342,7 @@ validateButton.addEventListener('click', (e) => {
                 showRandomTreeAndQuestion();
                 validateButton.disabled = false;
             }, 2000);
+            offsetX = 0;
         } else {
             validationLabel.style.color = "red";
             validationLabel.textContent = "Your operation was in-valid";
@@ -442,21 +461,21 @@ canvas.addEventListener('mousemove', (e) => {
                 }
                 // Call drawTree because tree has not changed
                 let isInPlace = findDropOffAreaOfNode(userDrawingTree.levels, userDrawingTree.freeNodes, selectedKeyObject, selectedNodeObject, mouseX, mouseY, moveFullNodeMode)
-                let binPositions = drawBinIcon(graphics);
+                let binPositions = drawBinIcon(graphics, offsetX);
                 const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
                 if (isInsideBoundsBin) {
                     graphics.clearRect(0, 0, canvas.width, canvas.height);
                     drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, true, true);
-                    drawBinIcon(graphics);
+                    drawBinIcon(graphics,offsetX);
                 } else {
                     if (isInPlace[0].length > 0) {
                         graphics.clearRect(0, 0, canvas.width, canvas.height);
                         drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, true, false);
-                        drawBinIcon(graphics);
+                        drawBinIcon(graphics,offsetX);
                     } else {
                         graphics.clearRect(0, 0, canvas.width, canvas.height);
                         drawTree(userDrawingTree.root, canvas, userDrawingTree.freeNodes, moveFullNodeMode, scaleFactor, selectedKeyObject, false, false);
-                        drawBinIcon(graphics);
+                        drawBinIcon(graphics,offsetX);
                     }
                 }
             }
@@ -504,7 +523,7 @@ window.addEventListener('mouseup', (e) => {
             if (isDragMode) {
                 isDragMode = false;
                 if (rootNodeSelcted === false) {
-                    let binPositions = drawBinIcon(graphics);
+                    let binPositions = drawBinIcon(graphics,offsetX);
                     const isInsideBoundsBin = (mouseX >= binPositions[0] && mouseX <= binPositions[2]) && (mouseY >= binPositions[1] && mouseY <= binPositions[3]);
                     if (isInsideBoundsBin && userDrawingTree.freeNodes.indexOf(selectedNodeObject) !== -1) {
                         userDrawingTree.freeNodes.splice(userDrawingTree.freeNodes.indexOf(selectedNodeObject), 1);
@@ -567,6 +586,8 @@ document.addEventListener("keydown", function (event) {
 
 showCorrectTreeButton.addEventListener('click', () => {
     // Place button that shows correct tree here
+    solutionPanel.style.display = "block";
+    drawCreateSolution();
 });
 
 resetIcon.addEventListener('click', () => {
