@@ -63,7 +63,17 @@
                                 <li><a href="#" data-section-id="insert-case-2b">Case 2b</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">B-Tree Deletion Guide</a></li>
+                        <li><a href="#" data-section-id="deletion-guide-section">B-Tree Deletion Guide</a>
+                            <ul>
+                                <li><a href="#" data-section-id="deletion-case-1">Case 1</a></li>
+                                <li><a href="#" data-section-id="deletion-case-2a">Case 2a</a></li>
+                                <li><a href="#" data-section-id="deletion-case-2b">Case 2b</a></li>
+                                <li><a href="#" data-section-id="deletion-case-2c">Case 2c</a></li>
+                                <li><a href="#" data-section-id="deletion-case-3a">Case 3a</a></li>
+                                <li><a href="#" data-section-id="deletion-case-3b">Case 3b</a></li>
+                                <li><a href="#" data-section-id="deletion-case-3c">Case 3c</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -1074,12 +1084,12 @@
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <!-------------------------------------------------------------------------Deletion Guide------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Full Deletion Guide-------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
-    <section id="insertion-guide-section" class="coloured-section"> 
+    <section id="deletion-guide-section" class="coloured-section"> 
         <section class="inner-section">
             <h2>B-Tree Properties</h2>
             <p>Before we delve into B-tree insertions with preemptive splitting, let's ensure we have a solid understanding of what a B-tree is. A B-tree is a self-balancing search tree data structure that maintains sorted data and enables efficient insertion, deletion, and search operations. It's widely used in database systems and file systems because of its balanced structure and efficient performance characteristics.</p>
@@ -1095,174 +1105,673 @@
         </section>
 
         <section class="inner-section">
-            <h2>What is Preemptive Splitting?</h2>
+            <h2>Introduction to B-Tree Deletion</h2>
             <ul>
-                <li>Preemptive splitting is a type of insertion method that we use for inserting into B-trees. This method ensures that insertions within a B-Tree can be done within a single traversal to the insertion point.</li>
-            <li>To preemptively split a B-Tree, while traversing the tree to the insertion point, we check every single node that we traverse to see if it needs to be preemptively split. This is done regardless of whether or not the insertion occurs at that node.</li>
-            <li>To determine if a node needs to be split, we look at the number of keys within that node. If the number of keys within that node is equal to the maximum number of allowable keys then it needs to undergo splitting.</li>
-            <li>To perform the split, take the median key of that node and place it into its parent node, then update the parent’s node child pointers to point to the left half of the split node and the right half of the split node in the appropriate locations.</li>
+                <li>B-Tree deletion is more complicated than insertion because operations not only occur at the leaf nodes but we can also delete from the internal nodes. </li>
+                <li>As with insertion, we must perform the operation where we do not violate the properties of a B-Tree.</li>
+                <li>Just as with insertions we are going to use a method called preemptive merging to ensure that B-Tree deletions can be performed with a single traversal of the tree.</li>
             </ul>
             
         </section>
 
         <section class="inner-section">
-            <h2>Inserting into a B-Tree</h2>
+            <h2>Deleting from a B-Tree</h2>
             
             <section class = "inner-section">
-                <h2>Cases for Insertion:</h2>
+                <h2>Cases for Deletion:</h2>
                 <ol>
-                    <li><b>Case 1: Inserting a key into a leaf node where the leaf node has less than the maximum amount of keys ie. (2t-1) keys.</b>
+                    <li><b>Case 1: Deleting a key at the leaf node where the leaf node has more than the minimum amount of keys in it, ie more than (t-1) keys</b>
                         <ul>
-                            <li><b>1.a) Without preemptive splitting</b></li>
                             <ul>
-                                <li> Traverse the tree to the correct leaf node.</li>
-                                <li> Simply insert the key into the correct position within the leaf node.</li> 
-                                <li> <b>Example: Insert 7</b></li>
+                                <li> Locate the key to delete.</li>
+                                <li> <b>Example: Delete 24</b></li>
                                 <div class="image-container">
-                                    <img src="./assets/ins1a1.jpg" alt="Image 1">
-                                    <img src="./assets/ins1a2.jpg" alt="Image 2">
-                                    <img src="./assets/ins1a3.jpg" alt="Image 3">
-                                    <img src="./assets/ins1a4.jpg" alt="Image 3">
+                                    <img src="./assets/del1_1.jpg" alt="Image 1">
+                                </div>
+                                
+                                <li> If the key to delete lies in a leaf node and the leaf node contains more than the minimum amount of keys, ie. more than (t-1) keys:</li> 
+                                <li> Simply delete the key from the leaf node.</li>
+                                
+                                <div class="image-container">
                                     
+                                    <img src="./assets/del1_2.jpg" alt="Image 2">
+                                    <img src="./assets/del1_3.jpg" alt="Image 3">
                                 </div>                      
-                            </ul>
-                            <li><b>1.b) With pre-emptive splitting</b></li>
-                            <ul>
-                                <li> Traverse the tree to the correct leaf node.</li>
-                                <li> If any of the nodes along the traversal that are not the leaf node have the maximum amount of keys, then that specific node needs pre-emptive splitting.</li>
-                                <li> Split that node by taking the median of that node and inserting it into it's parent node.</li>
-                                <li> The left half of the split node and the right half of the split node become the new children of the parent node.</li>
-                                <li> Update the children to correspond to the correct node.</li>
-                                <li> <b>Example: Insert 49</b></li>
-                                <div class="image-container">
-                                    <img src="./assets/ins1b1.jpg" alt="Image 1">
-                                    <img src="./assets/ins1b2.jpg" alt="Image 2">
-                                    <img src="./assets/ins1b3.jpg" alt="Image 3">
-                                    <img src="./assets/ins1b4.jpg" alt="Image 3">
-                                    
-                                </div>  
-                                
-                                <li> Now complete the traversal to the correct leaf node.</li>
-                                <li> Simply insert the key into the correct position within the leaf node.</li>
-
-                                <div class="image-container">
-                                    <img src="./assets/ins1b5.jpg" alt="Image 1">
-                                    <img src="./assets/ins1b6.jpg" alt="Image 2">
-                                    <img src="./assets/ins1b7.jpg" alt="Image 3">
-                                    <img src="./assets/ins1b8.jpg" alt="Image 3">
-                                    
-                                </div>                      
-                            </ul>
-                        </ul>
-                        </li>
-                        <li><b>Case 2: Inserting a key into a leaf node where the leaf node has the maximum amount of keys ie. (2t-1) keys.</b>
-                        <ul>
-                            <li><b>2.a) Without preemptive splitting</b></li>
-                            <ul>
-                                <li> Traverse the tree to the correct leaf node.</li>
-                                <li> <b>Example: Insert 69</b></li>
-                                <div class="image-container">
-                                    <img src="./assets/ins2a1.jpg" alt="Image 1">
-                                    <img src="./assets/ins2a2.jpg" alt="Image 2">
-                                    <img src="./assets/ins2a3.jpg" alt="Image 3">
-                                    
-                                    
-                                </div>   
-                                <li> If the leaf node where we want to insert the new key, has the maximum amount of keys, then split that leaf node.</li> 
-                                <div class="image-container">
-                                    <img src="./assets/ins2a4.jpg" alt="Image 3">
-                                    
-                                </div>  
-                                <li> Split the leaf node by taking the median key of that node and moving it to the correct position in its parent node.</li>
-                                <li> The left half of the split node and the right half of the split node become the new children of the parent node.</li>
-                                <li> Update the children to correspond to the correct node.</li>
-                                <div class="image-container">
-                                    <img src="./assets/ins2a5.jpg" alt="Image 1">
-                                    
-                                    
-                                </div>   
-                                
-                                   
-                                <li> Now that the leaf node is appropriately split:</li>    
-                                <li> Insert the key into the leaf node that corresponds to the correct traversal of the tree.  </li>    
-                                <div class="image-container">
-                                    <img src="./assets/ins2a6.jpg" alt="Image 2">
-                                    <img src="./assets/ins2a7.jpg" alt="Image 3">
-                                    <img src="./assets/ins2a8.jpg" alt="Image 3">
-                                    
-                                </div>   
-                                      
-                            </ul>
-                            <li><b>2.b) With preemptive splitting</b></li>
-                            <ul>
-                                <li> Traverse the tree to the correct leaf node.</li>
-                                <li> If any of the nodes along the traversal that are not the leaf node have the maximum amount of keys, then that specific node needs pre-emptive splitting.</li>
-                                <li> <b>Example: Insert 18</b></li>
-                                <div class="image-container">
-                                    <img src="./assets/ins2b1.jpg" alt="Image 1">
-                                    <img src="./assets/ins2b2.jpg" alt="Image 2">
-                                    <img src="./assets/ins2b3.jpg" alt="Image 3">
-                                    
-                                    
-                                </div>  
-                                <li> Split that node by taking the median of that node and inserting it into it's parent node.</li>
-                                <li> The left half of the split node and the right half of the split node become the new children of the parent node.</li>
-                                <li> Update the children to correspond to the correct node.</li>
-                                <div class="image-container">
-                                    <img src="./assets/ins2b4.jpg" alt="Image 3">
-                                    
-                                </div>  
-
-                                <li> Now complete the traversal to the correct leaf node.</li>
-                                
-                                <div class="image-container">
-                                    <img src="./assets/ins2b5.jpg" alt="Image 1">
-                                    <img src="./assets/ins2b6.jpg" alt="Image 2">
-                                    <img src="./assets/ins2b7.jpg" alt="Image 3">
-                                    
-                                    
-                                </div>  
-                                
-                                
-                                <li> If the leaf node where we want to insert the new key, has the maximum amount of keys, then split that leaf node.</li>
-
-                                <div class="image-container">
-                                    <img src="./assets/ins2b8.jpg" alt="Image 3">
-                                    
-                                    
-                                    
-                                </div>      
-
-                                <li> Split the leaf node by taking the median key of that node and moving it to the correct position in its parent node.</li>
-                                <li> The left half of the split node and the right half of the split node become the new children of the parent node.</li>
-                                <li> Update the children to correspond to the correct node.</li>  
-
-                                <div class="image-container">
-                                    <img src="./assets/ins2b9.jpg" alt="Image 1">
-                                    
-                                </div> 
-                                
-                                <li> Now that the leaf node is appropriately split:</li>    
-                                <li> Insert the key into the leaf node that corresponds to the correct traversal of the tree.  </li>  
-
-                                <div class="image-container">
-                                    <img src="./assets/ins2b10.jpg" alt="Image 2">
-                                    <img src="./assets/ins2b11.jpg" alt="Image 3">
-                                    <img src="./assets/ins2b12.jpg" alt="Image 3">
-                                    <img src="./assets/ins2b13.jpg" alt="Image 3">
-                                    
-                                </div> 
                             </ul>
                         </ul>
                     </li>
+
+                    <li><b>Case 2: Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys</b>
+                    <ul>
+                        <li><b>2.a)  Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys and The leaf node has a left immediate sibling node with more than the minimum amount of keys ie. more than (t-1) keys</b></li>
+                        <ul>
+                            <li> <b>Example: Delete 86</b></li>
+
+                            <li> Locate the key to delete.</li>
+                            <li> If the key to delete lies in a leaf node and the leaf node contains the minimum amount of keys, ie. (t-1) keys:</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2a1.jpg" alt="Image 1">
+                            </div>
+
+                            <li> Look to the immediate left sibling node of the shared parent key</li>
+
+                            <div class="image-container">
+                                <img src="./assets/del2a2.jpg" alt="Image 1">
+                            </div>
+
+                             
+                            <li> If the immediate left sibling node of the shared parent key has more than (t-1) keys:</li>
+                            <li> Borrow the shared parent key's predecessor by moving it into the parent node and moving the shared parent key into the node we want to delete from</li>
+
+                            <div class="image-container">
+                                <img src="./assets/del2a3.jpg" alt="Image 1">
+                            </div>
+
+                            <li> The leaf node now has more than the minimum amount of keys so:</li>
+                            <li> We simply delete the key from the leaf node.</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2a4.jpg" alt="Image 1">
+                                <img src="./assets/del2a5.jpg" alt="Image 1">
+                            </div>    
+                                    
+                        </ul>
+
+                        <li><b>2.b)  Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys and The leaf node’s left immediate sibling node has the minimum amount of keys ie (t-1) keys, but the leaf node’s right immediate sibling node has more than the minimum amount of keys ie. more than (t-1) keys</b></li>
+                        <ul>
+                            <li> <b>Example: Delete 47</b></li>
+
+                            <li> Locate the key to delete.</li>
+                            <li> If the key to delete lies in a leaf node and the leaf node contains the minimum amount of keys, ie. (t-1) keys:</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2b1.jpg" alt="Image 1">
+                            </div>
+
+                            <li> First look to the immediate left sibling node of the shared parent key</li>
+                            <li> If the immediate left sibling node of the shared parent key also has the minimum amount of keys, ie (t-1) keys:</li>
+
+                            <div class="image-container">
+                                <img src="./assets/del2b2.jpg" alt="Image 1">
+                            </div>
+
+                            <li> Look to the immediate right sibling node of the shared parent key</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2b3.jpg" alt="Image 1">
+                            </div>
+                             
+                            <li> If the immediate right sibling node of the shared parent key has more than the minimum amount of keys, ie. (t-1) keys:</li>
+                            <li> Borrow the shared parent key's successor by moving it into the parent node and moving the shared parent key into the node we want to delete from</li>
+
+                            <div class="image-container">
+                                <img src="./assets/del2b4.jpg" alt="Image 1">
+                            </div>
+
+                            <li> The leaf node now has more than the minimum amount of keys so:</li>
+                            <li> We simply delete the key from the leaf node.</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2b5.jpg" alt="Image 1">
+                                <img src="./assets/del2b6.jpg" alt="Image 1">
+                                <img src="./assets/del2b7.jpg" alt="Image 1">
+                                <img src="./assets/del2b8.jpg" alt="Image 1">
+                            </div>      
+                                    
+                        </ul>
+
+                        <li><b>2.c)  Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys and All immediate siblings have the minimum amount of keys ie. (t-1) keys</b></li>
+                        <ul>
+                            <li> <b>Example: Delete 40</b></li>
+
+                            <li> Locate the key to delete.</li>
+                            <li> If the key to delete lies in a leaf node and the leaf node contains the minimum amount of keys, ie. (t-1) keys:</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2c1.jpg" alt="Image 1">
+                            </div>
+
+                            <li> First look to the immediate left sibling node of the shared parent key</li>
+                            <li> If the immediate left sibling node of the shared parent key also has the minimum amount of keys, ie (t-1) keys:</li>
+
+                            <div class="image-container">
+                                <img src="./assets/del2c2.jpg" alt="Image 1">
+                            </div>
+
+                            <li> Look to the immediate right sibling node of the shared parent key</li>
+                            <li> If the immediate right sibling node of the shared parent key also has the minimum amount of keys, ie (t-1) keys:</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2c3.jpg" alt="Image 1">
+                            </div>
+                             
+                            <li>Merge the key to delete within either the immediate left sibling node or the immediate right sibling node by merging the sibling node and the shared parent key to the node to delete from.</li>
+                            <li>Please note that you can merge with either sibling node and in this example we are merging with the left sibling node. (Merging with the right will also be fine)</li>
+
+                            <div class="image-container">
+                                <img src="./assets/del2c4.jpg" alt="Image 1">
+                            </div>
+
+                            <li> The leaf node now has more than the minimum amount of keys so:</li>
+                            <li> We simply delete the key from the leaf node.</li>
+                            
+                            <div class="image-container">
+                                <img src="./assets/del2c5.jpg" alt="Image 1">
+                                <img src="./assets/del2c6.jpg" alt="Image 1">
+                                
+                            </div>       
+                                    
+                        </ul>
+
+                        
+                        
+                    </ul>
+                    </li>
+
+                    <li><b>Case 3: Deleting a Key at an Internal Node</b>
+                        <ul>
+                            <li><b>3.a)  Deleting a key at an internal node where the left child node has the more than the minimum amount of keys ie. more than (t-1) keys</b></li>
+                            <ul>
+                                <li> <b>Example: Delete 49</b></li>
+    
+                                <li> Locate the key to delete.</li>
+                                <li> If the key to delete lies in an internal node:</li>
+                                
+                                <div class="image-container">
+                                    <img src="./assets/del3a1.jpg" alt="Image 1">
+                                </div>
+    
+                                <li> Look to the left child node of the key to delete</li>
+    
+                                <div class="image-container">
+                                    <img src="./assets/del3a2.jpg" alt="Image 1">
+                                </div>
+    
+                                 
+                                <li> If the left child node of the key to delete has more than (t-1) keys:</li>
+                                <li> Borrow the key-to-delete's predecessor by moving it into the same node as the node where the key-to-delete is</li>
+    
+                                <div class="image-container">
+                                    <img src="./assets/del3a3.jpg" alt="Image 1">
+                                </div>
+    
+                                <li> The internal node now has more than the minimum amount of keys so:</li>
+                                <li> We simply delete the key from the internal node.</li>
+                                
+                                <div class="image-container">
+                                    <img src="./assets/del3a4.jpg" alt="Image 1">
+                                    <img src="./assets/del3a5.jpg" alt="Image 1">
+                                </div>    
+                                        
+                            </ul>
+    
+                            <li><b>3.b)  Deleting a key at an internal node where the left child node has the minimum amount of keys ie. (t-1) keys and the right child node has more than the minimum amount of keys ie. more than (t-1) keys </b></li>
+                            <ul>
+                                <li> <b>Example: Delete 72</b></li>
+    
+                                <li> Locate the key to delete.</li>
+                                <li> If the key to delete lies in an internal node:</li>
+                                
+                                <div class="image-container">
+                                    <img src="./assets/del3b1.jpg" alt="Image 1">
+                                </div>
+    
+                                <li> Look to the left child node of the key to delete</li>
+    
+                                <div class="image-container">
+                                    <img src="./assets/del3b2.jpg" alt="Image 1">
+                                </div>
+                                 
+                                <li> If the left child node of the key-to-delete has the minimum amount of keys, ie (t-1) keys:</li>
+                                <li> Look to the right child node of the key-to-delete</li>
+
+                                <div class="image-container">
+                                    <img src="./assets/del3b3.jpg" alt="Image 1">
+                                </div>
+
+                                <li> If the right child node of the key-to-delete has more than the minimum amount of keys, ie more than (t-1) keys:</li>
+                                <li> Borrow the key-to-delete's successor by moving it into the same node as the node where the key-to-delete is</li>
+    
+                                <div class="image-container">
+                                    <img src="./assets/del3b4.jpg" alt="Image 1">
+                                </div>
+    
+                                <li> The internal node now has more than the minimum amount of keys so:</li>
+                                <li> We simply delete the key from the internal node.</li>
+                                
+                                <div class="image-container">
+                                    <img src="./assets/del3b5.jpg" alt="Image 1">
+                                    <img src="./assets/del3b6.jpg" alt="Image 1">
+                                </div>    
+                                        
+                            </ul>
+    
+                            <li><b>3.c) Deleting a key at an internal node where both children have the minimum amount of keys in them, ie (t-1) keys</b></li>
+                            <ul>
+                                <li> <b>Example: Delete 72</b></li>
+    
+                                <li> Locate the key to delete.</li>
+                                <li> If the key to delete lies in an internal node:</li>
+                                
+                                <div class="image-container">
+                                    <img src="./assets/del3c1.jpg" alt="Image 1">
+                                </div>
+    
+                                <li> Look to the left child node of the key to delete</li>
+    
+                                <div class="image-container">
+                                    <img src="./assets/del3c2.jpg" alt="Image 1">
+                                </div>
+                                 
+                                <li> If the left child node of the key-to-delete has the minimum amount of keys, ie (t-1) keys:</li>
+                                <li> Look to the right child node of the key-to-delete</li>
+
+                                <div class="image-container">
+                                    <img src="./assets/del3c3.jpg" alt="Image 1">
+                                </div>
+
+                                <li> If the right child node of the key-to-delete has the minimum amount of keys, ie (t-1) keys:</li>
+                                <li> Merge the left child node and the right child node together</li>
+    
+                                <div class="image-container">
+                                    <img src="./assets/del3c4.jpg" alt="Image 1">
+                                </div>
+    
+                                <li> The internal node now has the same amount of keys as it has children so:</li>
+                                <li> We simply delete the key from the internal node.</li>
+                                
+                                <div class="image-container">
+                                    <img src="./assets/del3c5.jpg" alt="Image 1">
+                                    <img src="./assets/del3c6.jpg" alt="Image 1">
+                                </div>       
+                                        
+                            </ul>
+    
+                            
+                            
+                        </ul>
+                        </li>
                        
                 </ol>
                 
             </section>
             
-        </section>  
-        
+        </section> 
     </section>
+        <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 1---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------> 
+
+    <section id="deletion-case-1" class="coloured-section">
+        <section class="inner-section">
+
+            <h2><b>Case 1: Deleting a key at the leaf node where the leaf node has more than the minimum amount of keys in it, ie more than (t-1) keys</b></h2>
+
+            <li>
+                <ul>
+                    <ul>
+                        <li> Locate the key to delete.</li>
+                        <li> <b>Example: Delete 24</b></li>
+                        <div class="image-container">
+                            <img src="./assets/del1_1.jpg" alt="Image 1">
+                        </div>
+                        
+                        <li> If the key to delete lies in a leaf node and the leaf node contains more than the minimum amount of keys, ie. more than (t-1) keys:</li> 
+                        <li> Simply delete the key from the leaf node.</li>
+                        
+                        <div class="image-container">
+                            
+                            <img src="./assets/del1_2.jpg" alt="Image 2">
+                            <img src="./assets/del1_3.jpg" alt="Image 3">
+                        </div>                      
+                    </ul>
+                </ul>
+            </li>
+        
+        </section> 
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 2a---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <section id="deletion-case-2a" class="coloured-section">
+        <section class="inner-section">
+
+            <h2><b>2.a)  Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys and The leaf node has a left immediate sibling node with more than the minimum amount of keys ie. more than (t-1) keys</b></h2>
+
+            <ul>
+                <li> <b>Example: Delete 86</b></li>
+
+                <li> Locate the key to delete.</li>
+                <li> If the key to delete lies in a leaf node and the leaf node contains the minimum amount of keys, ie. (t-1) keys:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2a1.jpg" alt="Image 1">
+                </div>
+
+                <li> Look to the immediate left sibling node of the shared parent key</li>
+
+                <div class="image-container">
+                    <img src="./assets/del2a2.jpg" alt="Image 1">
+                </div>
+
+                 
+                <li> If the immediate left sibling node of the shared parent key has more than (t-1) keys:</li>
+                <li> Borrow the shared parent key's predecessor by moving it into the parent node and moving the shared parent key into the node we want to delete from</li>
+
+                <div class="image-container">
+                    <img src="./assets/del2a3.jpg" alt="Image 1">
+                </div>
+
+                <li> The leaf node now has more than the minimum amount of keys so:</li>
+                <li> We simply delete the key from the leaf node.</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2a4.jpg" alt="Image 1">
+                    <img src="./assets/del2a5.jpg" alt="Image 1">
+                </div>    
+                        
+            </ul>
+        
+        </section> 
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 2b---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <section id="deletion-case-2b" class="coloured-section">
+        <section class="inner-section">
+            
+            <h2><b>2.b)  Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys and The leaf node’s left immediate sibling node has the minimum amount of keys ie (t-1) keys, but the leaf node’s right immediate sibling node has more than the minimum amount of keys ie. more than (t-1) keys</b></h2>
+
+            <ul>
+                <li> <b>Example: Delete 47</b></li>
+
+                <li> Locate the key to delete.</li>
+                <li> If the key to delete lies in a leaf node and the leaf node contains the minimum amount of keys, ie. (t-1) keys:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2b1.jpg" alt="Image 1">
+                </div>
+
+                <li> First look to the immediate left sibling node of the shared parent key</li>
+                <li> If the immediate left sibling node of the shared parent key also has the minimum amount of keys, ie (t-1) keys:</li>
+
+                <div class="image-container">
+                    <img src="./assets/del2b2.jpg" alt="Image 1">
+                </div>
+
+                <li> Look to the immediate right sibling node of the shared parent key</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2b3.jpg" alt="Image 1">
+                </div>
+                 
+                <li> If the immediate right sibling node of the shared parent key has more than the minimum amount of keys, ie. (t-1) keys:</li>
+                <li> Borrow the shared parent key's successor by moving it into the parent node and moving the shared parent key into the node we want to delete from</li>
+
+                <div class="image-container">
+                    <img src="./assets/del2b4.jpg" alt="Image 1">
+                </div>
+
+                <li> The leaf node now has more than the minimum amount of keys so:</li>
+                <li> We simply delete the key from the leaf node.</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2b5.jpg" alt="Image 1">
+                    <img src="./assets/del2b6.jpg" alt="Image 1">
+                    <img src="./assets/del2b7.jpg" alt="Image 1">
+                    <img src="./assets/del2b8.jpg" alt="Image 1">
+                </div>      
+                        
+            </ul>
+        
+        </section> 
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 2c---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <section id="deletion-case-2c" class="coloured-section">
+        <section class="inner-section">
+
+            <h2><b>2.c)  Deleting a key at the leaf node where the leaf node has the minimum amount of keys in it, ie (t-1) keys and All immediate siblings have the minimum amount of keys ie. (t-1) keys</b></h2>
+
+            <ul>
+                <li> <b>Example: Delete 40</b></li>
+
+                <li> Locate the key to delete.</li>
+                <li> If the key to delete lies in a leaf node and the leaf node contains the minimum amount of keys, ie. (t-1) keys:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2c1.jpg" alt="Image 1">
+                </div>
+
+                <li> First look to the immediate left sibling node of the shared parent key</li>
+                <li> If the immediate left sibling node of the shared parent key also has the minimum amount of keys, ie (t-1) keys:</li>
+
+                <div class="image-container">
+                    <img src="./assets/del2c2.jpg" alt="Image 1">
+                </div>
+
+                <li> Look to the immediate right sibling node of the shared parent key</li>
+                <li> If the immediate right sibling node of the shared parent key also has the minimum amount of keys, ie (t-1) keys:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2c3.jpg" alt="Image 1">
+                </div>
+                 
+                <li>Merge the key to delete within either the immediate left sibling node or the immediate right sibling node by merging the sibling node and the shared parent key to the node to delete from.</li>
+                <li>Please note that you can merge with either sibling node and in this example we are merging with the left sibling node. (Merging with the right will also be fine)</li>
+
+                <div class="image-container">
+                    <img src="./assets/del2c4.jpg" alt="Image 1">
+                </div>
+
+                <li> The leaf node now has more than the minimum amount of keys so:</li>
+                <li> We simply delete the key from the leaf node.</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del2c5.jpg" alt="Image 1">
+                    <img src="./assets/del2c6.jpg" alt="Image 1">
+                    
+                </div>       
+                        
+            </ul>
+        
+        </section> 
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 3a---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <section id="deletion-case-3a" class="coloured-section">
+        <section class="inner-section">
+
+            <h2><b>3.a)  Deleting a key at an internal node where the left child node has the more than the minimum amount of keys ie. more than (t-1) keys</b></h2>
+
+            <ul>
+                <li> <b>Example: Delete 49</b></li>
+
+                <li> Locate the key to delete.</li>
+                <li> If the key to delete lies in an internal node:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del3a1.jpg" alt="Image 1">
+                </div>
+
+                <li> Look to the left child node of the key to delete</li>
+
+                <div class="image-container">
+                    <img src="./assets/del3a2.jpg" alt="Image 1">
+                </div>
+
+                 
+                <li> If the left child node of the key to delete has more than (t-1) keys:</li>
+                <li> Borrow the key-to-delete's predecessor by moving it into the same node as the node where the key-to-delete is</li>
+
+                <div class="image-container">
+                    <img src="./assets/del3a3.jpg" alt="Image 1">
+                </div>
+
+                <li> The internal node now has more than the minimum amount of keys so:</li>
+                <li> We simply delete the key from the internal node.</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del3a4.jpg" alt="Image 1">
+                    <img src="./assets/del3a5.jpg" alt="Image 1">
+                </div>    
+                        
+            </ul>
+        
+        </section> 
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 3b---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <section id="deletion-case-3b" class="coloured-section">
+        <section class="inner-section">
+
+            <h2><b>3.b)  Deleting a key at an internal node where the left child node has the minimum amount of keys ie. (t-1) keys and the right child node has more than the minimum amount of keys ie. more than (t-1) keys</b></h2>
+
+            <ul>
+                <li> <b>Example: Delete 72</b></li>
+        
+                <li> Locate the key to delete.</li>
+                <li> If the key to delete lies in an internal node:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del3b1.jpg" alt="Image 1">
+                </div>
+        
+                <li> Look to the left child node of the key to delete</li>
+        
+                <div class="image-container">
+                    <img src="./assets/del3b2.jpg" alt="Image 1">
+                </div>
+                 
+                <li> If the left child node of the key-to-delete has the minimum amount of keys, ie (t-1) keys:</li>
+                <li> Look to the right child node of the key-to-delete</li>
+        
+                <div class="image-container">
+                    <img src="./assets/del3b3.jpg" alt="Image 1">
+                </div>
+        
+                <li> If the right child node of the key-to-delete has more than the minimum amount of keys, ie more than (t-1) keys:</li>
+                <li> Borrow the key-to-delete's successor by moving it into the same node as the node where the key-to-delete is</li>
+        
+                <div class="image-container">
+                    <img src="./assets/del3b4.jpg" alt="Image 1">
+                </div>
+        
+                <li> The internal node now has more than the minimum amount of keys so:</li>
+                <li> We simply delete the key from the internal node.</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del3b5.jpg" alt="Image 1">
+                    <img src="./assets/del3b6.jpg" alt="Image 1">
+                </div>    
+                        
+            </ul>
+        
+        </section> 
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Deletion Case 3c---------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+    <section id="deletion-case-3c" class="coloured-section">
+        <section class="inner-section">
+
+            <h2><b>3.c) Deleting a key at an internal node where both children have the minimum amount of keys in them, ie (t-1) keys</b></h2>
+
+            <ul>
+                <li> <b>Example: Delete 72</b></li>
+        
+                <li> Locate the key to delete.</li>
+                <li> If the key to delete lies in an internal node:</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del3c1.jpg" alt="Image 1">
+                </div>
+        
+                <li> Look to the left child node of the key to delete</li>
+        
+                <div class="image-container">
+                    <img src="./assets/del3c2.jpg" alt="Image 1">
+                </div>
+                 
+                <li> If the left child node of the key-to-delete has the minimum amount of keys, ie (t-1) keys:</li>
+                <li> Look to the right child node of the key-to-delete</li>
+        
+                <div class="image-container">
+                    <img src="./assets/del3c3.jpg" alt="Image 1">
+                </div>
+        
+                <li> If the right child node of the key-to-delete has the minimum amount of keys, ie (t-1) keys:</li>
+                <li> Merge the left child node and the right child node together</li>
+        
+                <div class="image-container">
+                    <img src="./assets/del3c4.jpg" alt="Image 1">
+                </div>
+        
+                <li> The internal node now has the same amount of keys as it has children so:</li>
+                <li> We simply delete the key from the internal node.</li>
+                
+                <div class="image-container">
+                    <img src="./assets/del3c5.jpg" alt="Image 1">
+                    <img src="./assets/del3c6.jpg" alt="Image 1">
+                </div>       
+                        
+            </ul>
+        
+        </section> 
+    </section>
+        
+    
 
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
