@@ -1,20 +1,21 @@
-const navLinks = document.querySelectorAll('nav ul li a');
 const contentSections = document.querySelectorAll('section');
 
-function handleNavClick(event) {
-    const sectionId = event.target.getAttribute('data-section-id');
-    
-    event.preventDefault();
-    
-    contentSections.forEach(section => {
-        if (section.id === sectionId) {
-            section.classList.add('active');
-        } else {
-            section.classList.remove('active');
-        }
-    });
-}
+const nav = document.querySelector('nav');
 
-navLinks.forEach(link => {
-    link.addEventListener('click', handleNavClick);
+nav.addEventListener('click', function(event) {
+    if (event.target.tagName === 'A') {
+        const sectionId = event.target.getAttribute('data-section-id');
+        console.log('Clicked:', event.target);
+        console.log('Section ID:', sectionId);
+        
+        event.preventDefault();
+        
+        contentSections.forEach(section => {
+            if (section.id === sectionId) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+    }
 });
