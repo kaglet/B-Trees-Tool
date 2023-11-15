@@ -187,12 +187,16 @@ function moveCanvas(direction) {
 }
 
 function drawCreateSolution() {
-    solutionGraphics.clearRect(0, 0, solutionCanvas.width, solutionCanvas.height);
+    solutionGraphics.clearRect(-solutionCanvas.width, -solutionCanvas.height, 3*solutionCanvas.width, 3*solutionCanvas.height);
+    solutionGraphics.setTransform(1, 0, 0, 1, 60, 0);
     solutionGraphics.scale(0.8, 0.8);
     logicTree.assignNodePositions(1);
     drawTree(logicTree.root, solutionCanvas, logicTree.freeNodes, false, 1, null, null, null);
-    solutionGraphics.setTransform(1, 0, 0, 1, 0, 0);
+   
 
+
+
+    
 }
 
 function zoomCanvas(zoom) {
