@@ -119,3 +119,21 @@ body, div, h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, img, form, fieldse
   h1,h2,h3,p{
     padding-top: 10px;
   }
+
+  .image-container {
+    display: flex;
+}
+
+.image-container img {
+    width: 25%; /* Adjust the width as needed */
+    margin-right: 5px; /* Adjust the spacing between images */
+    margin-top: 10px;
+}
+
+/* Adjustments for better visualization */
+section {
+    /* max-width: 800px; */
+    margin: auto;
+    padding: 20px;
+    /* background-color: #f9f9f9; */
+}
