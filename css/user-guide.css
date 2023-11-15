@@ -87,15 +87,35 @@ body, div, h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, img, form, fieldse
 
     .coloured-section {
         background: #efefef; 
-        background: linear-gradient(top, #efefef 0%, #bbbbbb 100%);  
-        background: -moz-linear-gradient(top, #efefef 0%, #bbbbbb 100%); 
-        background: -webkit-linear-gradient(top, #efefef 0%,#bbbbbb 100%); 
+        background: linear-gradient(bottom, #efefef 0%, #bbbbbb 100%);  
+        background: -moz-linear-gradient(bottom, #efefef 0%, #bbbbbb 100%); 
+        background: -webkit-linear-gradient(bottom, #efefef 0%,#bbbbbb 100%); 
         box-shadow: 0px 0px 9px rgba(0,0,0,0.15);
         /* background-color: #efefef; */
         padding: 20px; 
         margin: 20px;
     }
 
+    .inner-section {
+      background: #efefef; 
+      /* background: linear-gradient(top, #efefef 0%, #bbbbbb 100%);  
+      background: -moz-linear-gradient(top, #efefef 0%, #bbbbbb 100%); 
+      background: -webkit-linear-gradient(top, #efefef 0%,#bbbbbb 100%);  */
+      box-shadow: 0px 0px 9px rgba(0,0,0,0.15);
+      border: 1px solid black ;
+      padding: 20px; 
+      margin: 20px;
+  }
+
     ol, ul {
-      padding-left: 20px; /* Adjust the value as needed */
+      padding-left: 20px;
+      padding-top: 10px;
     }
+
+    .inner-section:not(:first-of-type) {
+      display: block;
+  }
+
+  h1,h2,h3,p{
+    padding-top: 10px;
+  }
