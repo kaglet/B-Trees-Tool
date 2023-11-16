@@ -75,7 +75,9 @@
                     </ul>
                 </li>
 
+                <li><a href="#" data-section-id="glossary-section">Glossary</a></li>
                 <li><a href="#" data-section-id="faq-section">FAQ</a></li>
+              
             </ul>
         </nav>
     </section>
@@ -2048,73 +2050,262 @@
         
         </section> 
     </section>
-        
+
+     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-    <!-------------------------------------------------------------------------FAQ--------------------------------------------------------------------------------->
+    <!-------------------------------------------------------------------------Glossary--------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
+    <section id="glossary-section" class="coloured-section">
+        <style>
+            .glossary-section {
+                background-color: #f4f4f4;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+    
+            .glossary-inner-section {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+    
+            .glossary-search-container {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            #searchInputGlossary {
+            padding: 10px; /* Adjust the padding to make it bigger */
+            width: 400px; /* Adjust the width to make it wider */
+        }
+    
+            .glossary-list {
+                list-style: none;
+                padding: 0;
+            }
+    
+            .glossary-item {
+                margin-bottom: 20px;
+            }
+    
+            .glossary-page-heading {
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+        </style>
+    
+        <section class="inner-section">
+            <h2>Glossary</h2>
+            <div class="search-container">
+                <input type="text" id="searchInputGlossary" oninput="searchGlossary()" placeholder="Search...">
+            </div>
+            <ul class="glossary-list" id="glossaryList">
+                <!-- Glossary terms and definitions will be added here if searched -->
+            </ul>
+            <script>
+                  const glossaryData = [
+                        {
+                            term: 'Balanced',
+                            definition: 'All leaf nodes are at the same level. This ensures that the time required to access data in the tree remains constant, regardless of the size of the data set.'
+                        },
+                        {
+                            term: 'BTree',
+                            definition: 'A B-tree is a self-balancing tree where all the leaf nodes are at the same level, allowing for efficient searching, insertion, and deletion of records. The access time of data is fixed, regardless of the data set\'s size.'
+                        },
+                        {
+                            term: 'Branching Factor',
+                            definition: 'The branching factor of a B-tree is a measure of the maximum number of child nodes a node can have. It is usually twice the degree \'t\' of the B-tree.'
+                        },
+                        {
+                            term: 'Canvas',
+                            definition: 'An HTML element that provides a space for rendering graphics, animations, and interactive visual content directly within a web page. In this case, it is the main drawing area that trees will be added to and manipulated.'
+                        },
+                        {
+                            term: 'Children',
+                            definition: 'Children are the nodes connected to a parent node in a B-tree. Internal nodes have child nodes that are either internal nodes or leaf nodes, depending on the tree\'s structure. The max number of children of a node is equal to the number of keys in it plus 1.'
+                        },
+                        {
+                            term: 'Deletion Key',
+                            definition: 'The deletion key is used to locate and remove data from a B-tree during deletion operations.'
+                        },
+                        {
+                            term: 'Degree (t)',
+                            definition: 'The degree, often denoted as \'t\', of a B-tree is a parameter that determines the minimum and maximum number of child nodes a node can have, as well as the maximum number of keys in a node.'
+                        },
+                        {
+                            term: 'Full Node',
+                            definition: 'A node is considered "full" when it contains the maximum allowed number of keys, as determined by the degree (t) of the tree.'
+                        },
+                        {
+                            term: 'Height',
+                            definition: 'The height of a B-tree is the number of levels or layers in the tree, counting from the root to the leaf nodes. A balanced B-tree has a fixed height, ensuring efficient operations.'
+                        },
+                        {
+                            term: 'In-order Successor/Predecessor',
+                            definition: 'These terms describe keys that come immediately before or after a given key in the B-tree\'s sorting order.'
+                        },
+                        {
+                            term: 'Insertion Key',
+                            definition: 'The insertion key is the value used to determine where new data should be placed when inserting into a B-tree.'
+                        },
+                        {
+                            term: 'Internal Node',
+                            definition: 'Internal nodes are non-leaf nodes in a B-tree that contain keys and pointers to child nodes, helping route searches.'
+                        },
+                        {
+                            term: 'Key',
+                            definition: 'A key in a B-tree is a value associated with a record or data item. Keys are stored in the nodes of the B-tree and are used for searching, inserting, and deleting data in the tree. All keys of a node are sorted in increasing order.'
+                        },
+                        {
+                            term: 'Leaf',
+                            definition: 'A leaf node in a B-tree is a node that does not have any child nodes. Leaf nodes typically store data records and are at the same level in a balanced B-tree.'
+                        },
+                        {
+                            term: 'Level',
+                            definition: 'The level of a node in a B-tree represents its distance from the root. The root node is at level 0, its children are at level 1, and so on. All leaf nodes are at the same level.'
+                        },
+                        {
+                            term: 'Median',
+                            definition: 'When a full node is divided into two nodes due to an overflow condition, the median key is the key that separates the two resulting nodes. The median key is chosen to maintain the balanced property of the B-tree and is placed in the parent node to guide future searches. The median is the key found at the middle index of keys within that node.'
+                        },
+                        {
+                            term: 'Node',
+                            definition: 'A node in a B-tree is a fundamental unit that holds keys and pointers to child nodes. Nodes can be internal (containing keys and pointers) or leaf nodes (containing only keys). All nodes (including root) may contain at most (2*t – 1) keys.'
+                        },
+                        {
+                            term: 'Node Merge',
+                            definition: 'Node merge is an operation that combines two nodes into one, often used during deletion when a node has too few keys to maintain balance.'
+                        },
+                        {
+                            term: 'Node Split',
+                            definition: 'Node split is an operation in B-trees that divides a full node into two nodes, often triggered by overflow during insertion.'
+                        },
+                        {
+                            term: 'Overflow',
+                            definition: 'Overflow occurs when inserting a key into a node would exceed the maximum allowed number of keys, triggering node splitting.'
+                        },
+                        {
+                            term: 'Parent',
+                            definition: 'The parent of a node in a B-tree is the node immediately above it in the tree\'s hierarchy. It is connected to its child nodes and may contain keys for routing searches.'
+                        },
+                        {
+                            term: 'Rotation',
+                            definition: 'A rotation in the context of a B-tree is an operation that helps maintain the balance of the tree by reorganizing nodes. Rotations are used during insertion and deletion operations to ensure the B-tree remains balanced.'
+                        },
+                        {
+                            term: 'Search Key',
+                            definition: 'A search key is the value used for data lookup in a B-tree, typically stored in the nodes.'
+                        },
+                        {
+                            term: 'Search Path',
+                            definition: 'The search path is the sequence of nodes traversed from the root to a specific node or leaf during a search operation.'
+                        },
+                        {
+                            term: 'Sibling Node',
+                            definition: 'Sibling nodes are nodes that share the same parent node in a B-tree, aiding balance during insertion and deletion.'
+                        },
+                        {
+                            term: 'Traversal',
+                            definition: 'Traversal in a B-tree refers to the process of systematically visiting all the nodes and keys in the tree. Common traversal methods include in-order, pre-order, and post-order traversal for different purposes, such as searching or printing data.'
+                        },
+                        {
+                            term: 'Underflow',
+                            definition: 'Underflow is a condition that occurs when a node in a B-tree has too few keys to meet the minimum requirements for balancing.'
+                        },
+                        {
+                            term: 'Root Node',
+                            definition: 'The root node is the topmost node in a B-tree, serving as the entry point for accessing the data structure.'
+                        }
+                    ];
+            
+                function initGlossary() {
+                    const glossaryList = document.getElementById('glossaryList');
+                    glossaryData.forEach(item => {
+                        const li = document.createElement('li');
+                        li.classList.add('glossary-item');
+                        li.innerHTML = `<strong>${item.term}</strong><br>${item.definition}`;
+                        glossaryList.appendChild(li);
+                    });
+                    console.log(glossaryData);
+                }
+    
+                function searchGlossary() {
+                    const searchInput = document.getElementById('searchInputGlossary').value.toLowerCase();
+                    const glossaryList = document.getElementById('glossaryList');
+                    glossaryList.innerHTML = '';
+    
+                    glossaryData.forEach(item => {
+                        const term = item.term.toLowerCase();
+    
+                        if (term.includes(searchInput)) {
+                            const li = document.createElement('li');
+                            li.classList.add('glossary-item');
+                            li.innerHTML = `<strong>${item.term}</strong><br>${item.definition}`;
+                            glossaryList.appendChild(li);
+                        }
+                    });
+                }
+    
+                
+            </script>
+        </section>
+    </section>
+    
+    <!------------------------------------------------------------------------- FAQ Section ------------------------------------------------------>
+    
     <section id="faq-section" class="coloured-section">
+        <style>
+            .faq-section {
+                background-color: #f4f4f4;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+    
+            .faq-inner-section {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+    
+            .faq-search-container {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            #searchInputFAQ {
+            padding: 15px; /* Adjust the padding to make it bigger */
+            width: 400px; /* Adjust the width to make it wider */
+        }
+    
+            .faq-list {
+                list-style: none;
+                padding: 0;
+            }
+    
+            .faq-item {
+                margin-bottom: 20px;
+            }
+    
+            .faq-page-heading {
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+        </style>
         <section class="inner-section">
             <h2>Frequently Asked Questions - FAQ</h2>
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>FAQ Page</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        margin: 20px;
-                    }
-            
-                    .search-container {
-                        text-align: center;
-                        margin-bottom: 20px;
-                        
-                    }
-            
-                    #searchInput {
-                        padding: 10px;
-                        width: 300px;
-                        border: 2px solid #000;
-                    }
-            
-                    .faq-list {
-                        list-style: none;
-                        padding: 0;
-                    }
-            
-                    .faq-item {
-                        margin-bottom: 20px;
-                    }
-            
-                    .page-heading {
-                        text-align: center;
-                        font-size: 24px;
-                        margin-bottom: 20px;
-                    }
-            
-            
-                </style>
-            </head>
-            <body>
-
-                
-                <div class="search-container">
-                    <input type="text" id="searchInput" oninput="searchFAQ()" placeholder="Search...">
-                </div>
-            
-                <ul class="faq-list" id="faqList">
-                    <!-- faq added here if searched -->
-                </ul>
-            
-                <script>
-                    // put FAQ data 
-                    const faqData = [
+            <div class="search-container">
+                <input type="text" id="searchInputFAQ" oninput="searchFAQByKeywords()" placeholder="Search...">
+            </div>
+            <ul class="faq-list" id="faqList">
+                <!-- faq added here if searched -->
+            </ul>
+            <script>
+                   const faqData = [
                     {
                         question: 'How do I get started with the application?',
                         answer: 'To get started, you will appear on a menu screen where you can select what you want to do, for in-depth instructions, click ”User Guide”. For basic instructions, click on the ”Custom Tree Creation” and then on the ”Need help?” button in the application to open the Getting Started Guide.'
@@ -2152,72 +2343,53 @@
                         answer: 'The application provides a light or dark mode. You can toggle this by pressing the lightbulb icon.'
                     }
                 ];
-            
-                    function initFAQ() {
-                        const faqList = document.getElementById('faqList');
-                        faqData.forEach(item => {
+    
+                function initFAQ() {
+                    const faqList = document.getElementById('faqList');
+                    faqData.forEach(item => {
+                        const li = document.createElement('li');
+                        li.classList.add('faq-item');
+                        li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
+                        faqList.appendChild(li);
+                    });
+                }
+    
+                function searchFAQByKeywords() {
+                    const searchInput = document.getElementById('searchInputFAQ').value.toLowerCase();
+                    const faqList = document.getElementById('faqList');
+                    faqList.innerHTML = '';
+    
+                    faqData.forEach(item => {
+                        const question = item.question.toLowerCase();
+                        const answer = item.answer.toLowerCase();
+    
+                        if (
+                            question.includes(searchInput) ||
+                            answer.includes(searchInput)
+                        ) {
                             const li = document.createElement('li');
                             li.classList.add('faq-item');
                             li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
                             faqList.appendChild(li);
-                        });
-                    }
-            
-                    // func for FAQ based on strict user input
-                    function searchFAQ() {
-                        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-                        const faqList = document.getElementById('faqList');
-                        faqList.innerHTML = ''; // clears existing list
-            
-                        faqData.forEach(item => {
-                            const question = item.question.toLowerCase();
-                            const answer = item.answer.toLowerCase();
-            
-                            if (question.includes(searchInput) || answer.includes(searchInput)) {
-                                const li = document.createElement('li');
-                                li.classList.add('faq-item');
-                                li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
-                                faqList.appendChild(li);
-                            }
-                        });
-                    }
-            
-                    //func for search based on keywords
-                    function searchFAQ() {
-                        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-                        const faqList = document.getElementById('faqList');
-                        faqList.innerHTML = ''; 
-            
-                        const commonWords = ['is', 'are', 'from', 'the', 'how', 'what', 'where', 'when', 'who', 'why'];
-            
-                        const refinedSearchInput = searchInput
-                            .split(' ')
-                            .filter(word => !commonWords.includes(word.toLowerCase()))
-                            .join(' ');
-            
-                        faqData.forEach(item => {
-                            const question = item.question.toLowerCase();
-                            const answer = item.answer.toLowerCase();
-            
-                            if (
-                                question.includes(refinedSearchInput) ||
-                                answer.includes(refinedSearchInput)
-                            ) {
-                                const li = document.createElement('li');
-                                li.classList.add('faq-item');
-                                li.innerHTML = `<strong>${item.question}</strong><br>${item.answer}`;
-                                faqList.appendChild(li);
-                            }
-                        });
-                    }
-                    
-                    window.onload = function () {
-                        initFAQ();
-                    };
-                </script>
-            </body>
+                        }
+                    });
+                }
+    
+                window.onload = function () {
+                initGlossary(); // Load glossary as well
+                initFAQ();
+            };
+            </script>
         </section>
     </section>
+    
+
+    
+
+    
+    
+
+    
 
 
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
