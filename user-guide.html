@@ -27,14 +27,12 @@
             <ul>
                 <li><a href="./index.html" data-section-id="home-section"><i class="fa fa-home"></i></a></li>
 
-                <li><a href="#" data-section-id="menu-section">Menu</a></li>
-
                 <li><a href="#" data-section-id="custom-creation-section">Custom Creation</a>
                     <ul>
-                        <li><a href="#">Custom B-Tree Creation</a></li>
-                        <li><a href="#">Random B-Tree Creation</a></li>
-                        <li><a href="#">Save and Load</a></li>
-                        <li><a href="#">Questions on Created B-Tree</a></li>
+                        <li><a href="#" data-section-id="custom-tree-creation">Custom B-Tree Creation</a></li>
+                        <li><a href="#" data-section-id="random-tree-creation">Random B-Tree Creation</a></li>
+                        <li><a href="#" data-section-id="tree-creation-save-load">Save and Load a B-Tree</a></li>
+                        <li><a href="#" data-section-id="tree-creation-questions">Questions on Created B-Tree</a></li>
                     </ul>
                 </li>
 
@@ -90,9 +88,263 @@
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
     <section id="custom-creation-section" class="coloured-section">
-        <h2>Custom Creation</h2>
-        <p>Hello</p>
+        <section class="inner-section">
+            <h2>Custom Creation:</h2>
+            <p>
+                This section of the User Guide will take you through the steps of creating/randomly generating your own B-Tree to practising questions on that B-Tree.
+            </p>
+            <ul>
+                <li>1.1) Custom B-Tree Creation</li>
+                <li>1.2) Random B-Tree Creation</li>
+                <li>1.3) Save and Load a B-Tree</li>
+                <li>1.4) Questions on Created B-Tree (Random or Custom)</li>
+            </ul>
+        </section>
+
+        <section class="inner-section">
+            <h2>B-Tree Creation</h2>
+            <p>When entering the Custom Tree Creation Menu you will be greeted with the following page. From here you will have all the tools you need to create your custom/randomly generated B-Tree.</p>
+                <img src="./assets/guide/bTreeCreation1.jpg" alt="Image 1">
+
+            <p>To navigate back to the main menu select the Back button located on the top left of the screen. The light bulb on the top left of the screen will switch the application in and out of dark mode.</p>
+                <img src="./assets/guide/darkMode.jpg" alt="Image 2">
+                <br></br>
+                <img src="./assets/guide/bTreeCreation2.jpg" alt="Image 3">
+
+            <p>The arrow and centre(.) buttons will move the B-Tree around within the canvas and the centre button will move it to the centre of the canvas.</p>
+                <img src="./assets/guide/bTreeCreation3.jpg" alt="Image 4">
+
+            <p>To get help with using the software, select the “Need Help” button and the following pop up will appear where you can view a quick guide to the software.</p>
+                <img src="./assets/guide/needHelp1.jpg" alt="Image 5">
+                <br></br>
+                <img src="./assets/guide/bTreeCreation4.jpg" alt="Image 6">
+        </section>
+
+        <section class="inner-section">
+            <h2>1.1) Custom B-Tree Creation</h2>
+            <p>To create a custom B-Tree you will use the tools in the figure below. In order to create a new B-Tree you will need to select the “Max Degree” input box and insert  a numerical value between 2 and 4. Once entering the value, select the “Custom Tree” button.</p>
+                <img src="./assets/guide/customBTreeCreation1.jpg" alt="Image 1">
+
+            <p>After selecting the “Custom Tree” button, the canvas should allow you to insert/delete keys as seen in the figure below.</p>
+                <img src="./assets/guide/customBTreeCreation2.jpg" alt="Image 2">
+
+
+            <p>To insert keys, select the “Insert” input box and insert  a numerical value and then click the “Insert” button. Once completed, you will see a key pop up in the canvas and this can be seen in the left image. After continually inserting values, you will eventually have a B-Tree that looks as you desire, this B-Tree will be restructured automatically and requires no user input to change it.</p>
+                <img src="./assets/guide/customBTreeCreation3.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/customBTreeCreation4.jpg" alt="Image 4">
+                <img src="./assets/guide/customBTreeCreation5.jpg" alt="Image 5">
+
+
+            <p>If you made a mistake or you would like to remove a key, you can use the delete feature. To delete keys, select the “Delete” input box and insert  a numerical value (that already exists within the B-Tree) and then click the “Delete” button. Once completed, you will see the desired key removed from the B-Tree. The deletion from the B-Tree will cause it to be restructured automatically and requires no user input to change it. For example, removing 22 from the B-Tree above:</p>
+                <img src="./assets/guide/customBTreeCreation6.jpg" alt="Image 6">
+                <br></br>
+                <img src="./assets/guide/customBTreeCreation7.jpg" alt="Image 7">
+        </section>
+
+        <section class="inner-section">
+            <h2>1.2) Random B-Tree Creation</h2>
+            <p>To create a randomly generated B-Tree you will use the tools in the figure below. In order to create a new randomly generated B-Tree you will need to select the “Max Degree” input box and insert a numerical value between 2 and 4. You will need to select the “Num Keys” input box and insert  a numerical value between 1 and 100.</p>
+            <p>To use a seed to generate your random B-Tree, you will need to select the “Seed” input box and insert a numerical and select the “Use Seed” Checkbox. Essentially all this does is create a B-Tree using a particular seed.</p>
+                <img src="./assets/guide/randomBTreeCreation1.jpg" alt="Image 1">
+
+            <p>Once entering the values described above, select the “Random Tree'' button. After selecting the “Random Tree” button, the canvas should allow you to insert/delete keys as seen in the figure below and it will create a randomly generated B-Tree on the canvas. After generating  the random B-Tree you can use the insert and delete key functionality to further customise your randomly generated B-Tree.</p>
+                <img src="./assets/guide/randomBTreeCreation2.jpg" alt="Image 2">
+
+
+            <p>To insert keys, select the “Insert” input box and insert a numerical value and then click the “Insert” button. Once completed, you will see your key inserted into the B-Tree, the B-Tree will be restructured automatically and requires no user input to change it.</p>
+                <img src="./assets/guide/randomBTreeCreation3.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/randomBTreeCreation4.jpg" alt="Image 4">
+
+
+            <p>To delete keys, select the “Delete” input box and insert a numerical value that already exists in the B-Tree and then click the “Insert” button. Once completed, you will see your key removed from the B-Tree, the B-Tree will be restructured automatically and requires no user input to change it.</p>
+                <img src="./assets/guide/randomBTreeCreation5.jpg" alt="Image 5">
+                <br></br>
+                <img src="./assets/guide/randomBTreeCreation6.jpg" alt="Image 6">
+        </section>
+
+        <section class="inner-section">
+            <h2>1.3) Save and Load a B-Tree</h2>
+            <p>To save and load a B-Tree, you will need to use the buttons displayed below.</p>
+                <img src="./assets/guide/saveLoad1.jpg" alt="Image 1">
+
+            <p>To save a B-Tree that you have created, you will need to select the “Save” button. After saving the B-Tree, it will automatically download a text file to your device containing the contents used to create the B-Tree.</p>
+                <img src="./assets/guide/saveLoad2.jpg" alt="Image 2">
+
+
+            <p>To load a B-Tree you will need to select the “Load” button. After selecting the button, a pop up to your field will be displayed. From here, you can select the text  file of the B-Tree you would like to load. After, select the file and open it, the B-Tree will be created within the canvas area.</p>
+                <img src="./assets/guide/saveLoad2.jpg" alt="Image 3">
+        </section>
+
+        <section class="inner-section">
+            <h2>1.4) Questions on Created B-Tree</h2>
+            <p>After creating/generating your custom B-Tree, you can then answer questions on it. To do this, select the “Generate Questions on Tree” button.</p>
+                <img src="./assets/guide/questionsBTreeCreation1.jpg" alt="Image 1">
+
+            <p>After selecting this button you will be greeted with the following screen. As soon as the screen loads, you will be prompted with a question to perform on the B-Tree. You can use sections 3 and 4 in the user guide to help you complete these operations. </p>
+                <img src="./assets/guide/questionsBTreeCreation2.jpg" alt="Image 2">
+
+
+            <p>Once you have completed the operation, select the “Check Answer” button. From here, one of two things may happen.</p>
+            <p>The first option is that the operation you performed may be incorrect. In this case you will be notified and you will have the chance to see the correct answer by selecting the “Show Correct Answer”.</p>
+                <img src="./assets/guide/inValidOperation.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/questionsBTreeCreation3.jpg" alt="Image 4">
+                <br></br>
+                <img src="./assets/guide/questionsBTreeCreation4.jpg" alt="Image 5">
+
+            <p>The second option is that the operation you performed may be correct. In this case you will be notified and then a new question will be generated and the tree will be reset back to the original one created by you.</p>
+                <img src="./assets/guide/validOperation.jpg" alt="Image 6">
+                <br></br>
+                <img src="./assets/guide/questionsBTreeCreation5.jpg" alt="Image 7">
+
+            <p>Note how a new question was created, from here you can perform the new question. If you get stuck during a question and would like to retry it, you can select the retry button situated at the top left of the screen.</p>
+                <img src="./assets/guide/retryMode.jpg" alt="Image 8">
+             
+
+            <p>You can navigate back the custom tree creation by selecting the back button. You can also access the help menu by selecting the button as seen below.</p>
+                <img src="./assets/guide/backMode.jpg" alt="Image 9">
+                <img src="./assets/guide/needHelp1.jpg" alt="Image 10">
+        </section>
     </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------Custom B-Tree Creation---------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+    <section id="custom-tree-creation" class="coloured-section">
+        <section class="inner-section">
+            <h2>Custom B-Tree Creation</h2>
+            <p>To create a custom B-Tree you will use the tools in the figure below. In order to create a new B-Tree you will need to select the “Max Degree” input box and insert  a numerical value between 2 and 4. Once entering the value, select the “Custom Tree” button.</p>
+                <img src="./assets/guide/customBTreeCreation1.jpg" alt="Image 1">
+
+            <p>After selecting the “Custom Tree” button, the canvas should allow you to insert/delete keys as seen in the figure below.</p>
+                <img src="./assets/guide/customBTreeCreation2.jpg" alt="Image 2">
+
+
+            <p>To insert keys, select the “Insert” input box and insert  a numerical value and then click the “Insert” button. Once completed, you will see a key pop up in the canvas and this can be seen in the left image. After continually inserting values, you will eventually have a B-Tree that looks as you desire, this B-Tree will be restructured automatically and requires no user input to change it.</p>
+                <img src="./assets/guide/customBTreeCreation3.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/customBTreeCreation4.jpg" alt="Image 4">
+                <img src="./assets/guide/customBTreeCreation5.jpg" alt="Image 5">
+
+
+            <p>If you made a mistake or you would like to remove a key, you can use the delete feature. To delete keys, select the “Delete” input box and insert  a numerical value (that already exists within the B-Tree) and then click the “Delete” button. Once completed, you will see the desired key removed from the B-Tree. The deletion from the B-Tree will cause it to be restructured automatically and requires no user input to change it. For example, removing 22 from the B-Tree above:</p>
+                <img src="./assets/guide/customBTreeCreation6.jpg" alt="Image 6">
+                <br></br>
+                <img src="./assets/guide/customBTreeCreation7.jpg" alt="Image 7">
+        </section>
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------Random B-Tree Creation---------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+    <section id="random-tree-creation" class="coloured-section">
+        <section class="inner-section">
+            <h2>Random B-Tree Creation</h2>
+            <p>To create a randomly generated B-Tree you will use the tools in the figure below. In order to create a new randomly generated B-Tree you will need to select the “Max Degree” input box and insert a numerical value between 2 and 4. You will need to select the “Num Keys” input box and insert  a numerical value between 1 and 100.</p>
+            <p>To use a seed to generate your random B-Tree, you will need to select the “Seed” input box and insert a numerical and select the “Use Seed” Checkbox. Essentially all this does is create a B-Tree using a particular seed.</p>
+                <img src="./assets/guide/randomBTreeCreation1.jpg" alt="Image 1">
+
+            <p>Once entering the values described above, select the “Random Tree'' button. After selecting the “Random Tree” button, the canvas should allow you to insert/delete keys as seen in the figure below and it will create a randomly generated B-Tree on the canvas. After generating  the random B-Tree you can use the insert and delete key functionality to further customise your randomly generated B-Tree.</p>
+                <img src="./assets/guide/randomBTreeCreation2.jpg" alt="Image 2">
+
+
+            <p>To insert keys, select the “Insert” input box and insert a numerical value and then click the “Insert” button. Once completed, you will see your key inserted into the B-Tree, the B-Tree will be restructured automatically and requires no user input to change it.</p>
+                <img src="./assets/guide/randomBTreeCreation3.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/randomBTreeCreation4.jpg" alt="Image 4">
+
+
+            <p>To delete keys, select the “Delete” input box and insert a numerical value that already exists in the B-Tree and then click the “Insert” button. Once completed, you will see your key removed from the B-Tree, the B-Tree will be restructured automatically and requires no user input to change it.</p>
+                <img src="./assets/guide/randomBTreeCreation5.jpg" alt="Image 5">
+                <br></br>
+                <img src="./assets/guide/randomBTreeCreation6.jpg" alt="Image 6">
+        </section>
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------Save and Load B-Tree----------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+    <section id="tree-creation-save-load" class="coloured-section">
+        <section class="inner-section">
+            <h2>Save and Load a B-Tree</h2>
+            <p>To save and load a B-Tree, you will need to use the buttons displayed below.</p>
+                <img src="./assets/guide/saveLoad1.jpg" alt="Image 1">
+
+            <p>To save a B-Tree that you have created, you will need to select the “Save” button. After saving the B-Tree, it will automatically download a text file to your device containing the contents used to create the B-Tree.</p>
+                <img src="./assets/guide/saveLoad2.jpg" alt="Image 2">
+
+
+            <p>To load a B-Tree you will need to select the “Load” button. After selecting the button, a pop up to your field will be displayed. From here, you can select the text  file of the B-Tree you would like to load. After, select the file and open it, the B-Tree will be created within the canvas area.</p>
+                <img src="./assets/guide/saveLoad2.jpg" alt="Image 3">
+        </section>
+    </section>
+
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------Questions on B-Trees----------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+
+    <section id="tree-creation-questions" class="coloured-section">
+        <section class="inner-section">
+            <h2>Questions on Created B-Tree</h2>
+            <p>After creating/generating your custom B-Tree, you can then answer questions on it. To do this, select the “Generate Questions on Tree” button.</p>
+                <img src="./assets/guide/questionsBTreeCreation1.jpg" alt="Image 1">
+
+            <p>After selecting this button you will be greeted with the following screen. As soon as the screen loads, you will be prompted with a question to perform on the B-Tree. You can use sections 3 and 4 in the user guide to help you complete these operations. </p>
+                <img src="./assets/guide/questionsBTreeCreation2.jpg" alt="Image 2">
+
+
+            <p>Once you have completed the operation, select the “Check Answer” button. From here, one of two things may happen.</p>
+            <p>The first option is that the operation you performed may be incorrect. In this case you will be notified and you will have the chance to see the correct answer by selecting the “Show Correct Answer”.</p>
+                <img src="./assets/guide/inValidOperation.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/questionsBTreeCreation3.jpg" alt="Image 4">
+                <br></br>
+                <img src="./assets/guide/questionsBTreeCreation4.jpg" alt="Image 5">
+
+            <p>The second option is that the operation you performed may be correct. In this case you will be notified and then a new question will be generated and the tree will be reset back to the original one created by you.</p>
+                <img src="./assets/guide/validOperation.jpg" alt="Image 6">
+                <br></br>
+                <img src="./assets/guide/questionsBTreeCreation5.jpg" alt="Image 7">
+
+            <p>Note how a new question was created, from here you can perform the new question. If you get stuck during a question and would like to retry it, you can select the retry button situated at the top left of the screen.</p>
+                <img src="./assets/guide/retryMode.jpg" alt="Image 8">
+             
+
+            <p>You can navigate back the custom tree creation by selecting the back button. You can also access the help menu by selecting the button as seen below.</p>
+                <img src="./assets/guide/backMode.jpg" alt="Image 9">
+                <img src="./assets/guide/needHelp1.jpg" alt="Image 10">
+        </section>
+    </section>
+
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -103,8 +355,32 @@
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
     <section id="practice-questions-section" class="coloured-section">
-        <h2>Practice Questions</h2>
-        <img src="DSA/assets/MainMenu.JPG" alt="B Tree Practice Tool Image">
+        <section class="inner-section">
+            <h2>Answer Random Questions</h2>
+            <p>When entering the Answer Random Questions menu you will be greeted with the following page. As soon as the screen loads, you will be prompted with a question to perform on a random B-Tree. You can use sections 3 and 4 in the user guide to help you complete these operations. </p>
+                <img src="./assets/guide/answerBTreeQuestions1.jpg" alt="Image 1">
+
+            <p>Once you have completed the operation, select the “Check Answer” button. From here, one of two things may happen.</p>
+            <p>The first option is that the operation you performed may be incorrect. In this case you will be notified and you will have the chance to see the correct answer by selecting the “Show Correct Answer”.</p>
+                <img src="./assets/guide/inValidOperation.jpg" alt="Image 3">
+                <br></br>
+                <img src="./assets/guide/answerBTreeQuestions2.jpg" alt="Image 4">
+                <br></br>
+                <img src="./assets/guide/answerBTreeQuestions3.jpg" alt="Image 5">
+
+            <p>The second option is that the operation you performed is correct. In this case you will be notified and then a new question will be generated with a new random tree.</p>
+                <img src="./assets/guide/validOperation.jpg" alt="Image 6">
+                <br></br>
+                <img src="./assets/guide/answerBTreeQuestions4.jpg" alt="Image 7">
+
+            <p>Note how a new question was created, from here you can perform the new question. If you get stuck during a question and would like to retry it, you can select the retry button situated at the top left of the screen.</p>
+                <img src="./assets/guide/retryMode.jpg" alt="Image 8">
+             
+
+            <p>You can navigate back the custom tree creation by selecting the back button. You can also access the help menu by selecting the button as seen below.</p>
+                <img src="./assets/guide/backMode.jpg" alt="Image 9">
+                <img src="./assets/guide/needHelp1.jpg" alt="Image 10">
+        </section>
     </section>
 
     <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
