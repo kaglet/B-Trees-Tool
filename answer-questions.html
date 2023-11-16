@@ -24,11 +24,11 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
         </section>
-        
+
         <section class="canvas-container">
 
             <div class="holder">
-                <ul>  
+                <ul>
                     <li>
                         <label id="treeDegree" value=""></label>
                     </li>
@@ -37,7 +37,7 @@
                 </canvas>
             </div>
 
-<!-- 
+            <!-- 
             <section class="zoom-controls">
                 <button type="button" class="zoom-in">
                     + </button>
@@ -46,35 +46,35 @@
             </section> -->
 
             <section class="panning-controls">
-                    <section class="left-section">
-                        <button type="button" class="l">
-                            &larr;
-                        </button>
-                    </section>
-                    <section class="mid-section">
-                        <button type="button" class="up">
-                            &uarr;
-                        </button>
-                        <button type="button" class="m">
-                            &middot;
-                        </button>
-                        <button type="button" class="down">
-                            &darr;
-                        </button>
-                    </section>
-
-                    <section class="right-section">
-                        <button type="button" class="r">
-                            &rarr;
-                        </button>
-                    </section>
+                <section class="left-section">
+                    <button type="button" class="l">
+                        &larr;
+                    </button>
+                </section>
+                <section class="mid-section">
+                    <button type="button" class="up">
+                        &uarr;
+                    </button>
+                    <button type="button" class="m">
+                        &middot;
+                    </button>
+                    <button type="button" class="down">
+                        &darr;
+                    </button>
                 </section>
 
-            <div id ="solution-popup" class = "popup">
-                <div id="solution-panel" class ="solution">
-                <span class= "close" id="close-solution">&times;</span>
-                <h2 id="solution-heading">Correct Tree</h2>
-                <canvas id="solution-canvas" width="900px" height="450px"></canvas>
+                <section class="right-section">
+                    <button type="button" class="r">
+                        &rarr;
+                    </button>
+                </section>
+            </section>
+
+            <div id="solution-popup" class="popup">
+                <div id="solution-panel" class="solution">
+                    <span class="close" id="close-solution">&times;</span>
+                    <h2 id="solution-heading">Correct Tree</h2>
+                    <canvas id="solution-canvas" width="900px" height="450px"></canvas>
                 </div>
             </div>
 
@@ -82,7 +82,7 @@
                 <div class="guide-content">
                     <span class="close" id="close-help-guide">&times;</span>
                     <h2 id="guide-heading">Getting Started Guide</h2>
-                    <p>Here's a guide to using this B-tree simulator:</p>
+                    <p>Here's a quick guide to using this B-tree simulator:</p>
                     <ul>
                         <li><strong>Max Degree (for tree creation):</strong> Enter a number as the maximum degree of the
                             B-tree.</li>
@@ -96,6 +96,10 @@
                             tree.</li>
                         <li><strong>Delete:</strong> Enter a number and click this button to delete a node from the
                             tree.</li>
+                        <li><strong>Seeds:</strong> Enter a number and check the "Use Seed" option to generate the same
+                            random tree from reused parameters. Enter a different seed to generate a different tree with
+                            the same parameters.
+                        </li>
                     </ul>
                 </div>
             </div>
