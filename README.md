@@ -11,10 +11,10 @@ Find the live demo [here](https://kaglet.github.io/DSA/index.html).
 * Custom Tree Creation page to create a custom tree and random tree based off degree and/or number of nodes.
 * Highly intuitive tree interaction and manipulation options using the drag and drop "snapping" mode allowing users to intuitively merge and un-merge keys into nodes by dragging them around and dropping.
 * Insert/Delete keys to/from tree with input options for building a custom tree from scratch or editing a random tree.
-* Perform Insert/Delete questions through dragging keys to a bin to delete them or inserting floating keys via snapping.
+* Perform insert/delete questions through dragging keys to a bin to delete them or inserting floating keys via snapping.
 * Mark and validate trees after performing an insert/delete operation for a question.
 * Endless question generation mode for practice of random delete/insert questions on a random tree. 
-* Export tree to text file representation and load tree from text file representation.
+* Export tree to text file representation and import tree from text file representation.
 * Canvas controls to pan tree and center tree.
 
 ## Supporting features
