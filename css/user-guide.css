@@ -183,3 +183,23 @@ section {
 li {
   padding-top: 5px;
 }
+
+.iframe-container {
+  width: 500px;
+  height: 281.25px;
+}
+
+.inner-section.videos h3 {
+  text-align: center;
+  font-size: 3rem;
+}
+
+.inner-section.videos {
+  display: flex;
+}
+
+.videos.inner-section section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+} 
