@@ -462,3 +462,7 @@ body.dark-mode .holder ul {
 .panning-controls > .mid-section button {
     margin-bottom: 0.3rem;
 }
+
+a:link {
+    color: black;
+}
