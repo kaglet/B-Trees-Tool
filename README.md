@@ -2,14 +2,14 @@
 
 This is a tool that allows you to create customized B-Trees, manipulate them with a highly interactive user experience mode 
 and generate random questions on them to practice their operations. There are several secondary features to improve the user experience further.  
-Find the live demo [here](kaglet.github.io/DSA).
+Find the live demo [here](https://kaglet.github.io/DSA/index.html).
 
 ## Features
 
 ## Main features
 
 * Custom Tree Creation page to create a custom tree and random tree based off degree and/or number of nodes.
-* Highly intuitive tree interaction and manipulation options using the drag and drop "snapping" mode allowing users to intuitively merge keys into nodes by dragging them around and dropping.
+* Highly intuitive tree interaction and manipulation options using the drag and drop "snapping" mode allowing users to intuitively merge and un-merge keys into nodes by dragging them around and dropping.
 * Insert/Delete keys to/from tree with input options for building a custom tree from scratch or editing a random tree.
 * Perform Insert/Delete questions through dragging keys to a bin to delete them or inserting floating keys via snapping.
 * Mark and validate trees after performing an insert/delete operation for a question.
