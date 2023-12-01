@@ -2,7 +2,7 @@
 
 This is a tool that allows you to create customized B-Trees, manipulate them with a highly interactive user experience mode 
 and generate random questions on them to practice their operations. There are several secondary features to improve the user experience further.  
-Find the live demo [here](https://kaglet.github.io/DSA/index.html).
+Find the tool live [here](https://kaglet.github.io/DSA/index.html).
 
 ## Features
 
