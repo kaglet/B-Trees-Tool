@@ -4,6 +4,12 @@ This is a tool that allows you to create customized B-Trees, manipulate them wit
 and generate random questions on them to practice their operations. There are several secondary features to improve the user experience further.  
 Find the tool live [here](https://kaglet.github.io/B-Trees-Tool/).
 
+The following are pictures of the tree-creation, questions-practice, and user-guide pages respectively. These are to show how the page should look at 100% fullscreen. Light and dark modes are shown.
+
+![image](https://github.com/kaglet/B-Trees-Tool/assets/96872447/3ba5f9e8-b0c8-4723-8818-2c5a39050e27)
+![image](https://github.com/kaglet/B-Trees-Tool/assets/96872447/86c0dd6d-8629-452d-9119-c18759c51687)
+![image](https://github.com/kaglet/B-Trees-Tool/assets/96872447/9fda026d-fb46-424a-8dbe-39642dc1b4ad)
+
 ## Features
 
 ## Main features
