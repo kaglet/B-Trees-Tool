@@ -12,7 +12,7 @@ The following are pictures of the tree-creation, questions-practice, and user-gu
 
 ## Features
 
-## Main features
+### Main features
 
 * Custom Tree Creation page to create a custom tree and random tree based off degree and/or number of nodes.
 * Highly intuitive tree interaction and manipulation options using the drag and drop "snapping" mode allowing users to intuitively merge and un-merge keys into nodes by dragging them around and dropping.
@@ -23,7 +23,7 @@ The following are pictures of the tree-creation, questions-practice, and user-gu
 * Export tree to text file representation and import tree from text file representation.
 * Canvas controls to pan tree and center tree.
 
-## Supporting features
+### Supporting features
 
 * With press of space-bar toggle between node drag mode and key drag mode.
 * Click reset icon to reset to original tree after heavy modification of trees during question taking or random tree creation.
@@ -33,12 +33,12 @@ The following are pictures of the tree-creation, questions-practice, and user-gu
 * Comprehensive user guide covering B-Tree theory, manipulation, insertion/deletion by cases, glossary, FAQ, and video walkthroughs.
 * Clean, uncluttered, easy to use interface.
 
-## Extra features
+### Extra features
 
 * Per page dark mode for the main pages.
 * Quick help guide on custom tree creation page.
 
-## Advanced features to potentially add in future
+### Advanced features to potentially add in future
 
 * Selective random generation. Generate insert/delete questions by specified cases beyond purely random generation.
 * B-Tree Search question practice in addition to insert/delete.
